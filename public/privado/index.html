@@ -494,7 +494,7 @@
     <!-- Auth Guard -->
     <script>
         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         }
     </script>
 
@@ -1531,7 +1531,7 @@
             document.getElementById('logout-btn').addEventListener('click', function() {
                 sessionStorage.removeItem('isLoggedIn');
                 sessionStorage.removeItem('username');
-                window.location.href = 'index.html';
+                window.location.href = 'login.html';
             });
             
             console.log('âœ… AplicaciÃ³n lista');
