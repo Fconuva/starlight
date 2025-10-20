@@ -685,7 +685,7 @@
                     </h3>
                     <p class="text-sm text-gray-600 mb-4">Administra los estudiantes del curso: agregar, importar, editar o eliminar.</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <button onclick="addStudent()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-medium transition-all hover:shadow-lg">
                             <i class="fas fa-user-plus mr-2"></i>Agregar Estudiante
                         </button>
@@ -709,7 +709,7 @@
                     </h3>
                     <p class="text-sm text-gray-600 mb-4">Administra las tareas y evaluaciones del curso.</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <button onclick="addTask()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-medium transition-all hover:shadow-lg">
                             <i class="fas fa-plus mr-2"></i>Agregar Tarea
                         </button>
@@ -732,7 +732,7 @@
                     </h3>
                     <p class="text-sm text-gray-600 mb-4">Herramientas para manipular las calificaciones del curso de forma masiva.</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <button onclick="fillAllGrades(true)" class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-medium transition-all hover:shadow-lg">
                             <i class="fas fa-check-double mr-2"></i>Marcar Todo
                         </button>
@@ -778,7 +778,7 @@
                     </h3>
                     <p class="text-sm text-gray-600 mb-4">Importa o exporta datos del curso en diferentes formatos.</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition-all hover:shadow-lg">
                             <i class="fas fa-file-excel mr-2"></i>Exportar Excel
                         </button>
@@ -5364,7 +5364,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                         <i class="fas fa-chart-line mr-2 text-blue-600"></i>
                         Resumen Ejecutivo
                     </h4>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="bg-gray-50 p-4 rounded text-center">
                             <i class="fas fa-users text-2xl text-gray-600 mb-2"></i>
                             <p class="text-3xl font-bold text-gray-800">${stats.total}</p>
@@ -5577,7 +5577,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                         </table>
                     </div>
                     
-                    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="bg-green-100 p-3 rounded text-center">
                             <p class="text-2xl font-bold text-green-800">${stats.distribution.excelente}</p>
                             <p class="text-xs font-semibold text-green-700">Excelente (6.0-7.0)</p>
