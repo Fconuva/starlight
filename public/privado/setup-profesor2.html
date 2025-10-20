@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Perfil - Javiera Poblete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-purple-600 to-purple-800 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">
+                            <i class="fas fa-user-cog mr-3"></i>Configuración de Perfil
+                        </h1>
+                        <p class="text-purple-100 mt-2">Javiera Poblete Fernández</p>
+                    </div>
+                    <button onclick="window.location.href='dashboard.html'" 
+                            class="bg-white text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-50 transition-all">
+                        <i class="fas fa-arrow-left mr-2"></i>Volver
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Configuración -->
+        <div class="bg-white rounded-xl shadow-2xl p-8">
+            <form id="configForm" class="space-y-6">
+                
+                <!-- Nombre del Docente -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-user text-purple-600 mr-2"></i>Nombre Completo
+                    </label>
+                    <input type="text" id="teacherName" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                           placeholder="Ej: Javiera Poblete Fernández"
+                           value="Javiera Poblete Fernández">
+                </div>
+
+                <!-- Asignatura -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-book text-purple-600 mr-2"></i>Asignatura Principal
+                    </label>
+                    <input type="text" id="subject" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                           placeholder="Ej: Lenguaje y Comunicación"
+                           value="Lenguaje y Comunicación">
+                </div>
+
+                <!-- Cursos que imparte -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-chalkboard text-purple-600 mr-2"></i>Cursos que Imparte
+                    </label>
+                    <input type="text" id="courses" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                           placeholder="Ej: 3° y 4° Medio"
+                           value="3° y 4° Medio">
+                </div>
+
+                <!-- Email (opcional) -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-envelope text-purple-600 mr-2"></i>Email (Opcional)
+                    </label>
+                    <input type="email" id="email" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                           placeholder="javiera.poblete@ejemplo.cl">
+                </div>
+
+                <!-- Establecimiento -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-school text-purple-600 mr-2"></i>Establecimiento
+                    </label>
+                    <input type="text" id="school" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                           placeholder="Nombre del colegio o liceo">
+                </div>
+
+                <!-- Botones -->
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" 
+                            class="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-lg font-bold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl">
+                        <i class="fas fa-save mr-2"></i>Guardar Configuración
+                    </button>
+                    <button type="button" onclick="resetConfig()"
+                            class="px-6 bg-gray-200 text-gray-700 py-4 rounded-lg font-bold hover:bg-gray-300 transition-all">
+                        <i class="fas fa-undo mr-2"></i>Restablecer
+                    </button>
+                </div>
+            </form>
+
+            <!-- Estado de guardado -->
+            <div id="saveStatus" class="mt-6 hidden">
+                <div class="bg-green-50 border-2 border-green-200 rounded-lg p-4">
+                    <p class="text-green-800 font-semibold">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span id="statusText"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 mt-6">
+            <h3 class="text-lg font-bold text-purple-900 mb-3">
+                <i class="fas fa-info-circle mr-2"></i>Sobre esta configuración
+            </h3>
+            <ul class="space-y-2 text-sm text-purple-800">
+                <li><i class="fas fa-check text-purple-600 mr-2"></i>Esta información se guarda localmente en tu navegador</li>
+                <li><i class="fas fa-check text-purple-600 mr-2"></i>Aparecerá en el dashboard y en los informes generados</li>
+                <li><i class="fas fa-check text-purple-600 mr-2"></i>Puedes modificarla en cualquier momento</li>
+                <li><i class="fas fa-check text-purple-600 mr-2"></i>Es independiente de la configuración de otros docentes</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Cargar configuración existente
+        window.addEventListener('DOMContentLoaded', loadConfig);
+
+        function loadConfig() {
+            const docente = new URLSearchParams(window.location.search).get('docente') || 'javiera';
+            const configKey = `${docente}_config`;
+            const savedConfig = localStorage.getItem(configKey);
+
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    document.getElementById('teacherName').value = config.teacherName || 'Javiera Poblete Fernández';
+                    document.getElementById('subject').value = config.subject || 'Lenguaje y Comunicación';
+                    document.getElementById('courses').value = config.courses || '3° y 4° Medio';
+                    document.getElementById('email').value = config.email || '';
+                    document.getElementById('school').value = config.school || '';
+                } catch (e) {
+                    console.error('Error cargando configuración:', e);
+                }
+            }
+        }
+
+        // Guardar configuración
+        document.getElementById('configForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const docente = new URLSearchParams(window.location.search).get('docente') || 'javiera';
+            const configKey = `${docente}_config`;
+            
+            const config = {
+                teacherName: document.getElementById('teacherName').value,
+                subject: document.getElementById('subject').value,
+                courses: document.getElementById('courses').value,
+                email: document.getElementById('email').value,
+                school: document.getElementById('school').value,
+                lastUpdated: new Date().toISOString()
+            };
+
+            localStorage.setItem(configKey, JSON.stringify(config));
+
+            // Mostrar mensaje de éxito
+            const statusDiv = document.getElementById('saveStatus');
+            const statusText = document.getElementById('statusText');
+            
+            statusText.textContent = '✅ Configuración guardada exitosamente';
+            statusDiv.classList.remove('hidden');
+
+            // Ocultar mensaje después de 3 segundos
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 3000);
+
+            console.log('✅ Configuración guardada:', config);
+        });
+
+        // Restablecer configuración
+        function resetConfig() {
+            if (confirm('¿Restablecer la configuración a los valores predeterminados?')) {
+                document.getElementById('teacherName').value = 'Javiera Poblete Fernández';
+                document.getElementById('subject').value = 'Lenguaje y Comunicación';
+                document.getElementById('courses').value = '3° y 4° Medio';
+                document.getElementById('email').value = '';
+                document.getElementById('school').value = '';
+            }
+        }
+
+        // Verificar autenticación
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+</body>
+</html>

@@ -279,7 +279,7 @@
                 
                 // Redirigir después de breve pausa para mostrar confirmación
                 setTimeout(() => {
-                    window.location.href = 'index.html?docente=javiera';
+                    window.location.href = 'dashboard.html';
                 }, 800);
             } else {
                 // Login fallido
@@ -296,7 +296,7 @@
 
         // Verificar si ya está logueado
         if (sessionStorage.getItem('isLoggedIn') === 'true') {
-            window.location.href = 'index.html?docente=javiera';
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
