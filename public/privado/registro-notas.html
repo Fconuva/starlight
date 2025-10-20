@@ -1048,7 +1048,7 @@
                         <select id="taskEvaluationType" class="w-full px-3 py-2 border border-gray-300 rounded-lg" onchange="handleEvaluationTypeChange()">
                             <option value="binary">ℹœ“ Binario (Completado/No completado)</option>
                             <option value="logro">ðŸ“Š Niveles de Logro (NL/ML/L/D)</option>
-                            <option value="rubrica">ðŸ“ Rñºbrica (Criterios personalizados)</option>
+                            <option value="rubrica">ðŸ“ Rúbrica (Criterios personalizados)</option>
                             <option value="numeric">ðŸ”¢ Nota Numñ©rica (1.0 - 7.0)</option>
                             <option value="percentage">ðŸ“ˆ Porcentaje (0% - 100%)</option>
                             <option value="conceptual">ðŸ“‹ Conceptual (I/S/B/MB)</option>
@@ -1058,13 +1058,13 @@
                         </p>
                     </div>
 
-                    <!-- Configuraciñ³n de Rñºbrica (solo visible si se selecciona rubrica) -->
+                    <!-- Configuraciñ³n de Rúbrica (solo visible si se selecciona rubrica) -->
                     <div id="rubricaConfigContainer" style="display:none;" class="border border-blue-200 rounded-lg p-4 bg-blue-50">
                         <label class="block text-sm font-medium text-gray-700 mb-3">
-                            <i class="fas fa-list-check mr-1"></i>Criterios de la Rñºbrica
+                            <i class="fas fa-list-check mr-1"></i>Criterios de la Rúbrica
                         </label>
                         <div id="rubricaCriteriaList" class="space-y-2 mb-3">
-                            <!-- Los criterios se agregarñ¡n dinñ¡micamente -->
+                            <!-- Los criterios se agregarán dinámicamente -->
                         </div>
                         <button type="button" onclick="addRubricaCriterion()" class="text-sm text-blue-600 hover:text-blue-800">
                             <i class="fas fa-plus mr-1"></i>Agregar criterio
@@ -1117,12 +1117,12 @@
         </div>
     </div>
 
-    <!-- Modal: Evaluar con Rñºbrica -->
+    <!-- Modal: Evaluar con Rúbrica -->
     <div id="rubricaModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <div class="bg-purple-600 text-white px-6 py-4 rounded-t-lg">
                 <h3 class="text-lg font-bold">
-                    <i class="fas fa-list-check mr-2"></i>Evaluar con Rñºbrica
+                    <i class="fas fa-list-check mr-2"></i>Evaluar con Rúbrica
                 </h3>
                 <p class="text-sm mt-1" id="rubricaModalTitle">Tarea - Estudiante</p>
             </div>
@@ -1303,7 +1303,7 @@
         const EVALUATION_TYPES = {
             BINARY: 'binary',           // ℹœ“/ℹœ— (Completado/No completado)
             LOGRO: 'logro',            // 4 Niveles de Logro
-            RUBRICA: 'rubrica',        // Rñºbrica personalizable
+            RUBRICA: 'rubrica',        // Rúbrica personalizable
             NUMERIC: 'numeric',        // Nota 1.0-7.0 directa
             PERCENTAGE: 'percentage',  // Porcentaje 0-100%
             CONCEPTUAL: 'conceptual'   // MB/B/S/I
@@ -2817,7 +2817,7 @@
 
             descElement.textContent = descriptions[type] || '';
 
-            // Mostrar configuraciñ³n de rñºbrica si corresponde
+            // Mostrar configuraciñ³n de Rúbrica si corresponde
             if (type === 'rubrica') {
                 rubricaContainer.style.display = 'block';
                 initializeRubricaCriteria();
@@ -2826,7 +2826,7 @@
             }
         }
 
-        // Inicializar criterios de rñºbrica con valores por defecto
+        // Inicializar criterios de Rúbrica con valores por defecto
         function initializeRubricaCriteria() {
             const container = document.getElementById('rubricaCriteriaList');
             container.innerHTML = '';
@@ -2836,12 +2836,12 @@
             });
         }
 
-        // Agregar un nuevo criterio de rñºbrica
+        // Agregar un nuevo criterio de Rúbrica
         function addRubricaCriterion() {
             addRubricaCriterionRow('', 25, 4);
         }
 
-        // Agregar fila de criterio de rñºbrica
+        // Agregar fila de criterio de Rúbrica
         function addRubricaCriterionRow(name = '', weight = 25, maxScore = 4) {
             const container = document.getElementById('rubricaCriteriaList');
             const index = container.children.length;
@@ -2874,17 +2874,17 @@
             container.appendChild(row);
         }
 
-        // Eliminar criterio de rñºbrica
+        // Eliminar criterio de Rúbrica
         function removeRubricaCriterion(button) {
             const container = document.getElementById('rubricaCriteriaList');
             if (container.children.length > 1) {
                 button.parentElement.remove();
             } else {
-                alert('ℹŒ Debe haber al menos un criterio en la rñºbrica');
+                alert('ℹŒ Debe haber al menos un criterio en la Rúbrica');
             }
         }
 
-        // Obtener criterios configurados de rñºbrica
+        // Obtener criterios configurados de Rúbrica
         function getRubricaCriteria() {
             const container = document.getElementById('rubricaCriteriaList');
             const criteria = [];
@@ -2905,18 +2905,18 @@
             return criteria;
         }
 
-        // Variables para el modal de rñºbrica
+        // Variables para el modal de Rúbrica
         let currentRubricaStudentIndex = null;
         let currentRubricaGradeIndex = null;
 
-        // Abrir modal de rñºbrica
+        // Abrir modal de Rúbrica
         function openRubricaModal(studentIndex, gradeIndex) {
             const student = courseData.students[studentIndex];
             const task = courseData.tasks[gradeIndex];
             const currentGrade = student.grades[gradeIndex];
 
             if (!task.rubricaCriteria || task.rubricaCriteria.length === 0) {
-                alert('ℹš ï¸ Esta tarea no tiene criterios de rñºbrica definidos');
+                alert('ℹš ï¸ Esta tarea no tiene criterios de Rúbrica definidos');
                 return;
             }
 
@@ -2963,7 +2963,7 @@
             document.getElementById('rubricaModal').style.display = 'block';
         }
 
-        // Generar labels para los niveles de la rñºbrica
+        // Generar labels para los niveles de la Rúbrica
         function generateRubricaLabels(maxScore) {
             const labels = ['No logrado'];
             if (maxScore >= 3) labels.push('Bñ¡sico');
@@ -2973,7 +2973,7 @@
             return labels.map(l => `<span>${l}</span>`).join('');
         }
 
-        // Actualizar puntaje total de rñºbrica
+        // Actualizar puntaje total de Rúbrica
         function updateRubricaScore() {
             const sliders = document.querySelectorAll('.rubrica-slider');
             const displays = document.querySelectorAll('.rubrica-score-display');
@@ -3002,7 +3002,7 @@
             document.getElementById('rubricaEstimatedGrade').className = `text-2xl font-bold ${gradeColor}`;
         }
 
-        // Guardar evaluaciñ³n de rñºbrica
+        // Guardar evaluaciñ³n de Rúbrica
         function saveRubricaGrade() {
             const sliders = document.querySelectorAll('.rubrica-slider');
             const scores = Array.from(sliders).map(s => parseInt(s.value));
@@ -3015,7 +3015,7 @@
             closeRubricaModal();
         }
 
-        // Cerrar modal de rñºbrica
+        // Cerrar modal de Rúbrica
         function closeRubricaModal() {
             document.getElementById('rubricaModal').style.display = 'none';
             currentRubricaStudentIndex = null;
@@ -3083,11 +3083,11 @@
                 oas: selectedOAs
             };
 
-            // Si es tipo rñºbrica, agregar criterios
+            // Si es tipo Rúbrica, agregar criterios
             if (evaluationType === 'rubrica') {
                 const criteria = getRubricaCriteria();
                 if (criteria.length === 0) {
-                    alert('ℹš ï¸ Debes definir al menos un criterio para la rñºbrica');
+                    alert('ℹš ï¸ Debes definir al menos un criterio para la Rúbrica');
                     return;
                 }
                 task.rubricaCriteria = criteria;
@@ -4192,7 +4192,7 @@
                     break;
                     
                 case EVALUATION_TYPES.RUBRICA:
-                    // Para rñºbrica, el valor viene del modal
+                    // Para Rúbrica, el valor viene del modal
                     validatedValue = value;
                     break;
             }
@@ -4204,7 +4204,7 @@
                 evaluationType: evaluationType
             };
 
-            // Si es rñºbrica y tiene scores, agregar
+            // Si es Rúbrica y tiene scores, agregar
             if (evaluationType === EVALUATION_TYPES.RUBRICA && value && typeof value === 'object') {
                 student.grades[gradeIndex].rubricaScores = value.rubricaScores || null;
             }
@@ -7619,7 +7619,7 @@ PROHIBIDO:
                 
                 'estrategias': `\n\n**ESTRATEGIAS CONCRETAS DE MEJORA:**\n1. **Comprensiñ³n lectora**: Aplica la estrategia SQA (Quñ© Sñ©, Quñ© quiero saber, Quñ© Aprendñ­) antes, durante y despuñ©s de leer. Subraya ideas principales y elabora resñºmenes progresivos.\n2. **Producciñ³n textual**: Utiliza el mñ©todo de escritura recursiva (planificar-escribir-revisar-editar). Crea esquemas previos y revisa coherencia y cohesiñ³n.\n3. **Anñ¡lisis crñ­tico**: Cuestiona las intenciones del emisor, identifica sesgos ideolñ³gicos y contrasta mñºltiples perspectivas.\n4. **Gestiñ³n del aprendizaje**: Establece rutinas de estudio, utiliza tñ©cnicas de memorizaciñ³n comprensiva y autoevalñºa tu progreso semanalmente.`,
                 
-                'formativa': `\n\n**RETROALIMENTACIñ“N PARA EL APRENDIZAJE:**\nTu proceso de aprendizaje es progresivo y requiere ajustes permanentes. Te invito a: (1) Reflexionar metacognitivamente sobre tus estrategias lectoras y escriturales, identificando quñ© te funciona y quñ© necesitas modificar; (2) Solicitar retroalimentaciñ³n especñ­fica sobre tus producciones antes de entregarlas; (3) Revisar las rñºbricas de evaluaciñ³n para autoregular tu desempeñ±o; (4) Participar en instancias de coevaluaciñ³n con tus pares, enriqueciendo asñ­ tu perspectiva; (5) Mantener un portafolio de aprendizajes que documente tu evoluciñ³n.`
+                'formativa': `\n\n**RETROALIMENTACIñ“N PARA EL APRENDIZAJE:**\nTu proceso de aprendizaje es progresivo y requiere ajustes permanentes. Te invito a: (1) Reflexionar metacognitivamente sobre tus estrategias lectoras y escriturales, identificando quñ© te funciona y quñ© necesitas modificar; (2) Solicitar retroalimentaciñ³n especñ­fica sobre tus producciones antes de entregarlas; (3) Revisar las Rúbricas de evaluaciñ³n para autoregular tu desempeñ±o; (4) Participar en instancias de coevaluaciñ³n con tus pares, enriqueciendo asñ­ tu perspectiva; (5) Mantener un portafolio de aprendizajes que documente tu evoluciñ³n.`
             };
             
             feedback.push(estrategias[focus] || estrategias['general']);
@@ -7675,3 +7675,4 @@ PROHIBIDO:
     </div> <!-- Cierre de #app-container para iOS fix -->
 </body>
 </html>
+

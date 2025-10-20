@@ -1,0 +1,479 @@
+{
+  "asignatura": "Lenguaje y Comunicación",
+  "niveles": {
+    "1°Básico": {
+      "nivel": "1°Básico",
+      "unidades": [
+        {
+          "numero": 1,
+          "nombre": "Comprensión de textos orales y escritos",
+          "oas": [
+            {
+              "codigo": "OA1",
+              "texto": "Reconocer que los textos escritos transmiten mensajes y que son escritos por alguien para cumplir un propósito."
+            },
+            {
+              "codigo": "OA2",
+              "texto": "Demostrar comprensión de narraciones que aborden temas que les sean familiares: extrayendo información explícita e implícita; respondiendo preguntas simples, oralmente o por escrito, sobre los textos."
+            },
+            {
+              "codigo": "OA3",
+              "texto": "Leer palabras aisladas y en contexto, aplicando su conocimiento de la correspondencia letra-sonido en diferentes combinaciones: sílaba directa, indirecta o compleja."
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Lectura y escritura inicial",
+          "oas": [
+            {
+              "codigo": "OA4",
+              "texto": "Leer textos significativos que incluyan palabras con hiatos y diptongos, con grupos consonánticos y con combinación ce-ci, que-qui, ge-gi, gue-gui, güe-güi."
+            },
+            {
+              "codigo": "OA5",
+              "texto": "Experimentar con la escritura para comunicar hechos, ideas y sentimientos, entre otros."
+            },
+            {
+              "codigo": "OA6",
+              "texto": "Comprender textos aplicando estrategias de comprensión lectora; por ejemplo: relacionar la información del texto con sus experiencias y conocimientos; visualizar lo que describe el texto."
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Comunicación oral",
+          "oas": [
+            {
+              "codigo": "OA7",
+              "texto": "Participar activamente en conversaciones grupales sobre textos leídos o escuchados en clases o temas de su interés: expresando sus ideas u opiniones; demostrando interés ante lo escuchado."
+            },
+            {
+              "codigo": "OA8",
+              "texto": "Incorporar de manera pertinente en sus intervenciones orales el vocabulario nuevo extraído de textos escuchados o leídos."
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Lectura comprensiva y producción de textos",
+          "oas": [
+            {
+              "codigo": "OA9",
+              "texto": "Escribir con letra clara, separando las palabras con un espacio para que puedan ser leídas por otros con facilidad."
+            },
+            {
+              "codigo": "OA10",
+              "texto": "Escribir oraciones completas para transmitir mensajes."
+            }
+          ]
+        }
+      ]
+    },
+    "2°Básico": {
+      "nivel": "2°Básico",
+      "unidades": [
+        {
+          "numero": 1,
+          "nombre": "Lectura y comprensión",
+          "oas": [
+            {
+              "codigo": "OA1",
+              "texto": "Leer textos significativos que incluyan palabras con hiatos y diptongos, con grupos consonánticos y con combinación ce-ci, que-qui, ge-gi, gue-gui, güe-güi."
+            },
+            {
+              "codigo": "OA2",
+              "texto": "Demostrar comprensión de las narraciones leídas: extrayendo información explícita e implícita; reconstruyendo la secuencia de las acciones; identificando y describiendo las características físicas y sentimientos de los personajes."
+            },
+            {
+              "codigo": "OA3",
+              "texto": "Leer independientemente y comprender textos no literarios (cartas, notas, instrucciones y artículos informativos) para entretenerse y ampliar su conocimiento del mundo."
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Escritura y producción de textos",
+          "oas": [
+            {
+              "codigo": "OA4",
+              "texto": "Escribir frecuentemente, para desarrollar la creatividad y expresar sus ideas, textos como poemas, diarios de vida, anécdotas, cartas, recados, etc."
+            },
+            {
+              "codigo": "OA5",
+              "texto": "Escribir con letra clara, separando las palabras con un espacio para que puedan ser leídas por otros con facilidad."
+            },
+            {
+              "codigo": "OA6",
+              "texto": "Planificar la escritura, generando ideas a partir de: observación de imágenes; conversaciones con sus pares o el docente sobre experiencias personales y otros temas."
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Comunicación oral efectiva",
+          "oas": [
+            {
+              "codigo": "OA7",
+              "texto": "Participar activamente en conversaciones grupales sobre textos leídos o escuchados en clases o temas de su interés: manteniendo el foco de la conversación; expresando sus ideas u opiniones."
+            },
+            {
+              "codigo": "OA8",
+              "texto": "Incorporar de manera pertinente en sus intervenciones orales el vocabulario nuevo extraído de textos escuchados o leídos."
+            },
+            {
+              "codigo": "OA9",
+              "texto": "Desempeñar diferentes roles para desarrollar su lenguaje y autoestima, y aprender a trabajar en equipo."
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Vocabulario y fluidez lectora",
+          "oas": [
+            {
+              "codigo": "OA10",
+              "texto": "Leer en voz alta de manera fluida variados textos apropiados a su edad: pronunciando cada palabra con precisión; respetando la coma, el punto y los signos de exclamación e interrogación."
+            },
+            {
+              "codigo": "OA11",
+              "texto": "Comprender y disfrutar versiones completas de obras de la literatura, narradas o leídas por un adulto, como cuentos folclóricos y de autor, poemas, fábulas y leyendas."
+            }
+          ]
+        }
+      ]
+    },
+    "3°Básico": {
+      "nivel": "3°Básico",
+      "unidades": [
+        {
+          "numero": 1,
+          "nombre": "Comprensión lectora y estrategias",
+          "oas": [
+            {
+              "codigo": "OA1",
+              "texto": "Leer en voz alta de manera fluida variados textos apropiados a su edad: pronunciando las palabras con precisión; respetando los signos de puntuación; leyendo con entonación adecuada."
+            },
+            {
+              "codigo": "OA2",
+              "texto": "Comprender textos aplicando estrategias de comprensión lectora; por ejemplo: relacionar la información del texto con sus experiencias y conocimientos; releer lo que no fue comprendido; visualizar lo que describe el texto."
+            },
+            {
+              "codigo": "OA3",
+              "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo y desarrollar su imaginación."
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Escritura creativa y funcional",
+          "oas": [
+            {
+              "codigo": "OA4",
+              "texto": "Escribir frecuentemente, para desarrollar la creatividad y expresar sus ideas, textos como poemas, diarios de vida, cuentos, anécdotas, cartas, comentarios sobre sus lecturas, etc."
+            },
+            {
+              "codigo": "OA5",
+              "texto": "Escribir creativamente narraciones que incluyan: una secuencia lógica de eventos; inicio, desarrollo y desenlace; conectores adecuados."
+            },
+            {
+              "codigo": "OA6",
+              "texto": "Planificar la escritura: estableciendo propósito y destinatario; generando ideas a partir de conversaciones, investigaciones, lluvia de ideas u otra estrategia."
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Comunicación oral y vocabulario",
+          "oas": [
+            {
+              "codigo": "OA7",
+              "texto": "Comprender y disfrutar versiones completas de obras de la literatura, narradas o leídas por un adulto."
+            },
+            {
+              "codigo": "OA8",
+              "texto": "Incorporar de manera pertinente en la escritura el vocabulario nuevo extraído de textos escuchados o leídos."
+            },
+            {
+              "codigo": "OA9",
+              "texto": "Participar activamente en conversaciones grupales sobre textos leídos o escuchados en clases o temas de su interés: manteniendo el foco de la conversación; expresando sus ideas u opiniones y fundamentándolas."
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Análisis y reflexión sobre textos",
+          "oas": [
+            {
+              "codigo": "OA10",
+              "texto": "Escribir cartas, instrucciones, afiches, reportes de una experiencia, entre otros, para lograr diferentes propósitos: usando un formato adecuado; transmitiendo el mensaje con claridad."
+            },
+            {
+              "codigo": "OA11",
+              "texto": "Escribir con letra clara para que pueda ser leída por otros con facilidad."
+            },
+            {
+              "codigo": "OA12",
+              "texto": "Comprender la función de los artículos, sustantivos y adjetivos en textos orales y escritos, y reemplazarlos o combinarlos de diversas maneras para enriquecer o precisar sus producciones."
+            }
+          ]
+        }
+      ]
+    },
+    "4°Básico": {
+      "nivel": "4°Básico",
+      "unidades": [
+        {
+          "numero": 1,
+          "nombre": "Lectura y análisis literario",
+          "oas": [
+            {
+              "codigo": "OA1",
+              "texto": "Leer en voz alta de manera fluida variados textos apropiados a su edad: pronunciando las palabras con precisión; respetando la prosodia indicada por todos los signos de puntuación; decodificando de manera automática la mayoría de las palabras del texto."
+            },
+            {
+              "codigo": "OA2",
+              "texto": "Comprender textos aplicando estrategias de comprensión lectora; por ejemplo: relacionar la información del texto con sus experiencias y conocimientos; releer lo que no fue comprendido; formular preguntas sobre lo leído y responderlas."
+            },
+            {
+              "codigo": "OA3",
+              "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo, desarrollar su imaginación y reconocer su valor social y cultural."
+            },
+            {
+              "codigo": "OA4",
+              "texto": "Profundizar su comprensión de las narraciones leídas: extrayendo información explícita e implícita; determinando las consecuencias de hechos o acciones; describiendo y comparando a los personajes; describiendo los diferentes ambientes que aparecen en un texto."
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Producción escrita y ortografía",
+          "oas": [
+            {
+              "codigo": "OA5",
+              "texto": "Escribir frecuentemente para desarrollar la creatividad y expresar sus ideas: poemas; historias; anécdotas; cartas; comentarios sobre sus lecturas."
+            },
+            {
+              "codigo": "OA6",
+              "texto": "Escribir creativamente narraciones que: tengan una estructura clara; utilicen conectores adecuados; tengan coherencia en sus oraciones; describan a los personajes."
+            },
+            {
+              "codigo": "OA7",
+              "texto": "Planificar la escritura: estableciendo propósito y destinatario; generando ideas a partir de conversaciones, investigaciones, lluvia de ideas u otra estrategia."
+            },
+            {
+              "codigo": "OA8",
+              "texto": "Escribir correctamente para facilitar la comprensión por parte del lector, aplicando lo aprendido en años anteriores y usando de manera apropiada: mayúsculas al iniciar una oración y al escribir sustantivos propios; punto al finalizar una oración y punto aparte al finalizar un párrafo."
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Expresión oral y dramatización",
+          "oas": [
+            {
+              "codigo": "OA9",
+              "texto": "Incorporar de manera pertinente en la escritura el vocabulario nuevo extraído de textos escuchados o leídos."
+            },
+            {
+              "codigo": "OA10",
+              "texto": "Incorporar de manera pertinente en sus intervenciones orales el vocabulario nuevo extraído de textos escuchados o leídos."
+            },
+            {
+              "codigo": "OA11",
+              "texto": "Interactuar de acuerdo con las convenciones sociales en diferentes situaciones: presentarse a sí mismo y a otros; saludar; preguntar; expresar opiniones, sentimientos e ideas; usar fórmulas de cortesía como por favor, gracias, perdón, permiso."
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Textos no literarios e investigación",
+          "oas": [
+            {
+              "codigo": "OA12",
+              "texto": "Leer independientemente y comprender textos no literarios (cartas, biografías, relatos históricos, instrucciones, libros y artículos informativos, noticias, etc.) para ampliar su conocimiento del mundo y formarse una opinión."
+            },
+            {
+              "codigo": "OA13",
+              "texto": "Buscar y clasificar información sobre un tema en internet, libros, diarios, revistas, enciclopedias, atlas, etc., para llevar a cabo una investigación."
+            },
+            {
+              "codigo": "OA14",
+              "texto": "Escribir artículos informativos para comunicar información sobre un tema: organizando las ideas en párrafos; desarrollando las ideas mediante información que explica el tema."
+            }
+          ]
+        }
+      ]
+    },
+    "5°Básico": {
+      "nivel": "5°Básico",
+      "unidades": [
+        {
+          "numero": 1,
+          "nombre": "Comprensión de textos literarios",
+          "oas": [
+            {
+              "codigo": "OA1",
+              "texto": "Leer de manera fluida textos variados apropiados a su edad: pronunciando las palabras con precisión; respetando la prosodia indicada por todos los signos de puntuación; decodificando de manera automática la mayoría de las palabras del texto."
+            },
+            {
+              "codigo": "OA2",
+              "texto": "Comprender textos aplicando estrategias de comprensión lectora; por ejemplo: relacionar la información del texto con sus experiencias y conocimientos; releer lo que no fue comprendido; formular preguntas sobre lo leído y responderlas; organizar la información en esquemas o mapas conceptuales."
+            },
+            {
+              "codigo": "OA3",
+              "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo, desarrollar su imaginación y reconocer su valor social y cultural."
+            },
+            {
+              "codigo": "OA4",
+              "texto": "Analizar aspectos relevantes de narraciones leídas para profundizar su comprensión: interpretando el lenguaje figurado presente en el texto; expresando opiniones sobre las actitudes y acciones de los personajes; determinando las consecuencias de hechos o acciones."
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Escritura y producción de textos",
+          "oas": [
+            {
+              "codigo": "OA5",
+              "texto": "Escribir frecuentemente para desarrollar la creatividad y expresar sus ideas: poemas; narraciones (cuentos, anécdotas, etc.); artículos informativos; cartas; comentarios sobre sus lecturas."
+            },
+            {
+              "codigo": "OA6",
+              "texto": "Escribir creativamente narraciones que: tengan una estructura clara; utilicen conectores adecuados; incluyan descripciones y diálogo que desarrollen la trama, los personajes y el ambiente."
+            },
+            {
+              "codigo": "OA7",
+              "texto": "Planificar sus textos: estableciendo propósito y destinatario; generando ideas a partir de sus conocimientos e investigación; organizando las ideas que compondrán su escrito."
+            },
+            {
+              "codigo": "OA8",
+              "texto": "Escribir correctamente para facilitar la comprensión por parte del lector, aplicando todas las reglas de ortografía literal, acentual y puntual aprendidas en años anteriores, además de: escritura de los verbos haber, tener e ir, en los tiempos más utilizados."
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Comunicación oral efectiva",
+          "oas": [
+            {
+              "codigo": "OA9",
+              "texto": "Incorporar de manera pertinente en la escritura el vocabulario nuevo extraído de textos escuchados o leídos."
+            },
+            {
+              "codigo": "OA10",
+              "texto": "Ampliar su capacidad de expresión, utilizando los recursos que ofrece el lenguaje para expresar un mismo mensaje de diversas maneras."
+            },
+            {
+              "codigo": "OA11",
+              "texto": "Dialogar para compartir y desarrollar ideas y buscar acuerdos: manteniendo el foco en un tema; aceptando sugerencias; haciendo comentarios en los momentos adecuados; mostrando acuerdo o desacuerdo con respeto; fundamentando su postura."
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Investigación y exposición oral",
+          "oas": [
+            {
+              "codigo": "OA12",
+              "texto": "Leer independientemente y comprender textos no literarios (cartas, biografías, relatos históricos, libros y artículos informativos, noticias, etc.) para ampliar su conocimiento del mundo y formarse una opinión."
+            },
+            {
+              "codigo": "OA13",
+              "texto": "Buscar y seleccionar la información más relevante sobre un tema en internet, libros, diarios, revistas, enciclopedias, atlas, etc., para llevar a cabo una investigación."
+            },
+            {
+              "codigo": "OA14",
+              "texto": "Sintetizar y registrar las ideas principales de textos leídos para satisfacer propósitos como estudiar, hacer una investigación, recordar detalles, etc."
+            }
+          ]
+        }
+      ]
+    },
+    "6°Básico": {
+      "nivel": "6°Básico",
+      "unidades": [
+        {
+          "numero": 1,
+          "nombre": "Análisis literario profundo",
+          "oas": [
+            {
+              "codigo": "OA1",
+              "texto": "Leer de manera fluida textos variados apropiados a su edad: pronunciando las palabras con precisión; respetando la prosodia indicada por todos los signos de puntuación; decodificando de manera automática la mayoría de las palabras del texto."
+            },
+            {
+              "codigo": "OA2",
+              "texto": "Comprender textos aplicando estrategias de comprensión lectora; por ejemplo: relacionar la información del texto con sus experiencias y conocimientos; releer lo que no fue comprendido; formular preguntas sobre lo leído y responderlas; identificar las ideas más importantes de acuerdo con el propósito del lector; organizar la información en esquemas o mapas conceptuales."
+            },
+            {
+              "codigo": "OA3",
+              "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo, desarrollar su imaginación y reconocer su valor social y cultural."
+            },
+            {
+              "codigo": "OA4",
+              "texto": "Analizar aspectos relevantes de diversos poemas para profundizar su comprensión: explicando cómo el lenguaje poético que emplea el autor apela a los sentidos, sugiere estados de ánimo y crea imágenes en el lector; identificando personificaciones y comparaciones y explicando su significado dentro del poema."
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Escritura argumentativa y creativa",
+          "oas": [
+            {
+              "codigo": "OA5",
+              "texto": "Escribir frecuentemente para desarrollar la creatividad y expresar sus ideas: poemas; narraciones (cuentos, anécdotas, etc.); artículos informativos; cartas; comentarios sobre sus lecturas; ensayos."
+            },
+            {
+              "codigo": "OA6",
+              "texto": "Escribir creativamente narraciones que: tengan una estructura clara; utilicen conectores adecuados; incluyan descripciones y diálogo que desarrollen la trama, los personajes y el ambiente."
+            },
+            {
+              "codigo": "OA7",
+              "texto": "Planificar sus textos: estableciendo propósito y destinatario; generando ideas a partir de sus conocimientos e investigación; organizando las ideas que compondrán su escrito."
+            },
+            {
+              "codigo": "OA8",
+              "texto": "Escribir correctamente para facilitar la comprensión por parte del lector, aplicando todas las reglas de ortografía literal, acentual y puntual aprendidas en años anteriores, además de: uso de coma en frases explicativas; coma en presencia de conectores que la requieren."
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Expresión oral y debate",
+          "oas": [
+            {
+              "codigo": "OA9",
+              "texto": "Incorporar de manera pertinente en la escritura el vocabulario nuevo extraído de textos escuchados o leídos."
+            },
+            {
+              "codigo": "OA10",
+              "texto": "Ampliar su capacidad de expresión, utilizando los recursos que ofrece el lenguaje para expresar un mismo mensaje de diversas maneras."
+            },
+            {
+              "codigo": "OA11",
+              "texto": "Expresarse de manera clara y efectiva en exposiciones orales para comunicar temas de su interés: presentando las ideas de manera coherente y cohesiva; fundamentando sus planteamientos con ejemplos y datos; organizando las ideas en introducción, desarrollo y cierre."
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Textos no literarios y medios de comunicación",
+          "oas": [
+            {
+              "codigo": "OA12",
+              "texto": "Leer independientemente y comprender textos no literarios (cartas, biografías, relatos históricos, libros y artículos informativos, noticias, etc.) para ampliar su conocimiento del mundo y formarse una opinión."
+            },
+            {
+              "codigo": "OA13",
+              "texto": "Buscar y comparar información sobre un tema, utilizando fuentes como internet, enciclopedias, libros, prensa, etc., para llevar a cabo una investigación."
+            },
+            {
+              "codigo": "OA14",
+              "texto": "Sintetizar, registrar y ordenar las ideas principales de textos leídos para satisfacer propósitos como estudiar, hacer una investigación, recordar detalles, etc."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
