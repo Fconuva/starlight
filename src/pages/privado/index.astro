@@ -1,7 +1,0 @@
-﻿---
-// Esta página sirve el sistema de registro de notas desde /public/privado/
-// Astro automáticamente sirve archivos de /public en la raíz
-// Pero necesitamos redirigir explícitamente
-const response = Astro.redirect('/privado/index.html' + Astro.url.search);
-return response;
----
