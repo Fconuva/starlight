@@ -254,49 +254,49 @@
 
     <script>
         const CREDENTIALS = {
-            username: ''Javi'',
-            password: ''Jose0201juli3011''
+            username: 'Javi',
+            password: 'Jose0201juli3011'
         };
 
-        document.getElementById(''loginForm'').addEventListener(''submit'', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const username = document.getElementById(''username'').value.trim();
-            const password = document.getElementById(''password'').value;
-            const errorMessage = document.getElementById(''errorMessage'');
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
 
             if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
                 // Login exitoso - configurar sesión completa para Javiera
-                sessionStorage.setItem(''isLoggedIn'', ''true'');
-                sessionStorage.setItem(''username'', ''javiera'');
-                sessionStorage.setItem(''teacherName'', ''Javiera Poblete Fernández'');
-                sessionStorage.setItem(''currentDocente'', ''javiera'');
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', 'javiera');
+                sessionStorage.setItem('teacherName', 'Javiera Poblete Fernández');
+                sessionStorage.setItem('currentDocente', 'javiera');
                 
                 // Mostrar mensaje de éxito
-                const button = document.querySelector(''.btn-login'');
-                button.innerHTML = ''<i class="fas fa-check"></i> Accediendo...'';
-                button.style.background = ''linear-gradient(135deg, #10b981 0%, #059669 100%)'';
+                const button = document.querySelector('.btn-login');
+                button.innerHTML = '<i class="fas fa-check"></i> Accediendo...';
+                button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
                 
                 // Redirigir después de breve pausa para mostrar confirmación
                 setTimeout(() => {
-                    window.location.href = ''index.html?docente=javiera'';
+                    window.location.href = 'index.html?docente=javiera';
                 }, 800);
             } else {
                 // Login fallido
-                errorMessage.classList.add(''show'');
+                errorMessage.classList.add('show');
                 setTimeout(() => {
-                    errorMessage.classList.remove(''show'');
+                    errorMessage.classList.remove('show');
                 }, 3000);
                 
                 // Limpiar campos
-                document.getElementById(''password'').value = '''';
-                document.getElementById(''password'').focus();
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
             }
         });
 
         // Verificar si ya está logueado
-        if (sessionStorage.getItem(''isLoggedIn'') === ''true'') {
-            window.location.href = ''index.html?docente=javiera'';
+        if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'index.html?docente=javiera';
         }
     </script>
 </body>
