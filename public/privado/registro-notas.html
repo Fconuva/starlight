@@ -2577,37 +2577,61 @@
 
         // Modal: Nuevo Curso
         function showNewCourseModal() {
-            const courseName = prompt('Nombre del curso (ej: IV° Año A - 2025):');
-            if (!courseName) return;
-            
-            const subject = prompt('Asignatura:');
-            if (!subject) return;
-            
-            const period = prompt('Período:');
-            if (!period) return;
-            
-            const newCourse = {
-                id: Date.now(),
-                courseName: courseName,
-                subject: subject,
-                period: period,
-                students: [],
-                tasks: [],
-                config: {
-                    minGrade: 1.0,
-                    maxGrade: 7.0,
-                    passingGrade: 4.0,
-                    passingPercentage: 60
-                }
-            };
-            
-            allCourses.push(newCourse);
-            updateCourseSelector();
-            saveAllCourses();
-            loadCourse(newCourse.id);
-            
-            alert('Curso creado exitosamente');
+            document.getElementById('newCourseModal').classList.remove('hidden');
+            // Resetear formulario
+            document.getElementById('newCourseForm').reset();
+            // Establecer año actual por defecto
+            document.getElementById('courseYear').value = '2025';
+            document.getElementById('courseSubject').value = 'Lenguaje y Comunicación';
         }
+        
+        function closeNewCourseModal() {
+            document.getElementById('newCourseModal').classList.add('hidden');
+        }
+        
+        // Manejar envío del formulario
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('newCourseForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const level = document.getElementById('courseLevel').value;
+                    const letter = document.getElementById('courseLetter').value.toUpperCase();
+                    const type = document.getElementById('courseType').value;
+                    const year = document.getElementById('courseYear').value;
+                    const semester = document.getElementById('courseSemester').value;
+                    const subject = document.getElementById('courseSubject').value;
+                    
+                    // Construir nombre del curso: "3° Medio A (HC) - 2025"
+                    const courseName = `${level} ${letter} (${type}) - ${year}`;
+                    const period = `${semester} ${year}`;
+                    
+                    const newCourse = {
+                        id: Date.now(),
+                        courseName: courseName,
+                        subject: subject,
+                        period: period,
+                        students: [],
+                        tasks: [],
+                        config: {
+                            minGrade: 1.0,
+                            maxGrade: 7.0,
+                            passingGrade: 4.0,
+                            passingPercentage: 60
+                        }
+                    };
+                    
+                    allCourses.push(newCourse);
+                    updateCourseSelector();
+                    saveAllCourses();
+                    loadCourse(newCourse.id);
+                    
+                    closeNewCourseModal();
+                    alert('✅ Curso creado exitosamente: ' + courseName);
+                });
+            }
+        });
 
         // Eliminar curso actual
         async function deleteCourse() {
@@ -2774,6 +2798,102 @@
 
         // Agregar estudiante
         function addStudent() {
+            showAddStudentModal();
+        }
+        
+        function showAddStudentModal() {
+            const modal = document.getElementById('addStudentModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.getElementById('bulkStudentInput').value = '';
+            }
+        }
+        
+        function closeAddStudentModal() {
+            const modal = document.getElementById('addStudentModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+        
+        function parseBulkStudents() {
+            const input = document.getElementById('bulkStudentInput').value.trim();
+            if (!input) {
+                alert('⚠️ Por favor, ingresa los datos de los estudiantes');
+                return;
+            }
+            
+            const lines = input.split('\n').filter(line => line.trim());
+            const students = [];
+            let headersDetected = false;
+            
+            for (let line of lines) {
+                // Limpiar la línea
+                line = line.trim();
+                if (!line) continue;
+                
+                // Detectar y saltar encabezados
+                if (line.toLowerCase().includes('paterno') || line.toLowerCase().includes('nombres') || line.toLowerCase().includes('acciones')) {
+                    headersDetected = true;
+                    continue;
+                }
+                
+                // Separar por tabulaciones o múltiples espacios
+                const parts = line.split(/\t+|\s{2,}/).map(p => p.trim()).filter(p => p);
+                
+                if (parts.length < 4) continue; // Necesitamos al menos: N°, Paterno, Materno, Nombres
+                
+                let numero, paterno, materno, nombres, rut, estado;
+                
+                // Intentar detectar formato automáticamente
+                // Formato esperado: N° | Ap.Paterno | Ap.Materno | Nombres | RUN | Estado
+                if (parts.length >= 6) {
+                    [numero, paterno, materno, nombres, rut, estado] = parts;
+                } else if (parts.length === 5) {
+                    [numero, paterno, materno, nombres, rut] = parts;
+                    estado = 'Activo';
+                } else if (parts.length === 4) {
+                    [numero, paterno, materno, nombres] = parts;
+                    estado = 'Activo';
+                }
+                
+                // Validar que tenemos los datos mínimos
+                if (!paterno || !materno || !nombres) continue;
+                
+                // Detectar si el estudiante está retirado
+                const isRetired = estado && (estado.toLowerCase().includes('retirado') || estado.toLowerCase().includes('retired'));
+                
+                const student = {
+                    id: Date.now() + students.length,
+                    number: courseData.students.length + students.length + 1,
+                    lastName1: paterno.toUpperCase(),
+                    lastName2: materno.toUpperCase(),
+                    name: nombres.toUpperCase(),
+                    rut: rut || '',
+                    grades: Array(courseData.tasks.length).fill(null).map(() => ({ value: null, updatedAt: new Date().toISOString() })),
+                    notes: '',
+                    retired: isRetired
+                };
+                
+                students.push(student);
+            }
+            
+            if (students.length === 0) {
+                alert('❌ No se pudieron detectar estudiantes en el formato proporcionado.\n\nFormato esperado:\nN° | Ap.Paterno | Ap.Materno | Nombres | RUN | Estado');
+                return;
+            }
+            
+            // Confirmar importación
+            if (confirm(`✅ Se detectaron ${students.length} estudiantes.\n¿Deseas importarlos?`)) {
+                courseData.students.push(...students);
+                renderTable();
+                saveAllCourses();
+                closeAddStudentModal();
+                alert(`✅ ${students.length} estudiantes importados exitosamente`);
+            }
+        }
+        
+        function addSingleStudent() {
             const name = prompt('Nombre del estudiante:');
             const lastName1 = prompt('Apellido paterno:');
             const lastName2 = prompt('Apellido materno:');
@@ -2792,6 +2912,7 @@
                 courseData.students.push(student);
                 renderTable();
                 saveAllCourses();
+                closeAddStudentModal();
             }
         }
 
@@ -7673,6 +7794,172 @@ PROHIBIDO:
     </div>
 
     </div> <!-- Cierre de #app-container para iOS fix -->
-</body>
+
+    <!-- Modal: Nuevo Curso -->
+    <div id="newCourseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold">
+                        <i class="fas fa-plus-circle mr-2"></i>Crear Nuevo Curso
+                    </h2>
+                    <button onclick="closeNewCourseModal()" class="text-white hover:text-gray-200 text-3xl leading-none">
+                        &times;
+                    </button>
+                </div>
+            </div>
+            
+            <form id="newCourseForm" class="p-6 space-y-6">
+                <!-- Nivel -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-layer-group mr-2 text-indigo-600"></i>Nivel
+                    </label>
+                    <select id="courseLevel" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                        <option value="">Seleccionar nivel...</option>
+                        <option value="1° Medio">1° Medio</option>
+                        <option value="2° Medio">2° Medio</option>
+                        <option value="3° Medio">3° Medio</option>
+                        <option value="4° Medio">4° Medio</option>
+                    </select>
+                </div>
+                
+                <!-- Letra del curso -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-font mr-2 text-indigo-600"></i>Letra del Curso
+                    </label>
+                    <input type="text" id="courseLetter" required maxlength="1" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 uppercase" 
+                           placeholder="Ej: A, B, C..." 
+                           pattern="[A-Za-z]"
+                           title="Ingrese una letra (A-Z)">
+                    <p class="text-xs text-gray-500 mt-1">Escriba una letra mayúscula (A, B, C, etc.)</p>
+                </div>
+                
+                <!-- Tipo de curso -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-graduation-cap mr-2 text-indigo-600"></i>Tipo de Curso
+                    </label>
+                    <select id="courseType" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                        <option value="">Seleccionar tipo...</option>
+                        <option value="HC">HC (Humanista-Científico)</option>
+                        <option value="TP">TP (Técnico-Profesional)</option>
+                    </select>
+                </div>
+                
+                <!-- Año -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-calendar mr-2 text-indigo-600"></i>Año
+                    </label>
+                    <select id="courseYear" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                        <option value="">Seleccionar año...</option>
+                        <option value="2024">2024</option>
+                        <option value="2025" selected>2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+                
+                <!-- Semestre -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i>Semestre
+                    </label>
+                    <select id="courseSemester" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                        <option value="">Seleccionar semestre...</option>
+                        <option value="Primer Semestre">Primer Semestre</option>
+                        <option value="Segundo Semestre">Segundo Semestre</option>
+                        <option value="Anual">Anual</option>
+                    </select>
+                </div>
+                
+                <!-- Asignatura -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-book mr-2 text-indigo-600"></i>Asignatura
+                    </label>
+                    <input type="text" id="courseSubject" required 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" 
+                           placeholder="Ej: Lenguaje y Comunicación"
+                           value="Lenguaje y Comunicación">
+                </div>
+                
+                <!-- Botones -->
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105">
+                        <i class="fas fa-check mr-2"></i>Crear Curso
+                    </button>
+                    <button type="button" onclick="closeNewCourseModal()" class="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-all">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal: Agregar Estudiantes -->
+    <div id="addStudentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="bg-gradient-to-r from-green-600 to-teal-600 p-6 text-white">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold">
+                        <i class="fas fa-user-plus mr-2"></i>Agregar Estudiantes
+                    </h2>
+                    <button onclick="closeAddStudentModal()" class="text-white hover:text-gray-200 text-3xl leading-none">
+                        &times;
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-bold mb-2">Instrucciones para importar estudiantes:</p>
+                            <ol class="list-decimal ml-4 space-y-1">
+                                <li>Copia la tabla completa desde Excel, SIGE u otro sistema</li>
+                                <li>Pega directamente en el cuadro de texto abajo</li>
+                                <li>El sistema detectará automáticamente las columnas</li>
+                                <li>Formato esperado: <code class="bg-blue-100 px-1 rounded">N° | Ap.Paterno | Ap.Materno | Nombres | RUN | Estado</code></li>
+                            </ol>
+                            <p class="mt-2 text-xs opacity-75">💡 También puedes agregar un estudiante individual usando el botón inferior</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-table mr-2 text-green-600"></i>Pegar datos de estudiantes (formato tabular)
+                    </label>
+                    <textarea id="bulkStudentInput" 
+                              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 font-mono text-sm" 
+                              rows="12"
+                              placeholder="Ejemplo:
+Nº	Ap. Paterno	Ap. Materno	Nombres	RUN	Estado
+1	GONZÁLEZ	PÉREZ	JUAN ANDRÉS	12.345.678-9	Activo
+2	MARTÍNEZ	LÓPEZ	MARÍA JOSÉ	98.765.432-1	Activo
+3	SILVA	ROJAS	PEDRO PABLO	11.222.333-4	Retirado"></textarea>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button onclick="parseBulkStudents()" class="flex-1 bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold py-3 px-6 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all transform hover:scale-105">
+                        <i class="fas fa-file-import mr-2"></i>Importar Estudiantes
+                    </button>
+                    <button onclick="addSingleStudent()" class="px-6 py-3 border-2 border-green-600 text-green-600 font-bold rounded-lg hover:bg-green-50 transition-all">
+                        <i class="fas fa-user-plus mr-2"></i>Agregar Individual
+                    </button>
+                    <button onclick="closeAddStudentModal()" class="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-all">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+\n</body>
 </html>
 
