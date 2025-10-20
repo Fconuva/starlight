@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Sistema Multi-Usuario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .login-card {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <div class="login-card w-full max-w-md">
+        <!-- Logo y Header -->
+        <div class="text-center mb-8">
+            <div class="inline-block bg-white rounded-full p-4 shadow-2xl mb-4">
+                <i class="fas fa-users text-5xl text-purple-600"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">Sistema Multi-Usuario</h1>
+            <p class="text-purple-100">Javiera Poblete - Administración Académica</p>
+        </div>
+
+        <!-- Formulario de Login -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <form id="loginForm" class="space-y-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-sign-in-alt mr-2 text-purple-600"></i>Iniciar Sesión
+                </h2>
+
+                <!-- Usuario -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-user text-purple-600 mr-2"></i>Usuario
+                    </label>
+                    <input type="text" id="username" required
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                           placeholder="Ingresa tu usuario">
+                </div>
+
+                <!-- Contraseña -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-lock text-purple-600 mr-2"></i>Contraseña
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="password" required
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                               placeholder="Ingresa tu contraseña">
+                        <button type="button" onclick="togglePassword()" 
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-600">
+                            <i id="eyeIcon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mensaje de error -->
+                <div id="errorMessage" class="hidden bg-red-50 border-2 border-red-200 rounded-lg p-3 text-red-800 text-sm">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span id="errorText">Usuario o contraseña incorrectos</span>
+                </div>
+
+                <!-- Botón de Login -->
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-lg font-bold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Ingresar
+                </button>
+            </form>
+
+            <!-- Usuarios del Sistema -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <p class="text-xs text-gray-500 text-center mb-3">
+                    <i class="fas fa-info-circle mr-1"></i>Usuarios del sistema
+                </p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-purple-50 p-2 rounded text-center">
+                        <i class="fas fa-user-shield text-purple-600"></i>
+                        <span class="ml-1 text-gray-700">Javiera (Admin)</span>
+                    </div>
+                    <div class="bg-blue-50 p-2 rounded text-center">
+                        <i class="fas fa-user text-blue-600"></i>
+                        <span class="ml-1 text-gray-700">Marcelo</span>
+                    </div>
+                    <div class="bg-pink-50 p-2 rounded text-center">
+                        <i class="fas fa-user text-pink-600"></i>
+                        <span class="ml-1 text-gray-700">Valentina</span>
+                    </div>
+                    <div class="bg-gray-50 p-2 rounded text-center">
+                        <i class="fas fa-user-plus text-gray-600"></i>
+                        <span class="ml-1 text-gray-700">Más usuarios...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Link para volver -->
+        <div class="text-center mt-6">
+            <a href="../../index.html" class="text-white hover:text-purple-200 transition-all">
+                <i class="fas fa-arrow-left mr-2"></i>Volver al sitio principal
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos de usuarios (en producción esto estaría en el backend)
+        const USERS_DB = {
+            'Javi': {
+                password: 'Jose0201juli3011',
+                fullName: 'Javiera Poblete Fernández',
+                role: 'admin',
+                username: 'javiera',
+                email: '',
+                rut: '',
+                requiresPasswordChange: false,
+                requiresProfileSetup: false
+            },
+            'marcelo': {
+                password: '12345678',
+                fullName: 'Marcelo',
+                role: 'user',
+                username: 'marcelo',
+                email: '',
+                rut: '',
+                requiresPasswordChange: true,
+                requiresProfileSetup: true
+            },
+            'valentina': {
+                password: '12345678',
+                fullName: 'Valentina',
+                role: 'user',
+                username: 'valentina',
+                email: '',
+                rut: '',
+                requiresPasswordChange: true,
+                requiresProfileSetup: true
+            }
+        };
+
+        // Función para mostrar/ocultar contraseña
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.className = 'fas fa-eye';
+            }
+        }
+
+        // Manejar login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+
+            // Verificar credenciales
+            const user = USERS_DB[username];
+            
+            if (!user) {
+                errorText.textContent = 'Usuario no encontrado';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (user.password !== password) {
+                errorText.textContent = 'Contraseña incorrecta';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Login exitoso
+            console.log('✅ Login exitoso:', user.fullName);
+
+            // Guardar datos de sesión
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('username', user.username);
+            sessionStorage.setItem('userFullName', user.fullName);
+            sessionStorage.setItem('userRole', user.role);
+            sessionStorage.setItem('currentDocente', user.username);
+            sessionStorage.setItem('loginUsername', username); // Para identificar al usuario específico
+
+            // Guardar también los datos del usuario en localStorage
+            const userConfig = {
+                username: user.username,
+                fullName: user.fullName,
+                role: user.role,
+                email: user.email,
+                rut: user.rut
+            };
+            localStorage.setItem(`${user.username}_userConfig`, JSON.stringify(userConfig));
+
+            // Redirigir según necesidades del usuario
+            if (user.requiresPasswordChange) {
+                // Primer login - cambiar contraseña
+                window.location.href = 'cambiar-password.html';
+            } else if (user.requiresProfileSetup) {
+                // Configurar perfil completo
+                window.location.href = 'completar-perfil.html';
+            } else {
+                // Login normal - ir al dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Verificar si ya está logueado
+        if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+
+</body>
+</html>

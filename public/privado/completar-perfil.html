@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completar Perfil - Configuración Inicial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-block bg-white rounded-full p-4 shadow-2xl mb-4">
+                <i class="fas fa-user-edit text-5xl text-purple-600"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">Configuración Inicial</h1>
+            <p class="text-purple-100">Completa tu perfil para empezar a usar el sistema</p>
+        </div>
+
+        <!-- Formulario -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <!-- Progreso -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold text-gray-700">Progreso del perfil</span>
+                    <span id="progressPercent" class="text-sm font-semibold text-purple-600">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div id="progressBar" class="bg-gradient-to-r from-purple-600 to-purple-700 h-3 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <form id="profileForm" class="space-y-6">
+                <!-- Información Personal -->
+                <div class="border-l-4 border-purple-500 pl-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-id-card text-purple-600 mr-2"></i>Información Personal
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Nombre Completo -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2"></i>Nombre Completo *
+                            </label>
+                            <input type="text" id="fullName" required
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="Juan Pérez González">
+                        </div>
+
+                        <!-- RUT -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-id-card mr-2"></i>RUT *
+                            </label>
+                            <input type="text" id="rut" required
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="12.345.678-9">
+                            <p class="text-xs text-gray-500 mt-1">Formato: 12.345.678-9</p>
+                        </div>
+
+                        <!-- Fecha de Nacimiento -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-calendar mr-2"></i>Fecha de Nacimiento
+                            </label>
+                            <input type="date" id="birthDate"
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="border-l-4 border-blue-500 pl-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-address-book text-blue-600 mr-2"></i>Información de Contacto
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-envelope mr-2"></i>Email *
+                            </label>
+                            <input type="email" id="email" required
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="usuario@ejemplo.com">
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-phone mr-2"></i>Teléfono
+                            </label>
+                            <input type="tel" id="phone"
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="+56 9 1234 5678">
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-map-marker-alt mr-2"></i>Dirección
+                            </label>
+                            <input type="text" id="address"
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="Calle, número, comuna, ciudad">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Profesional -->
+                <div class="border-l-4 border-green-500 pl-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-briefcase text-green-600 mr-2"></i>Información Profesional
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Cargo/Rol -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-user-tag mr-2"></i>Cargo/Rol
+                            </label>
+                            <select id="role"
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                                <option value="">Seleccionar...</option>
+                                <option value="Profesor/a">Profesor/a</option>
+                                <option value="Coordinador/a">Coordinador/a</option>
+                                <option value="Jefe/a UTP">Jefe/a UTP</option>
+                                <option value="Asistente">Asistente de la Educación</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <!-- Especialidad -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-graduation-cap mr-2"></i>Especialidad/Asignatura
+                            </label>
+                            <input type="text" id="subject"
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="Ej: Lenguaje y Comunicación">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje de estado -->
+                <div id="message" class="hidden"></div>
+
+                <!-- Botones -->
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" 
+                            class="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-lg font-bold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg">
+                        <i class="fas fa-check mr-2"></i>Guardar y Continuar
+                    </button>
+                    <button type="button" onclick="skipForNow()"
+                            class="px-6 bg-gray-200 text-gray-700 py-4 rounded-lg font-bold hover:bg-gray-300 transition-all">
+                        <i class="fas fa-forward mr-2"></i>Omitir por ahora
+                    </button>
+                </div>
+
+                <p class="text-xs text-gray-500 text-center mt-4">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Los campos marcados con * son obligatorios
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const username = sessionStorage.getItem('loginUsername');
+        const userFullName = sessionStorage.getItem('userFullName');
+
+        // Verificar autenticación
+        if (!sessionStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login-multi.html';
+        }
+
+        // Cargar datos existentes si los hay
+        const savedProfile = localStorage.getItem(`${username}_profile`);
+        if (savedProfile) {
+            const profile = JSON.parse(savedProfile);
+            document.getElementById('fullName').value = profile.fullName || userFullName || '';
+            document.getElementById('rut').value = profile.rut || '';
+            document.getElementById('birthDate').value = profile.birthDate || '';
+            document.getElementById('email').value = profile.email || '';
+            document.getElementById('phone').value = profile.phone || '';
+            document.getElementById('address').value = profile.address || '';
+            document.getElementById('role').value = profile.role || '';
+            document.getElementById('subject').value = profile.subject || '';
+        } else {
+            document.getElementById('fullName').value = userFullName || '';
+        }
+
+        // Calcular progreso
+        function updateProgress() {
+            const fields = ['fullName', 'rut', 'email', 'phone', 'address', 'role', 'subject', 'birthDate'];
+            let filled = 0;
+            
+            fields.forEach(fieldId => {
+                if (document.getElementById(fieldId).value.trim()) {
+                    filled++;
+                }
+            });
+            
+            const percent = Math.round((filled / fields.length) * 100);
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressPercent').textContent = percent + '%';
+        }
+
+        // Actualizar progreso en cada cambio
+        document.querySelectorAll('input, select').forEach(field => {
+            field.addEventListener('input', updateProgress);
+        });
+
+        // Validar RUT chileno
+        function validateRUT(rut) {
+            rut = rut.replace(/\./g, '').replace(/-/g, '');
+            if (rut.length < 2) return false;
+            
+            const body = rut.slice(0, -1);
+            const dv = rut.slice(-1).toUpperCase();
+            
+            let sum = 0;
+            let multiplier = 2;
+            
+            for (let i = body.length - 1; i >= 0; i--) {
+                sum += parseInt(body[i]) * multiplier;
+                multiplier = multiplier === 7 ? 2 : multiplier + 1;
+            }
+            
+            const expectedDV = 11 - (sum % 11);
+            const calculatedDV = expectedDV === 11 ? '0' : expectedDV === 10 ? 'K' : String(expectedDV);
+            
+            return dv === calculatedDV;
+        }
+
+        // Formatear RUT mientras se escribe
+        document.getElementById('rut').addEventListener('input', function(e) {
+            let rut = e.target.value.replace(/\./g, '').replace(/-/g, '');
+            if (rut.length > 1) {
+                const body = rut.slice(0, -1);
+                const dv = rut.slice(-1);
+                e.target.value = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + dv;
+            }
+        });
+
+        // Guardar perfil
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const rut = document.getElementById('rut').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            // Validaciones
+            if (!fullName || !rut || !email) {
+                showMessage('Por favor completa todos los campos obligatorios (*)', 'error');
+                return;
+            }
+            
+            if (!validateRUT(rut)) {
+                showMessage('El RUT ingresado no es válido', 'error');
+                return;
+            }
+            
+            // Guardar datos
+            const profile = {
+                fullName: fullName,
+                rut: rut,
+                birthDate: document.getElementById('birthDate').value,
+                email: email,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                role: document.getElementById('role').value,
+                subject: document.getElementById('subject').value,
+                completedAt: new Date().toISOString(),
+                requiresProfileSetup: false
+            };
+            
+            localStorage.setItem(`${username}_profile`, JSON.stringify(profile));
+            
+            // Actualizar sessionStorage
+            sessionStorage.setItem('userFullName', fullName);
+            
+            // También guardar en la configuración del docente
+            const docenteConfig = {
+                teacherName: fullName,
+                email: email,
+                rut: rut,
+                subject: profile.subject,
+                role: profile.role
+            };
+            localStorage.setItem(`${username}_config`, JSON.stringify(docenteConfig));
+            
+            showMessage('¡Perfil guardado exitosamente!', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        });
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = type === 'success' 
+                ? 'bg-green-50 border-2 border-green-200 rounded-lg p-4 text-green-800'
+                : 'bg-red-50 border-2 border-red-200 rounded-lg p-4 text-red-800';
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} mr-2"></i>
+                ${text}
+            `;
+            messageDiv.classList.remove('hidden');
+        }
+
+        function skipForNow() {
+            if (confirm('¿Seguro que deseas omitir la configuración del perfil? Podrás completarlo más tarde desde el dashboard.')) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // Calcular progreso inicial
+        updateProgress();
+    </script>
+
+</body>
+</html>
