@@ -1,61 +1,377 @@
 ﻿---
-// Redirigir automáticamente al sistema de registro de notas
+// Portada profesional de Javiera Poblete Fernández
 ---
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=/privado/?docente=javiera">
-    <title>Profesora Javiera Poblete - Sistema de Registro</title>
+    <title>Javiera Poblete Fernández | Docente de Lengua y Literatura</title>
+    <meta name="description" content="Javiera Poblete Fernández - Docente de Lengua y Literatura, Postulante a Magíster en Educación Basado en Competencias, Universidad de Talca">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: ''Inter'', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '''';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 6px solid rgba(255, 255, 255, 0.9);
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: ''Playfair Display'', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .institution {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 3rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: ''Playfair Display'', serif;
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title i {
+            font-size: 1.5rem;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
-        .container {
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-section {
             text-align: center;
             padding: 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 20px;
         }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
         }
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero {
+                padding: 3rem 2rem;
+            }
+
+            .content {
+                padding: 2rem 1.5rem;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
         }
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1> Profesora Javiera Poblete</h1>
-        <p>Redirigiendo al sistema de registro de notas...</p>
-        <div class="spinner"></div>
+        <div class="hero">
+            <div class="profile-image">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <h1>Javiera Poblete Fernández</h1>
+            <p class="subtitle">Docente de Lengua y Literatura</p>
+            <p class="institution">Postulante a Magíster en Educación Basado en Competencias<br>Universidad de Talca</p>
+            
+            <div class="social-links">
+                <a href="#" class="social-link" title="LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="mailto:javiera.poblete@ejemplo.cl" class="social-link" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="#" class="social-link" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Formación Académica
+                </h2>
+                <div class="cards">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <h3>Lengua y Literatura</h3>
+                        <p>Especialización en didáctica del lenguaje y literatura, con enfoque en competencias comunicativas y análisis textual.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Educación Basada en Competencias</h3>
+                        <p>Formación de postgrado en metodologías innovadoras centradas en el desarrollo integral de habilidades.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h3>Universidad de Talca</h3>
+                        <p>Estudiante de Magíster comprometida con la excelencia educativa y la investigación pedagógica.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Experiencia Docente
+                </h2>
+                <div class="cards">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Enseñanza Innovadora</h3>
+                        <p>Desarrollo de estrategias pedagógicas que promueven el pensamiento crítico y la creatividad en el aula.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Evaluación por Competencias</h3>
+                        <p>Implementación de sistemas de evaluación integral que miden el desarrollo de habilidades complejas.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3>Innovación Educativa</h3>
+                        <p>Integración de tecnología y metodologías activas para potenciar el aprendizaje significativo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h2 class="section-title" style="justify-content: center; margin-bottom: 1.5rem;">
+                    <i class="fas fa-laptop"></i>
+                    Sistema de Gestión Académica
+                </h2>
+                <p style="color: #666; margin-bottom: 2rem; font-size: 1.1rem;">
+                    Accede al sistema integral de registro de notas y seguimiento del proceso educativo
+                </p>
+                <a href="/privado/?docente=javiera" class="cta-button">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                    Acceder al Sistema
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Javiera Poblete Fernández. Todos los derechos reservados.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;">Docente comprometida con la excelencia educativa</p>
+        </div>
     </div>
-    <script>
-        setTimeout(() => {
-            window.location.href = '/privado/?docente=javiera';
-        }, 100);
-    </script>
 </body>
 </html>
