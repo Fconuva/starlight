@@ -32,7 +32,7 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         
-        /* Optimizaciones mó³vil */
+        /* Optimizaciones móvil */
         @media (max-width: 768px) {
             main {
                 padding: 1rem !important;
@@ -167,12 +167,12 @@
                           title="Click para editar">Dashboard</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="admin-db-docentes.html" class="flex items-center text-sm text-purple-600 hover:text-purple-700 font-semibold border-2 border-purple-600 px-3 py-1 rounded-lg hover:bg-purple-50 transition-colors" title="Gestió³n de Bases de Datos">
+                    <a href="admin-db-docentes.html" class="flex items-center text-sm text-purple-600 hover:text-purple-700 font-semibold border-2 border-purple-600 px-3 py-1 rounded-lg hover:bg-purple-50 transition-colors" title="Gestión de Bases de Datos">
                         <i class="fas fa-database mr-2"></i>
                         Admin DB
                     </a>
 
-<!-- REMOVIDO:             <p class="mt-2 text-lg text-gray-600">Sistema de gestió³n de notas por docente.</p> -->
+<!-- REMOVIDO:             <p class="mt-2 text-lg text-gray-600">Sistema de gestión de notas por docente.</p> -->
 </div></div></header>
 
 <!-- REMOVIDO:         <!-- SECCIó“N: DOCENTES --> -->
@@ -289,7 +289,7 @@
                         <i class="fas fa-shield-alt text-3xl mr-4"></i>
                         <div class="text-left">
                             <h2 class="text-2xl font-bold">Control Maestro</h2>
-                            <p class="text-red-200 text-sm">Herramientas administrativas para gestió³n completa del sistema</p>
+                            <p class="text-red-200 text-sm">Herramientas administrativas para gestión completa del sistema</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
@@ -307,7 +307,7 @@
                             <i class="fas fa-user-check text-purple-600 text-2xl mr-3"></i>
                             <h3 class="text-xl font-bold text-gray-800">Seleccionar Docente de Trabajo</h3>
                         </div>
-                        <p class="text-gray-600 mb-4">âš ï¸ <strong>Importante:</strong> Selecciona el docente antes de realizar cualquier acció³n administrativa.</p>
+                        <p class="text-gray-600 mb-4">âš ï¸ <strong>Importante:</strong> Selecciona el docente antes de realizar cualquier acción administrativa.</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <button onclick="seleccionarDocente('javiera')" 
@@ -357,7 +357,7 @@
                                 <div class="bg-gradient-to-r from-red-500 to-red-600 p-4">
                                     <div class="flex items-center text-white">
                                         <i class="fas fa-database text-2xl mr-3"></i>
-                                        <h3 class="text-lg font-bold">Gestió³n de Cursos</h3>
+                                        <h3 class="text-lg font-bold">Gestión de Cursos</h3>
                                     </div>
                                 </div>
                                 <div class="p-4 space-y-2">
@@ -379,7 +379,7 @@
                                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-4">
                                     <div class="flex items-center text-white">
                                         <i class="fas fa-users text-2xl mr-3"></i>
-                                        <h3 class="text-lg font-bold">Gestió³n de Estudiantes</h3>
+                                        <h3 class="text-lg font-bold">Gestión de Estudiantes</h3>
                                     </div>
                                 </div>
                                 <div class="p-4">
@@ -405,7 +405,7 @@
                                 <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-4">
                                     <div class="flex items-center text-white">
                                         <i class="fas fa-tasks text-2xl mr-3"></i>
-                                        <h3 class="text-lg font-bold">Gestió³n de Tareas</h3>
+                                        <h3 class="text-lg font-bold">Gestión de Tareas</h3>
                                     </div>
                                 </div>
                                 <div class="p-4">
@@ -431,7 +431,7 @@
                                 <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 p-4">
                                     <div class="flex items-center text-white">
                                         <i class="fas fa-star text-2xl mr-3"></i>
-                                        <h3 class="text-lg font-bold">Gestió³n de Notas</h3>
+                                        <h3 class="text-lg font-bold">Gestión de Notas</h3>
                                     </div>
                                 </div>
                                 <div class="p-4">
@@ -460,7 +460,7 @@
                                 <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-4">
                                     <div class="flex items-center text-white">
                                         <i class="fas fa-cog text-2xl mr-3"></i>
-                                        <h3 class="text-lg font-bold">Gestió³n del Curso</h3>
+                                        <h3 class="text-lg font-bold">Gestión del Curso</h3>
                                     </div>
                                 </div>
                                 <div class="p-4">
@@ -542,16 +542,16 @@
                 welcomeEl.innerHTML = `<i class="fas fa-user-circle mr-1"></i> ${userFullName}`;
             }
             
-            // Si NO es admin, ocultar secció³n de administració³n
+            // Si NO es admin, ocultar sección de administración
             if (userRole !== 'admin') {
                 const adminSection = document.getElementById('adminSection');
                 if (adminSection) {
                     adminSection.style.display = 'none';
                 }
                 
-                console.log(`ðŸ‘¤ Sesió³n iniciada como: ${userFullName} (Profesora - Permisos limitados)`);
+                console.log(`ðŸ‘¤ Sesión iniciada como: ${userFullName} (Profesora - Permisos limitados)`);
             } else {
-                console.log(`ðŸ”‘ Sesió³n iniciada como: ${userFullName} (Administrador - Todos los permisos)`);
+                console.log(`ðŸ”‘ Sesión iniciada como: ${userFullName} (Administrador - Todos los permisos)`);
             }
         }
         
@@ -616,7 +616,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                contentDiv.innerHTML = '<p class="text-red-600">Error de conexió³n.</p>';
+                contentDiv.innerHTML = '<p class="text-red-600">Error de conexión.</p>';
                 listadoDiv.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
@@ -626,7 +626,7 @@
 
         // BORRAR UN CURSO ESPECóFICO
         async function borrarCursoEspecifico(courseId, courseName) {
-            if (!confirm(`Â¿Borrar el curso "${courseName}"?\n\nEsta acció³n no se puede deshacer.`)) {
+            if (!confirm(`Â¿Borrar el curso "${courseName}"?\n\nEsta acción no se puede deshacer.`)) {
                 return;
             }
             
@@ -654,8 +654,8 @@
                     alert(`âŒ Error al eliminar el curso:\n${responseData.error || 'Error desconocido'}\n\nRevisa la consola para más detalles.`);
                 }
             } catch (error) {
-                console.error('âŒ Error de conexió³n:', error);
-                alert('âŒ Error de conexió³n. Revisa la consola.');
+                console.error('âŒ Error de conexión:', error);
+                alert('âŒ Error de conexión. Revisa la consola.');
             }
         }
 
@@ -667,7 +667,7 @@
                 return;
             }
 
-            const segundaConfirmacion = confirm('Segunda confirmació³n:\n\nÂ¿De verdad quieres BORRAR TODO?\n\nEscribe OK mentalmente y presiona Aceptar para continuar.');
+            const segundaConfirmacion = confirm('Segunda confirmación:\n\nÂ¿De verdad quieres BORRAR TODO?\n\nEscribe OK mentalmente y presiona Aceptar para continuar.');
             
             if (!segundaConfirmacion) {
                 return;
@@ -790,7 +790,7 @@
                 welcomeEl.innerHTML = `<i class="fas fa-user-circle mr-1"></i> ${userFullName}`;
             }
             
-            // Si NO es admin, ocultar secció³n de administració³n
+            // Si NO es admin, ocultar sección de administración
             if (userRole !== 'admin') {
                 const adminSection = document.getElementById('adminSection');
                 if (adminSection) {
@@ -812,15 +812,15 @@
                         </p>
                         <p class="text-xs text-purple-600 mt-2">
                             <i class="fas fa-lock mr-1"></i>
-                            La gestió³n avanzada de cursos está reservada para el administrador.
+                            La gestión avanzada de cursos está reservada para el administrador.
                         </p>
                     `;
                     container.appendChild(infoCard);
                 }
                 
-                console.log(`ðŸ‘¤ Sesió³n iniciada como: ${userFullName} (Profesora - Permisos limitados)`);
+                console.log(`ðŸ‘¤ Sesión iniciada como: ${userFullName} (Profesora - Permisos limitados)`);
             } else {
-                console.log(`ðŸ”‘ Sesió³n iniciada como: ${userFullName} (Administrador - Todos los permisos)`);
+                console.log(`ðŸ”‘ Sesión iniciada como: ${userFullName} (Administrador - Todos los permisos)`);
             }
         }
         
@@ -885,7 +885,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                contentDiv.innerHTML = '<p class="text-red-600">Error de conexió³n.</p>';
+                contentDiv.innerHTML = '<p class="text-red-600">Error de conexión.</p>';
                 listadoDiv.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
@@ -895,7 +895,7 @@
 
         // BORRAR UN CURSO ESPECóFICO
         async function borrarCursoEspecifico(courseId, courseName) {
-            if (!confirm(`Â¿Borrar el curso "${courseName}"?\n\nEsta acció³n no se puede deshacer.`)) {
+            if (!confirm(`Â¿Borrar el curso "${courseName}"?\n\nEsta acción no se puede deshacer.`)) {
                 return;
             }
             
@@ -923,8 +923,8 @@
                     alert(`âŒ Error al eliminar el curso:\n${responseData.error || 'Error desconocido'}\n\nRevisa la consola para más detalles.`);
                 }
             } catch (error) {
-                console.error('âŒ Error de conexió³n:', error);
-                alert('âŒ Error de conexió³n. Revisa la consola.');
+                console.error('âŒ Error de conexión:', error);
+                alert('âŒ Error de conexión. Revisa la consola.');
             }
         }
 
@@ -936,7 +936,7 @@
                 return;
             }
 
-            const segundaConfirmacion = confirm('Segunda confirmació³n:\n\nÂ¿De verdad quieres BORRAR TODO?\n\nEscribe OK mentalmente y presiona Aceptar para continuar.');
+            const segundaConfirmacion = confirm('Segunda confirmación:\n\nÂ¿De verdad quieres BORRAR TODO?\n\nEscribe OK mentalmente y presiona Aceptar para continuar.');
             
             if (!segundaConfirmacion) {
                 return;
@@ -1050,7 +1050,7 @@
             const statusDiv = document.getElementById('migracionStatus');
             const statusText = document.getElementById('statusText');
 
-            // Desactivar botó³n
+            // Desactivar botón
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>PROCESANDO...';
             btn.classList.add('opacity-75', 'cursor-not-allowed');
@@ -1060,7 +1060,7 @@
                 // Paso 1: Preparar datos
                 statusText.textContent = 'Paso 1/3: Preparando 8 cursos...';
                 
-                // Funció³n auxiliar para crear curso con grades sincronizadas
+                // Función auxiliar para crear curso con grades sincronizadas
                 const crearCurso = (nombre, asignatura, numEstudiantes, numTareas) => {
                     const tareas = generarTareas(numTareas);
                     const estudiantes = generarEstudiantes(numEstudiantes);
@@ -1080,10 +1080,10 @@
                 };
 
                 const cursosCompletos = [
-                    crearCurso("3Â° Medio A", "Lenguaje y Comunicació³n", 35, 12),
-                    crearCurso("3Â° Medio B", "Lenguaje y Comunicació³n", 32, 12),
-                    crearCurso("4Â° Medio A", "Lenguaje y Comunicació³n", 28, 15),
-                    crearCurso("4Â° Medio B", "Lenguaje y Comunicació³n", 30, 15),
+                    crearCurso("3Â° Medio A", "Lenguaje y Comunicación", 35, 12),
+                    crearCurso("3Â° Medio B", "Lenguaje y Comunicación", 32, 12),
+                    crearCurso("4Â° Medio A", "Lenguaje y Comunicación", 28, 15),
+                    crearCurso("4Â° Medio B", "Lenguaje y Comunicación", 30, 15),
                     crearCurso("3Â° Medio HC", "Humanista Cientó­fico", 38, 10),
                     crearCurso("3Â° Medio TP", "Tó©cnico Profesional", 25, 10),
                     crearCurso("4Â° Medio HC", "Humanista Cientó­fico", 36, 14),
@@ -1134,7 +1134,7 @@
                 }
 
                 // Â¡ó‰XITO!
-                statusText.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Â¡Migració³n completada! 8 cursos creados exitosamente.';
+                statusText.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Â¡Migración completada! 8 cursos creados exitosamente.';
                 
                 // Cambiar color a verde
                 statusDiv.querySelector('div').classList.remove('bg-green-50', 'border-green-200');
@@ -1142,9 +1142,9 @@
                 statusDiv.querySelector('p').classList.remove('text-green-800');
                 statusDiv.querySelector('p').classList.add('text-green-900');
 
-                // Mostrar botó³n de ir al sistema
+                // Mostrar botón de ir al sistema
                 setTimeout(() => {
-                    if (confirm('Â¡Migració³n exitosa! Â¿Deseas ir al Sistema de Registro de Notas para ver los cursos?')) {
+                    if (confirm('Â¡Migración exitosa! Â¿Deseas ir al Sistema de Registro de Notas para ver los cursos?')) {
                         window.location.href = 'registro-notas.html';
                     } else {
                         // Recargar página
@@ -1153,14 +1153,14 @@
                 }, 1500);
 
             } catch (error) {
-                console.error('Error en migració³n:', error);
+                console.error('Error en migración:', error);
                 statusText.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Error: ' + error.message;
                 statusDiv.querySelector('div').classList.remove('bg-green-50', 'border-green-200');
                 statusDiv.querySelector('div').classList.add('bg-red-50', 'border-red-200');
                 statusDiv.querySelector('p').classList.remove('text-green-800');
                 statusDiv.querySelector('p').classList.add('text-red-800');
                 
-                // Reactivar botó³n
+                // Reactivar botón
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-rocket mr-2"></i>REINTENTAR MIGRACIó“N';
                 btn.classList.remove('opacity-75', 'cursor-not-allowed');
@@ -1199,7 +1199,7 @@
         }
 
         function generarTareas(cantidad) {
-            const tiposTarea = ['Evaluació³n Escrita', 'Prueba', 'Trabajo Pró¡ctico', 'Exposició³n Oral', 'Anó¡lisis Literario', 'Ensayo', 'Comprensió³n Lectora'];
+            const tiposTarea = ['Evaluación Escrita', 'Prueba', 'Trabajo Pró¡ctico', 'Exposición Oral', 'Anó¡lisis Literario', 'Ensayo', 'Comprensión Lectora'];
             const tareas = [];
             
             // Generar fechas realistas del aó±o 2024
@@ -1223,7 +1223,7 @@
             return tareas;
         }
 
-        // Cargar configuració³n de Profesor 2 si existe
+        // Cargar configuración de Profesor 2 si existe
         window.addEventListener('DOMContentLoaded', () => {
             try {
                 const config = localStorage.getItem('profesor2_config');
@@ -1244,7 +1244,7 @@
                     }
                 }
             } catch (e) {
-                console.log('No hay configuració³n de Profesor 2');
+                console.log('No hay configuración de Profesor 2');
             }
         });
 
@@ -1281,11 +1281,11 @@
                                 nameElement.textContent = data.teacherName;
                                 console.log(`âœï¸ Nombre actualizado: ${docente.id} -> ${data.teacherName}`);
                             } else {
-                                console.warn(`âš ï¸ No se encontró³ elemento con ID: ${docente.nameId}`);
+                                console.warn(`âš ï¸ No se encontró elemento con ID: ${docente.nameId}`);
                             }
                         }
                         
-                        // Actualizar descripció³n si existe
+                        // Actualizar descripción si existe
                         if (data.subject || data.courses) {
                             const desc = data.courses && data.subject ? 
                                 `${data.courses} - ${data.subject}` : 
@@ -1294,13 +1294,13 @@
                             const descElement = document.getElementById(docente.descId);
                             if (descElement) {
                                 descElement.textContent = desc;
-                                console.log(`âœï¸ Descripció³n actualizada: ${docente.id} -> ${desc}`);
+                                console.log(`âœï¸ Descripción actualizada: ${docente.id} -> ${desc}`);
                             } else {
-                                console.warn(`âš ï¸ No se encontró³ elemento con ID: ${docente.descId}`);
+                                console.warn(`âš ï¸ No se encontró elemento con ID: ${docente.descId}`);
                             }
                         }
                     } else {
-                        console.log(`â„¹ï¸ No hay configuració³n guardada para: ${docente.id}`);
+                        console.log(`â„¹ï¸ No hay configuración guardada para: ${docente.id}`);
                     }
                 } catch (e) {
                     console.error(`âŒ Error al cargar ${docente.id}:`, e);
@@ -1351,7 +1351,7 @@
         // Variable global para el docente seleccionado
         let docenteActivo = localStorage.getItem('docenteActivo') || null;
 
-        // Funció³n para colapsar/expandir Control Maestro
+        // Función para colapsar/expandir Control Maestro
         function toggleControlMaestro() {
             const content = document.getElementById('controlMaestroContent');
             const icon = document.getElementById('controlMaestroIcon');
@@ -1367,7 +1367,7 @@
             }
         }
 
-        // Funció³n para seleccionar docente
+        // Función para seleccionar docente
         function seleccionarDocente(docenteId) {
             console.log('ðŸŽ¯ Seleccionando docente:', docenteId);
             
@@ -1375,7 +1375,7 @@
             localStorage.setItem('docenteActivo', docenteId);
             docenteActivo = docenteId;
             
-            // Obtener configuració³n del docente
+            // Obtener configuración del docente
             const configKey = `${docenteId}_config`;
             const configData = localStorage.getItem(configKey);
             let nombreDocente = docenteId;
@@ -1389,7 +1389,7 @@
                 }
             }
             
-            // Actualizar UI - Quitar selecció³n de todos
+            // Actualizar UI - Quitar selección de todos
             document.querySelectorAll('.docente-selector').forEach(btn => {
                 btn.classList.remove('ring-4', 'ring-green-400', 'bg-green-50');
             });
@@ -1407,7 +1407,7 @@
             banner.classList.remove('hidden');
             nombreDisplay.textContent = nombreDocente;
             
-            // Habilitar todos los botones de acció³n
+            // Habilitar todos los botones de acción
             document.querySelectorAll('.admin-action-btn').forEach(btn => {
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -1423,7 +1423,7 @@
             });
         }
 
-        // Funció³n para cambiar docente
+        // Función para cambiar docente
         function cambiarDocente() {
             localStorage.removeItem('docenteActivo');
             docenteActivo = null;
@@ -1431,12 +1431,12 @@
             // Ocultar banner
             document.getElementById('docenteSeleccionado').classList.add('hidden');
             
-            // Quitar selecció³n visual
+            // Quitar selección visual
             document.querySelectorAll('.docente-selector').forEach(btn => {
                 btn.classList.remove('ring-4', 'ring-green-400', 'bg-green-50');
             });
             
-            // Deshabilitar botones de acció³n
+            // Deshabilitar botones de acción
             document.querySelectorAll('.admin-action-btn').forEach(btn => {
                 btn.disabled = true;
                 btn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -1445,15 +1445,15 @@
             console.log('ðŸ”„ Docente deseleccionado - Seleccione uno nuevo');
         }
 
-        // Funció³n para ejecutar acciones administrativas
+        // Función para ejecutar acciones administrativas
         function accionAdmin(accion) {
             if (!docenteActivo) {
                 alert('âš ï¸ Por favor, selecciona un docente primero.');
-                console.warn('âŒ Intento de acció³n sin docente seleccionado');
+                console.warn('âŒ Intento de acción sin docente seleccionado');
                 return;
             }
             
-            console.log(`ðŸ”§ Ejecutando acció³n: ${accion} para docente: ${docenteActivo}`);
+            console.log(`ðŸ”§ Ejecutando acción: ${accion} para docente: ${docenteActivo}`);
             
             // Registrar en auditoró­a
             registrarAuditoria('ACCION_ADMIN', {
@@ -1501,8 +1501,8 @@
                     break;
                     
                 default:
-                    alert(`Acció³n "${accion}" aóºn no implementada para el docente seleccionado.`);
-                    console.log(`â„¹ï¸ Acció³n pendiente de implementació³n: ${accion}`);
+                    alert(`Acción "${accion}" aóºn no implementada para el docente seleccionado.`);
+                    console.log(`â„¹ï¸ Acción pendiente de implementación: ${accion}`);
             }
         }
 
@@ -1530,7 +1530,7 @@
             }
         }
 
-        // Ver auditoró­a (funció³n de debugging)
+        // Ver auditoró­a (función de debugging)
         function verAuditoria() {
             const auditoria = JSON.parse(localStorage.getItem('auditoria_admin') || '[]');
             console.table(auditoria);
@@ -1539,13 +1539,13 @@
 
         // Inicializar Control Maestro al cargar
         window.addEventListener('DOMContentLoaded', () => {
-            // Deshabilitar botones de acció³n al inicio
+            // Deshabilitar botones de acción al inicio
             document.querySelectorAll('.admin-action-btn').forEach(btn => {
                 btn.disabled = true;
                 btn.classList.add('opacity-50', 'cursor-not-allowed');
             });
             
-            // Si hay un docente guardado, restaurar selecció³n
+            // Si hay un docente guardado, restaurar selección
             if (docenteActivo) {
                 console.log('ðŸ”„ Restaurando docente activo:', docenteActivo);
                 seleccionarDocente(docenteActivo);
