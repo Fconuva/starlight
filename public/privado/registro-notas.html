@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -545,71 +545,6 @@
                 console.log('👑 Usuario administrador - Acceso completo');
             }
         })();
-
-        // ============================================================
-        // FUNCIONES GLOBALES PARA onclick EN HTML (Stubs)
-        // ============================================================
-        
-        window._appFunctions = {};
-        
-        function showNewCourseModal() {
-            if (window._appFunctions.showNewCourseModal) {
-                return window._appFunctions.showNewCourseModal();
-            }
-            console.warn('âš ï¸ Esperando carga completa...');
-        }
-        
-        function closeNewCourseModal() {
-            if (window._appFunctions.closeNewCourseModal) {
-                return window._appFunctions.closeNewCourseModal();
-            }
-        }
-        
-        function addStudent() {
-            if (window._appFunctions.addStudent) {
-                return window._appFunctions.addStudent();
-            }
-            alert('âš ï¸ Sistema cargando, intenta en un momento...');
-        }
-        
-        function addTask() {
-            if (window._appFunctions.addTask) {
-                return window._appFunctions.addTask();
-            }
-            alert('âš ï¸ Sistema cargando, intenta en un momento...');
-        }
-        
-        function fillAllGrades(value) {
-            if (window._appFunctions.fillAllGrades) {
-                return window._appFunctions.fillAllGrades(value);
-            }
-        }
-        
-        function deleteCourse() {
-            if (window._appFunctions.deleteCourse) {
-                return window._appFunctions.deleteCourse();
-            }
-        }
-        
-        function switchCourse() {
-            if (window._appFunctions.switchCourse) {
-                return window._appFunctions.switchCourse();
-            }
-        }
-        
-        function manualSync() {
-            if (window._appFunctions.manualSync) {
-                return window._appFunctions.manualSync();
-            }
-            alert('⚠️ Sincronización cargando...');
-        }
-        
-        function saveAllCourses() {
-            if (window._appFunctions.saveAllCourses) {
-                return window._appFunctions.saveAllCourses();
-            }
-            console.warn('⚠️ saveAllCourses aún no cargada');
-        }
     </script>
 
 
@@ -1540,10 +1475,9 @@
         function resetData() {
             const userRole = sessionStorage.getItem('userRole') || 'teacher';
             
-            // Verificar permisos antes de resetear
-            if (userRole === 'admin' || userRole === 'teacher') {
-                originalResetData();
             }
+            
+            originalResetData();
         }
         
         // Optimizaciones para móvil
@@ -2187,7 +2121,7 @@
             }
         }
         
-        // ðŸ§¹ LIMPIAR CURSOS CON IDS INVñLIDOS O problemáTICOS
+        // ðŸ§¹ LIMPIAR CURSOS CON IDS INVñLIDOS O PROBLEMñTICOS
         async function cleanInvalidCourses() {
             if (!confirm('ℹ️ Esta acción eliminará cursos con IDs Inválidos (0, decimales extraños, duplicados).\n\n¿Continuar?')) {
                 return;
@@ -2704,6 +2638,69 @@
         }
 
         // Sincronización manual (para trabajo colaborativo)
+        async function manualSync() {
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            
+            try {
+                // Cambiar botón a estado de carga
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-sync-alt fa-spin mr-2"></i><span class="hidden md:inline">Sincronizando...</span>';
+                
+                console.log('ðŸ”„ Sincronización manual iniciada...');
+                
+                // Mostrar indicador
+                const syncIndicator = document.getElementById('syncIndicator');
+                if (syncIndicator) {
+                    syncIndicator.classList.remove('hidden');
+                }
+                
+                // 1. Subir cambios locales
+                await syncCoursesToDatabase();
+                
+                // 2. Bajar cambios remotos
+                const username = getNamespacedUsername();
+                const response = await fetch(`/api/courses?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                if (data.success && data.courses) {
+                    const merged = mergeCoursesByTimestamp(allCourses || [], data.courses || []);
+                    allCourses = merged;
+                    setStorageItem('allCourses', JSON.stringify(allCourses));
+                    
+                    // Actualizar vista del curso actual
+                    if (currentCourseId && courseData) {
+                        const updatedCourse = allCourses.find(c => c.id == currentCourseId);
+                        if (updatedCourse) {
+                            courseData = updatedCourse;
+                            renderTable();
+                            populateStudentSelect();
+                            updateCourseSelector();
+                        }
+                    }
+                    
+                    showNotification('✅ Sincronización completada', 'success');
+                    console.log('✅ Sincronización manual exitosa');
+                }
+            } catch (error) {
+                console.error('ℹŒ Error en sincronización manual:', error);
+                showNotification('ℹŒ Error al sincronizar', 'error');
+            } finally {
+                // Restaurar botón
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                
+                // Ocultar indicador
+                setTimeout(() => {
+                    const syncIndicator = document.getElementById('syncIndicator');
+                    if (syncIndicator) {
+                        syncIndicator.classList.add('hidden');
+                    }
+                }, 1000);
+            }
+        }
+
+        // Cargar un curso específico
         function loadCourse(courseId) {
             // Convertir a número para comparación consistente
             const numId = typeof courseId === 'string' ? parseFloat(courseId) : courseId;
@@ -2920,7 +2917,7 @@
             
             let courseIdToDelete = currentCourseId;
             
-            // ðŸ”§ DETECTAR IDs problemáTICOS (0, decimales, Inválidos)
+            // ðŸ”§ DETECTAR IDs PROBLEMñTICOS (0, decimales, Inválidos)
             const isInvalidId = !courseIdToDelete || 
                                courseIdToDelete === 0 || 
                                courseIdToDelete === '0' ||
@@ -3509,7 +3506,9 @@
         // Eliminar tarea (solo admin)
         function deleteTask(taskIndex) {
             // Verificar permisos
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';if (!courseData$3$4 || !courseData.tasks || taskIndex < 0 || taskIndex >= courseData.tasks.length) {
+            }
+            
+            if (!courseData || !courseData.tasks || taskIndex < 0 || taskIndex >= courseData.tasks.length) {
                 alert('ℹŒ Error: Tarea no encontrada');
                 return;
             }
@@ -3546,7 +3545,7 @@
 
         // Editar tarea (solo admin)
         function editTask(taskIndex) {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
+            }
             
             if (!courseData || !courseData.tasks || taskIndex < 0 || taskIndex >= courseData.tasks.length) {
                 alert('ℹŒ Error: Tarea no encontrada');
@@ -3642,7 +3641,7 @@
 
         // Mover tarea hacia arriba (solo admin)
         function moveTaskUp(taskIndex) {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
+            }
             
             if (taskIndex <= 0 || taskIndex >= courseData.tasks.length) {
                 return;
@@ -3667,7 +3666,7 @@
 
         // Mover tarea hacia abajo (solo admin)
         function moveTaskDown(taskIndex) {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
+            }
             
             if (taskIndex < 0 || taskIndex >= courseData.tasks.length - 1) {
                 return;
@@ -3692,7 +3691,7 @@
 
         // Eliminar Múltiples tareas (solo admin)
         function deleteMultipleTasks() {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
+            }
             
             if (!courseData || !courseData.tasks || courseData.tasks.length === 0) {
                 alert('ℹ️ No hay tareas para eliminar');
@@ -4025,21 +4024,6 @@
                 'success'
             );
         }
-        
-        // ============================================================
-        // REGISTRO DE FUNCIONES GLOBALES
-        // ============================================================
-        console.log('📝 Registrando funciones globales en window._appFunctions...');
-        window._appFunctions.showNewCourseModal = showNewCourseModal;
-        window._appFunctions.closeNewCourseModal = closeNewCourseModal;
-        window._appFunctions.addStudent = addStudent;
-        window._appFunctions.addTask = addTask;
-        window._appFunctions.fillAllGrades = fillAllGrades;
-        window._appFunctions.deleteCourse = deleteCourse;
-        window._appFunctions.switchCourse = switchCourse;
-        window._appFunctions.manualSync = manualSync;
-        window._appFunctions.saveAllCourses = saveAllCourses;
-        console.log('✅ Funciones globales registradas correctamente');
 
         // Llenar columna de tarea
         function fillTaskColumn() {
@@ -7765,163 +7749,284 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
 
         // Construir prompt MEJORADO Y DETALLADO para la IA
         function buildAIPrompt(studentName, level, levelInfo, percentage, points, totalTasks, oasAnalysis, focus, courseData) {
-            let prompt = `Eres un profesor experto de Lenguaje y Comunicación de Chile con 15 años de experiencia en Educación Media. Debes escribir una retroalimentación pedagógica profesional, específica y fundamentada curricularmente.
+            let prompt = `# ROL Y CONTEXTO PROFESIONAL
 
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-📊 CONTEXTO DEL ESTUDIANTE
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-Nombre: ${studentName}
-Curso: ${courseData.courseName}
-Nivel de desempeño: ${levelInfo.nivel.toUpperCase()}
-Porcentaje de logro: ${percentage}% (${points} de ${totalTasks} tareas completadas)
-Rango de calificación: ${levelInfo.nota}
+Eres un(a) profesor(a) especialista en Lenguaje y Comunicación con 15 años de experiencia en Educación Media en Chile. Tu expertise incluye:
+- Aplicación práctica de las Bases Curriculares MINEDUC
+- Evaluación formativa centrada en el aprendizaje
+- Pedagogía diferenciada y retroalimentación efectiva
+- Análisis curricular por competencias y habilidades del siglo XXI
+
+Tu tarea es generar una retroalimentación pedagógica profesional, específica y fundamentada curricularmente para un informe de proceso.
+
+═══════════════════════════════════════════════════════════════════════════
+📊 DATOS DEL ESTUDIANTE
+═══════════════════════════════════════════════════════════════════════════
+
+**Nombre:** ${studentName}
+**Curso:** ${courseData.courseName} (${courseData.subject})
+**Período evaluativo:** ${courseData.period || 'Actual'}
+**Nivel de desempeño:** ${levelInfo.nivel.toUpperCase()}
+**Indicador cuantitativo:** ${percentage}% de logro (${points} de ${totalTasks} tareas completadas)
+**Rango de calificación:** ${levelInfo.nota}
+**Descriptor de nivel:** ${levelInfo.descripcion || 'En proceso de desarrollo'}
 
 `;
 
-            // Agregar análisis detallado de OAs
-            if (oasAnalysis && (oasAnalysis.cumplidos.length > 0 || oasAnalysis.noCumplidos.length > 0)) {
-                prompt += `ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸŽ¯ ANñLISIS CURRICULAR (BASES CURRICULARES MINEDUC)
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•\n\n`;
-                
-                if (oasAnalysis.cumplidos.length > 0) {
-                    prompt += `✅ OBJETIVOS DE APRENDIZAJE LOGRADOS (${oasAnalysis.cumplidos.length}):\n`;
-                    oasAnalysis.cumplidos.forEach((oa, index) => {
-                        if (index < 4) { // Máximo 4 para no saturar
-                            prompt += `\n[${oa.codigo}] ${oa.unidad}:\n`;
-                            prompt += `   Descriptor: ${oa.texto.substring(0, 180)}...\n`;
-                            prompt += `   Evidencias: ${oa.tareas.join(', ')}\n`;
-                        }
-                    });
-                    if (oasAnalysis.cumplidos.length > 4) {
-                        prompt += `\n   + ${oasAnalysis.cumplidos.length - 4} OA(s) adicional(es) cumplido(s)\n`;
-                    }
-                    prompt += `\n`;
-                }
-                
-                if (oasAnalysis.noCumplidos.length > 0) {
-                    prompt += `ℹ️ OBJETIVOS POR CONSOLIDAR (${oasAnalysis.noCumplidos.length}):\n`;
-                    oasAnalysis.noCumplidos.forEach((oa, index) => {
-                        if (index < 4) {
-                            prompt += `\n[${oa.codigo}] ${oa.unidad}:\n`;
-                            prompt += `   Descriptor: ${oa.texto.substring(0, 180)}...\n`;
-                            prompt += `   Tareas descendidas: ${oa.tareas.join(', ')}\n`;
-                        }
-                    });
-                    if (oasAnalysis.noCumplidos.length > 4) {
-                        prompt += `\n   + ${oasAnalisis.noCumplidos.length - 4} OA(s) adicional(es) pendiente(s)\n`;
-                    }
-                    prompt += `\n`;
-                }
-            }
+// Análisis curricular si hay OAs disponibles
+if (oasAnalysis && (oasAnalysis.cumplidos.length > 0 || oasAnalysis.noCumplidos.length > 0)) {
+    prompt += `═══════════════════════════════════════════════════════════════════════════
+🎯 ANÁLISIS CURRICULAR (Bases Curriculares MINEDUC)
+═══════════════════════════════════════════════════════════════════════════
 
-            // Enfoques pedagógicos detallados
-            const enfoquesDetallados = {
-                'general': `
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸ“‹ ENFOQUE: RETROALIMENTACIñ“N INTEGRAL
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-Elabora una retroalimentación comprehensiva que:
-• Reconozca logros específicos evidenciados en las tareas completadas
-• Identifique áreas descendidas con precisión diagnóstica
-• Establezca relaciones entre los OAs y las competencias comunicativas desarrolladas
-• Proyecte próximos desafíos de aprendizaje basados en el perfil de egreso
-• Incluya sugerencias pedagógicas concretas y contextualizadas`,
+`;
+    
+    if (oasAnalysis.cumplidos.length > 0) {
+        prompt += `## ✅ OBJETIVOS DE APRENDIZAJE LOGRADOS (${oasAnalysis.cumplidos.length} OA${oasAnalysis.cumplidos.length > 1 ? 's' : ''})
 
-                'oas': `
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸŽ¯ ENFOQUE: ANñLISIS CURRICULAR POR OBJETIVOS
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-Centra la retroalimentación en los Objetivos de Aprendizaje:
-• Menciona explícitamente cada OA cumplido (usa los códigos: OA1, OA2, etc.)
-• Explica cómo las tareas evidencian el logro de cada OA
-• Detalla las brechas en los OAs no cumplidos
-• Relaciona los OAs con habilidades del siglo XXI (pensamiento crítico, comunicación efectiva)
-• Propone actividades remediales específicas para cada OA descendido`,
+`;
+        oasAnalysis.cumplidos.slice(0, 5).forEach((oa) => {
+            prompt += `**${oa.codigo}** - ${oa.unidad}
+Descriptor: ${oa.texto.substring(0, 200)}${oa.texto.length > 200 ? '...' : ''}
+Evidencias: ${oa.tareas.slice(0, 3).join(', ')}${oa.tareas.length > 3 ? ` (+${oa.tareas.length - 3} más)` : ''}
+${oa.indicadores && oa.indicadores.length > 0 ? `Indicadores alcanzados: ${oa.indicadores.slice(0, 2).join('; ')}` : ''}
 
-                'motivacional': `
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸ’ª ENFOQUE: RECONOCIMIENTO Y MOTIVACIñ“N
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-Escribe con ñ©nfasis en el potencial y logros del estudiante:
-• Inicia reconociendo fortalezas específicas demostradas en las tareas
-• Usa lenguaje que empodere y genere autoconfianza acadñ©mica
-• Conecta los logros actuales con capacidades futuras
-• Presenta las dificultades como oportunidades de crecimiento
-• Proyecta expectativas positivas pero realistas sobre su trayectoria
-• Termina con un desafío inspirador y alcanzable`,
+`;
+        });
+        if (oasAnalysis.cumplidos.length > 5) {
+            prompt += `_+ ${oasAnalysis.cumplidos.length - 5} OA(s) adicionales cumplidos_
 
-                'estrategias': `
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸ“– ENFOQUE: ESTRATEGIAS Y ACCIONES CONCRETAS
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-Proporciona un plan de acción específico:
-• Lista estrategias metacognitivas de comprensión lectora (inferencias, síntesis, evaluación)
-• Sugiere tñ©cnicas de escritura recursiva (planificación-redacción-revisión)
-• Recomienda organizadores gráficos específicos (mapas conceptuales, esquemas)
-• Propone rutinas de estudio y gestión del tiempo
-• Incluye recursos digitales o bibliográficos de apoyo
-• Establece metas SMART (específicas, medibles, alcanzables, relevantes, temporales)`,
-
-                'formativa': `
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸŒ± ENFOQUE: EVALUACIñ“N PARA EL APRENDIZAJE
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-Retroalimentación procesual y descriptiva:
-• Usa lenguaje descriptivo en lugar de calificativo
-• Enfócate en el proceso más que en el resultado final
-• Identifica patrones de error para orientar la mejora
-• Promueve la autorregulación y reflexión metacognitiva
-• Sugiere estrategias de autoevaluación y coevaluación
-• Establece próximos pasos claros en el continuo de aprendizaje
-• Evita juicios absolutos, enfatiza el progreso incremental`
-            };
-
-            prompt += enfoquesDetallados[focus] || enfoquesDetallados['general'];
-
-            prompt += `
-
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-📋 ESPECIFICACIONES DE REDACCIñ“N
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ESTRUCTURA OBLIGATORIA:
-1. Introducción contextualizada (2-3 oraciones sobre el desempeño general)
-2. Análisis de OAs cumplidos con evidencias específicas de tareas
-3. Identificación de OAs descendidos y diagnóstico de brechas
-4. Orientaciones pedagógicas y/o estrategias concretas
-5. Cierre proyectivo y motivacional
-
-ESTILO Y TONO:
-ℹ️“ Segunda persona (tú/tu) - Dirigirse directamente al estudiante
-ℹ️“ Lenguaje técnico-pedagógico apropiado (Bases Curriculares, competencias, habilidades)
-ℹ️“ Tono profesional pero cercano y empático
-ℹ️“ Terminología MINEDUC: OAs, competencias comunicativas, perfil de egreso, evaluación formativa
-
-CONTENIDO ESPECñFICO:
-ℹ️“ Citar códigos de OAs (ej: "Has demostrado logro del OA2 sobre...")
-ℹ️“ Mencionar nombres exactos de tareas como evidencia
-ℹ️“ Incluir vocabulario disciplinar: coherencia, cohesión, intertextualidad, análisis crítico, etc.
-ℹ️“ Referenciar unidades curriculares trabajadas
-
-EXTENSIñ“N Y FORMATO:
-ℹ️“ Entre 200-300 palabras (ni muy breve ni excesivamente extensa)
-ℹ️“ Usar negrita para destacar conceptos clave: **OA1**, **comprensión lectora**, etc.
-ℹ️“ Sin emojis (lenguaje profesional)
-ℹ️“ Párrafos bien estructurados con conectores lógicos
-
-PROHIBIDO:
-❌ Lenguaje informal o coloquial ("choro", "bacán", "está bien nomás")
-❌ Frases genñ©ricas sin sustento ("sigue así", "esfuñ©rzate más")
-❌ Errores ortográficos o gramaticales
-❌ Copiar literal fragmentos de OAs sin contextualizarlos
-❌ Usar más de 300 palabras
-
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸŽ¯ GENERA LA RETROALIMENTACIñ“N PROFESIONAL AHORA
-ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•`;
-
-            return prompt;
+`;
         }
+    }
+    
+    if (oasAnalysis.noCumplidos.length > 0) {
+        prompt += `## ⚠️ OBJETIVOS POR CONSOLIDAR (${oasAnalisis.noCumplidos.length} OA${oasAnalisis.noCumplidos.length > 1 ? 's' : ''})
+
+`;
+        oasAnalysis.noCumplidos.slice(0, 5).forEach((oa) => {
+            prompt += `**${oa.codigo}** - ${oa.unidad}
+Descriptor: ${oa.texto.substring(0, 200)}${oa.texto.length > 200 ? '...' : ''}
+Tareas descendidas: ${oa.tareas.slice(0, 3).join(', ')}${oa.tareas.length > 3 ? ` (+${oa.tareas.length - 3} más)` : ''}
+${oa.indicadores && oa.indicadores.length > 0 ? `Indicadores por desarrollar: ${oa.indicadores.slice(0, 2).join('; ')}` : ''}
+
+`;
+        });
+        if (oasAnalysis.noCumplidos.length > 5) {
+            prompt += `_+ ${oasAnalisis.noCumplidos.length - 5} OA(s) adicionales pendientes_
+
+`;
+        }
+    }
+}
+
+const enfoquesDetallados = {
+    'general': `═══════════════════════════════════════════════════════════════════════════
+📋 ENFOQUE: RETROALIMENTACIÓN INTEGRAL Y BALANCEADA
+═══════════════════════════════════════════════════════════════════════════
+
+Genera una retroalimentación comprehensiva que integre:
+
+**1. Reconocimiento de logros específicos**
+- Menciona tareas concretas completadas exitosamente
+- Vincula los logros con OAs y competencias comunicativas
+- Destaca fortalezas observables
+
+**2. Diagnóstico de áreas descendidas**
+- Identifica con precisión los OAs no consolidados
+- Analiza patrones de dificultad
+- Usa lenguaje descriptivo y constructivo
+
+**3. Proyección y desafíos**
+- Conecta aprendizajes actuales con próximos
+- Propone metas alcanzables
+- Incluye sugerencias pedagógicas concretas`,
+
+    'oas': `═══════════════════════════════════════════════════════════════════════════
+🎯 ENFOQUE: ANÁLISIS CURRICULAR POR OBJETIVOS DE APRENDIZAJE
+═══════════════════════════════════════════════════════════════════════════
+
+Centra la retroalimentación en el mapeo curricular:
+
+**1. Objetivos logrados (evidencia)**
+- Menciona cada OA cumplido con su código (OA1, OA2, etc.)
+- Explica cómo las tareas evidencian el logro
+- Relaciona OAs con habilidades transversales
+
+**2. Objetivos por consolidar (diagnóstico)**
+- Detalla brechas en OAs no cumplidos
+- Identifica indicadores específicos descendidos
+- Analiza causas posibles
+
+**3. Plan de acción curricular**
+- Propone actividades remediales específicas
+- Sugiere progresión de habilidades
+- Vincula con recursos del Currículum Nacional`,
+
+    'motivacional': `═══════════════════════════════════════════════════════════════════════════
+💪 ENFOQUE: RECONOCIMIENTO, FORTALEZAS Y MOTIVACIÓN
+═══════════════════════════════════════════════════════════════════════════
+
+Escribe con énfasis en el potencial y logros:
+
+**1. Inicio con reconocimiento genuino**
+- Identifica fortalezas específicas demostradas
+- Usa evidencias concretas
+- Valora esfuerzo y progreso
+
+**2. Lenguaje empoderador**
+- Genera autoconfianza académica
+- Conecta logros actuales con capacidades futuras
+- Enfócate en crecimiento individual
+
+**3. Reencuadre positivo**
+- Presenta dificultades como oportunidades
+- Normaliza el error como parte del proceso
+- Muestra caminos concretos para superación
+
+**4. Cierre inspirador**
+- Proyecta expectativas positivas realistas
+- Propone desafío específico y alcanzable
+- Refuerza confianza en capacidades`,
+
+    'estrategias': `═══════════════════════════════════════════════════════════════════════════
+📖 ENFOQUE: ESTRATEGIAS METODOLÓGICAS Y PLAN DE ACCIÓN
+═══════════════════════════════════════════════════════════════════════════
+
+Proporciona un plan de mejora específico:
+
+**1. Estrategias metacognitivas (comprensión lectora)**
+- Prelectura: predicción, activación conocimientos
+- Durante: monitoreo, relectura, subrayado
+- Poslectura: resumen, inferencias, evaluación crítica
+
+**2. Técnicas de producción escrita**
+- Escritura recursiva: planificación → borrador → revisión
+- Organizadores: mapas conceptuales, esquemas
+- Cohesión: conectores, referentes, progresión temática
+
+**3. Recursos y herramientas**
+- Materiales digitales y bibliografía
+- Estrategias de estudio: gestión tiempo, autoevaluación
+
+**4. Metas SMART**
+- Específicas, Medibles, Alcanzables, Relevantes, Temporales`,
+
+    'formativa': `═══════════════════════════════════════════════════════════════════════════
+🌱 ENFOQUE: EVALUACIÓN FORMATIVA Y RETROALIMENTACIÓN DESCRIPTIVA
+═══════════════════════════════════════════════════════════════════════════
+
+Retroalimentación procesual centrada en aprendizaje:
+
+**1. Lenguaje descriptivo (no calificativo)**
+- Describe lo observado sin juicios
+- Usa criterios claros y objetivos
+- Enfócate en desempeños observables
+
+**2. Énfasis en el proceso**
+- Valora estrategias, no solo resultados
+- Identifica patrones de error
+- Reconoce progreso incremental
+
+**3. Promoción de autorregulación**
+- Fomenta reflexión metacognitiva
+- Sugiere autoevaluación y coevaluación
+- Promueve feedback entre pares
+
+**4. Próximos pasos claros**
+- Establece "feed-forward"
+- Define acciones concretas
+- Proyecta continuo de aprendizaje`
+};
+
+prompt += enfoquesDetallados[focus] || enfoquesDetallados['general'];
+
+prompt += `
+
+═══════════════════════════════════════════════════════════════════════════
+📝 ESPECIFICACIONES DE REDACCIÓN PROFESIONAL
+═══════════════════════════════════════════════════════════════════════════
+
+## ESTRUCTURA OBLIGATORIA (5 párrafos):
+
+**Párrafo 1: Introducción (40-50 palabras)**
+- Saludo directo (segunda persona: tú/tu)
+- Mención del desempeño general y nivel
+- Contexto del período evaluativo
+
+**Párrafo 2: Reconocimiento de logros (60-80 palabras)**
+- Mención de OAs cumplidos con códigos (OA1, OA2, etc.)
+- Evidencias concretas: nombres de tareas
+- Habilidades desarrolladas observables
+
+**Párrafo 3: Áreas por consolidar (60-80 palabras)**
+- Identificación de OAs descendidos
+- Diagnóstico de brechas específicas
+- Lenguaje constructivo, sin juicios
+
+**Párrafo 4: Orientaciones y estrategias (60-80 palabras)**
+- Sugerencias metodológicas concretas
+- Técnicas de estudio, recursos
+- Acciones específicas para mejorar
+
+**Párrafo 5: Cierre proyectivo (30-40 palabras)**
+- Mensaje motivacional realista
+- Desafío específico y alcanzable
+- Confianza en capacidades
+
+---
+
+## ESTILO Y LENGUAJE:
+
+✅ **Tono:** Profesional, cercano, empático
+✅ **Persona:** Segunda (tú/tu) - dirigirse al estudiante
+✅ **Vocabulario:** Técnico-pedagógico apropiado
+✅ **Terminología MINEDUC:** OAs, competencias comunicativas, habilidades, indicadores, perfil de egreso
+
+✅ **Negrita** para conceptos clave: **OA1**, **coherencia**, **análisis crítico**
+✅ **Conectores lógicos:** además, sin embargo, por lo tanto, por ejemplo
+
+---
+
+## EXTENSIÓN Y FORMATO:
+
+📏 **Extensión:** 250-300 palabras
+📐 **Párrafos:** 5 párrafos bien delimitados
+📑 **Formato:** Texto corrido, sin listas excesivas
+
+---
+
+## CONTENIDO OBLIGATORIO:
+
+✅ Mencionar 2-3 códigos de OAs
+✅ Citar 2+ nombres de tareas como evidencia
+✅ Vocabulario disciplinar:
+   - Comprensión: inferencias, ideas principales, análisis contextual
+   - Producción: planificación, coherencia, cohesión, revisión
+   - Reflexión: argumentación, intertextualidad, postura crítica
+
+---
+
+## PROHIBICIONES:
+
+❌ Lenguaje informal ("choro", "bacán")
+❌ Frases genéricas ("sigue así", "esfuérzate más")
+❌ Errores ortográficos/gramaticales
+❌ Copiar literal fragmentos de OAs
+❌ Emojis
+❌ Superar 300 palabras
+❌ Juicios de valor sobre capacidades
+❌ Comparaciones con otros estudiantes
+
+═══════════════════════════════════════════════════════════════════════════
+🎯 GENERA LA RETROALIMENTACIÓN PROFESIONAL AHORA
+═══════════════════════════════════════════════════════════════════════════
+
+Redacta una retroalimentación pedagógica de alta calidad que cumpla todos los criterios para ${studentName}.
+
+**IMPORTANTE:** Escribe directamente la retroalimentación sin preámbulos. Inicia con el saludo al estudiante.`;
+
+return prompt;
 
         // ============= SISTEMA MULTI-IA CON FALLBACK =============
         
