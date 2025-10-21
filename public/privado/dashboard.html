@@ -530,48 +530,6 @@
     </main>
 
     <script>
-        // Sistema de Control de Permisos
-        function initializePermissions() {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
-            const userFullName = sessionStorage.getItem('userFullName') || 'Usuario';
-            const username = sessionStorage.getItem('username') || '';
-            
-            // Mostrar bienvenida
-            const welcomeEl = document.getElementById('userWelcome');
-            if (welcomeEl) {
-                welcomeEl.innerHTML = `<i class="fas fa-user-circle mr-1"></i> ${userFullName}`;
-            }
-            
-            // Si NO es admin, ocultar sección de administración
-            if (userRole !== 'admin') {
-                const adminSection = document.getElementById('adminSection');
-                if (adminSection) {
-                    adminSection.style.display = 'none';
-                }
-                
-                console.log(`ðŸ‘¤ Sesión iniciada como: ${userFullName} (Profesora - Permisos limitados)`);
-            } else {
-                console.log(`ðŸ”‘ Sesión iniciada como: ${userFullName} (Administrador - Todos los permisos)`);
-            }
-        }
-        
-        // Inicializar permisos al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            initializePermissions();
-            
-            // Event listener para logout (dentro de DOMContentLoaded para evitar null)
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function() {
-                    sessionStorage.removeItem('isLoggedIn');
-                    sessionStorage.removeItem('username');
-                    sessionStorage.removeItem('userRole');
-                    sessionStorage.removeItem('userFullName');
-                    window.location.href = 'index.html';
-                });
-            }
-        });
-
         // VER CURSOS ACTUALES EN LA BASE DE DATOS
         async function verCursosActuales() {
             const btn = document.getElementById('verCursosBtn');
@@ -1509,13 +1467,13 @@
 
 
     <script>
-        // Sistema de autenticación y permisos
+        // Sistema de autenticación y permisos (sincronizado con login.html)
         const USERS = {
             'javiera': {
-                password: 'javiera123',  // Mantén tu contraseña actual
+                password: 'Jose0201juli3011',
                 allowedDocentes: ['javiera', 'javiera2', 'docente3', 'docente4'],
                 isAdmin: true,
-                displayName: 'Javiera Poblete'
+                displayName: 'Javiera Poblete Fernández'
             },
             'marcelo': {
                 password: '123456789',
