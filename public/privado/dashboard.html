@@ -1498,17 +1498,26 @@
 
         // Agregar botón de cerrar sesión
         function addLogoutButton() {
-            const header = document.querySelector('.bg-gradient-to-r.from-purple-600');
-            if (header) {
+            // Buscar el contenedor de botones en el nav
+            const navButtonsContainer = document.querySelector('nav .flex.items-center.gap-4');
+            
+            if (navButtonsContainer) {
+                // Verificar si ya existe el botón
+                if (document.getElementById('logout-button')) {
+                    console.log('⚠️ Botón de logout ya existe');
+                    return;
+                }
+                
                 const logoutBtn = document.createElement('button');
+                logoutBtn.id = 'logout-button';
                 logoutBtn.onclick = logout;
-                logoutBtn.className = 'bg-white text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-50 transition-all text-sm font-semibold';
+                logoutBtn.className = 'flex items-center text-sm text-white bg-red-600 hover:bg-red-700 font-semibold px-4 py-2 rounded-lg transition-colors';
                 logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión';
                 
-                const headerContent = header.querySelector('.flex.items-center.justify-between, .flex.justify-between');
-                if (headerContent) {
-                    headerContent.appendChild(logoutBtn);
-                }
+                navButtonsContainer.appendChild(logoutBtn);
+                console.log('✅ Botón de Cerrar Sesión agregado');
+            } else {
+                console.error('❌ No se encontró el contenedor del nav');
             }
         }
 

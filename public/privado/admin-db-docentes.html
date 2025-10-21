@@ -6,6 +6,33 @@
     <title>🗑️ Gestión de Bases de Datos por Docente</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- PROTECCIÓN DE ACCESO - SOLO JAVIERA (ADMIN) -->
+    <script>
+        (function() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            
+            console.log('🔒 Verificando acceso a Admin DB...');
+            console.log('   Usuario actual:', currentUser);
+            console.log('   Sesión activa:', isLoggedIn);
+            
+            // Solo permitir acceso a javiera
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                alert('⛔ Acceso Denegado\n\nDebes iniciar sesión para acceder a esta página.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            if (currentUser !== 'javiera') {
+                alert('⛔ Acceso Denegado\n\nEsta página es solo para administradores.\n\nUsuario actual: ' + (currentUser || 'Desconocido'));
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            
+            console.log('✅ Acceso permitido - Usuario: javiera (admin)');
+        })();
+    </script>
 </head>
 <body class="bg-gradient-to-br from-gray-100 to-gray-200 p-6">
     
