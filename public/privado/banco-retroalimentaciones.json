@@ -1,0 +1,119 @@
+{
+  "niveles": {
+    "Excelente (6.5-7.0)": {
+      "general": "Demuestra un dominio excepcional de los Objetivos de Aprendizaje, evidenciando comprensión profunda, análisis crítico y aplicación creativa de los contenidos.",
+      "lectura": "Realiza análisis literarios complejos, identifica recursos estilísticos con precisión y establece conexiones intertextuales sofisticadas.",
+      "escritura": "Produce textos coherentes, bien estructurados y con alto nivel de elaboración lingüística. Maneja diversos géneros textuales con dominio.",
+      "comunicacion": "Se expresa con claridad, fluidez y pertinencia en situaciones formales e informales. Utiliza recursos retóricos eficazmente.",
+      "sugerencias": [
+        "Continúa desafiándote con lecturas de mayor complejidad",
+        "Explora géneros literarios diversos para ampliar tu repertorio",
+        "Comparte tus estrategias de aprendizaje con tus compañeros"
+      ]
+    },
+    "Muy Bueno (6.0-6.4)": {
+      "general": "Demuestra un buen dominio de los Objetivos de Aprendizaje, logrando desempeños sólidos con autonomía y consistencia.",
+      "lectura": "Comprende textos complejos, identifica ideas principales y secundarias, y realiza inferencias fundamentadas.",
+      "escritura": "Produce textos bien estructurados con claridad y coherencia. Aplica convenciones ortográficas y gramaticales correctamente.",
+      "comunicacion": "Participa activamente en intercambios comunicativos con ideas claras y bien fundamentadas.",
+      "sugerencias": [
+        "Profundiza en el análisis de recursos literarios",
+        "Practica la argumentación con evidencia textual sólida",
+        "Revisa y edita tus textos con mayor rigurosidad"
+      ]
+    },
+    "Bueno (5.0-5.9)": {
+      "general": "Alcanza los Objetivos de Aprendizaje esperados, demostrando comprensión y aplicación adecuada de los contenidos.",
+      "lectura": "Comprende textos de mediana complejidad e identifica información explícita e implícita relevante.",
+      "escritura": "Produce textos coherentes que cumplen con los propósitos comunicativos básicos. Aplica normas ortográficas fundamentales.",
+      "comunicacion": "Se comunica con claridad suficiente en situaciones cotidianas y académicas básicas.",
+      "sugerencias": [
+        "Amplía tu vocabulario mediante lectura variada",
+        "Practica la escritura recursiva (planifica, escribe, revisa)",
+        "Participa más activamente en discusiones de clase"
+      ]
+    },
+    "Suficiente (4.0-4.9)": {
+      "general": "Alcanza los aprendizajes mínimos requeridos, aunque requiere reforzar algunos aspectos para consolidar los Objetivos de Aprendizaje.",
+      "lectura": "Comprende ideas principales de textos sencillos. Requiere apoyo para textos de mayor complejidad.",
+      "escritura": "Produce textos simples con estructura básica. Necesita reforzar coherencia, cohesión y convenciones.",
+      "comunicacion": "Se expresa de manera comprensible en situaciones familiares. Requiere ampliar recursos expresivos.",
+      "sugerencias": [
+        "Dedica tiempo diario a la lectura recreativa",
+        "Solicita retroalimentación específica para mejorar tus textos",
+        "Practica estrategias de comprensión lectora (subrayado, resumen)"
+      ]
+    },
+    "Insuficiente (< 4.0)": {
+      "general": "Presenta dificultades para alcanzar los Objetivos de Aprendizaje esperados. Requiere apoyo pedagógico adicional y estrategias diferenciadas.",
+      "lectura": "Enfrenta dificultades para comprender textos básicos. Necesita desarrollar estrategias de lectura sistemáticas.",
+      "escritura": "Produce textos muy básicos con limitaciones significativas en estructura, coherencia y convenciones.",
+      "comunicacion": "Presenta dificultades para expresarse con claridad. Requiere fortalecer vocabulario y estructuras comunicativas.",
+      "sugerencias": [
+        "Trabajaremos juntos con actividades de reforzamiento personalizado",
+        "Establece metas de aprendizaje pequeñas y alcanzables",
+        "Solicita ayuda cuando lo necesites - estoy aquí para apoyarte",
+        "Considera asistir a talleres de reforzamiento o tutorías"
+      ]
+    }
+  },
+  "actitudes": {
+    "positivas": [
+      "Demuestra responsabilidad y compromiso con sus tareas",
+      "Participa activamente en las actividades de clase",
+      "Muestra disposición para colaborar con sus compañeros",
+      "Evidencia curiosidad e interés por aprender",
+      "Mantiene una actitud respetuosa y constructiva",
+      "Demuestra perseverancia frente a los desafíos"
+    ],
+    "areas_mejora": [
+      "Podría mejorar su puntualidad en la entrega de trabajos",
+      "Beneficiaría participar más activamente en clases",
+      "Necesita desarrollar mayor autonomía en su aprendizaje",
+      "Requiere mejorar su organización y planificación",
+      "Debe fortalecer su disposición para recibir retroalimentación",
+      "Necesita mantener mayor concentración durante las clases"
+    ]
+  },
+  "curso": {
+    "excelente": {
+      "promedio": "El curso demuestra un rendimiento excepcional con promedio superior a 6.0",
+      "recomendaciones": "Continuar con desafíos de alta complejidad y proyectos interdisciplinarios que estimulen el pensamiento crítico."
+    },
+    "muy_bueno": {
+      "promedio": "El curso muestra un muy buen nivel de desempeño con promedio entre 5.5 y 6.0",
+      "recomendaciones": "Mantener estrategias efectivas y ofrecer oportunidades de profundización para estudiantes destacados."
+    },
+    "bueno": {
+      "promedio": "El curso alcanza un nivel satisfactorio con promedio entre 5.0 y 5.5",
+      "recomendaciones": "Reforzar áreas descendidas mediante actividades diferenciadas y trabajo colaborativo."
+    },
+    "suficiente": {
+      "promedio": "El curso presenta un rendimiento justo con promedio entre 4.0 y 5.0",
+      "recomendaciones": "Implementar estrategias de nivelación y apoyo pedagógico focalizado en estudiantes con mayores dificultades."
+    },
+    "preocupante": {
+      "promedio": "El curso muestra un rendimiento bajo con promedio inferior a 4.0",
+      "recomendaciones": "Requiere intervención pedagógica urgente, plan de apoyo integral y coordinación con equipo directivo."
+    }
+  },
+  "templates": {
+    "intro_positiva": [
+      "Es un placer destacar tu excelente desempeño en",
+      "Has demostrado un notable progreso en",
+      "Tu compromiso y dedicación en {asignatura} han sido ejemplares",
+      "Felicitaciones por tu destacado desempeño en"
+    ],
+    "intro_constructiva": [
+      "En {asignatura}, has mostrado avances que vale la pena reconocer",
+      "Tu participación en {asignatura} ha sido valiosa, aunque podemos seguir creciendo",
+      "He observado tu esfuerzo en {asignatura}, y juntos podemos lograr aún más"
+    ],
+    "cierre_motivador": [
+      "Confío en que continuarás esforzándote y alcanzando nuevos logros",
+      "Tu potencial es evidente, y estoy segura de que lograrás grandes cosas",
+      "Sigue adelante con tu dedicación y entusiasmo por aprender",
+      "Recuerda que cada desafío es una oportunidad para crecer"
+    ]
+  }
+}

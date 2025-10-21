@@ -665,7 +665,7 @@
             <!-- Botón de Guardar -->
             <div class="bg-white rounded-lg shadow-md p-4 mb-6 no-print">
                 <div class="flex justify-center">
-                    <button onclick="saveAllCourses(); showTemporaryMessage('ℹœ… Datos guardados correctamente', 'success');" class="btn-action bg-indigo-500 hover:bg-indigo-600 text-lg px-8 py-3">
+                    <button onclick="saveAllCourses(); showTemporaryMessage('✅ Datos guardados correctamente', 'success');" class="btn-action bg-indigo-500 hover:bg-indigo-600 text-lg px-8 py-3">
                         <i class="fas fa-save mr-2"></i>Guardar Cambios
                     </button>
                 </div>
@@ -943,7 +943,6 @@
                         </p>
                         <ul class="text-sm text-blue-700 space-y-1 list-disc list-inside">
                             <li>Los cambios realizados por cualquier usuario son visibles para todos</li>
-                            <li>Alicia, Joselin, Pia y tú trabajan en los mismos cursos</li>
                             <li>La sincronización se realiza automáticamente cada 30 segundos</li>
                             <li>No es necesario compartir cursos manualmente</li>
                         </ul>
@@ -1293,7 +1292,7 @@
             
             if (config) {
                 const data = JSON.parse(config);
-                console.log('ℹœ… Configuración encontrada:', data);
+                console.log('✅ Configuración encontrada:', data);
                 
                 // Asegurarse de que existe la entrada en DOCENTES_CONFIG
                 if (!DOCENTES_CONFIG[docenteParam]) {
@@ -1375,7 +1374,7 @@
         // ============================================================
         
         const EVALUATION_TYPES = {
-            BINARY: 'binary',           // ℹœ“/ℹœ— (Completado/No completado)
+            BINARY: 'binary',           // ℹ️“/❌ (Completado/No completado)
             LOGRO: 'logro',            // 4 Niveles de Logro
             RUBRICA: 'rubrica',        // Rúbrica personalizable
             NUMERIC: 'numeric',        // Nota 1.0-7.0 directa
@@ -1578,7 +1577,7 @@
                 console.log('📋 No hay cursos, creando uno por defecto...');
                 createDefaultCourse();
             } else {
-                console.log(`ℹœ… ${allCourses.length} curso(s) disponible(s)`);
+                console.log(`✅ ${allCourses.length} curso(s) disponible(s)`);
             }
             
             // PASO 4: Asegurar que hay un curso actual
@@ -1605,7 +1604,7 @@
                 window.location.href = 'index.html';
             });
             
-            console.log('ℹœ… Aplicación lista');
+            console.log('✅ Aplicación lista');
         });
 
         // Crear curso por defecto
@@ -1673,7 +1672,7 @@
                     // Merge using updatedAt
                     allCourses = mergeCoursesByTimestamp(localBackup, remoteClean);
 
-                    console.log('ℹœ… Cursos combinados local+DB:', allCourses.length, 'cursos');
+                    console.log('✅ Cursos combinados local+DB:', allCourses.length, 'cursos');
 
                     // Save merged to localStorage
                     setStorageItem('allCourses', JSON.stringify(allCourses));
@@ -1726,7 +1725,7 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    console.log('ℹœ… Sincronización exitosa:', data.message);
+                    console.log('✅ Sincronización exitosa:', data.message);
                     return true;
                 } else {
                     console.warn('ℹ️ Respuesta sin ñ©xito:', data.error);
@@ -1789,7 +1788,7 @@
                     results.push({
                         test: 'Conexión a Base de Datos',
                         status: 'success',
-                        message: `ℹœ… Conectado correctamente a Neon Database`,
+                        message: `✅ Conectado correctamente a Neon Database`,
                         details: `Usuario: ${username}`
                     });
                 } else {
@@ -1819,7 +1818,7 @@
                     results.push({
                         test: 'LocalStorage',
                         status: 'success',
-                        message: `ℹœ… ${parsed.length} curso(s) en almacenamiento local`,
+                        message: `✅ ${parsed.length} curso(s) en almacenamiento local`,
                         details: `Espacio usado: ${(JSON.stringify(parsed).length / 1024).toFixed(2)} KB`
                     });
                 } catch (e) {
@@ -1847,7 +1846,7 @@
                     results.push({
                         test: 'Sincronización',
                         status: 'success',
-                        message: `ℹœ… Sincronización funcionando correctamente`,
+                        message: `✅ Sincronización funcionando correctamente`,
                         details: `${allCourses.length} curso(s) sincronizado(s)`
                     });
                 } else {
@@ -1873,7 +1872,7 @@
             results.push({
                 test: 'Auto-Refresh',
                 status: autoRefreshActive ? 'success' : 'warning',
-                message: autoRefreshActive ? `ℹœ… Auto-refresh activo (cada 30s)` : `ℹ️ Auto-refresh desactivado`,
+                message: autoRefreshActive ? `✅ Auto-refresh activo (cada 30s)` : `ℹ️ Auto-refresh desactivado`,
                 details: autoRefreshActive ? 'Los cambios de otros dispositivos se sincronizarán automáticamente' : 'Necesitas recargar manualmente'
             });
             
@@ -1882,7 +1881,7 @@
             results.push({
                 test: 'Variables del Sistema',
                 status: criticalVarsOk ? 'success' : 'error',
-                message: criticalVarsOk ? `ℹœ… Todas las variables críticas están definidas` : `ℹŒ Faltan variables críticas`,
+                message: criticalVarsOk ? `✅ Todas las variables críticas están definidas` : `ℹŒ Faltan variables críticas`,
                 details: `allCourses: ${allCourses ? allCourses.length : 'undefined'}, courseData: ${courseData ? 'OK' : 'undefined'}`
             });
             
@@ -1894,7 +1893,7 @@
                     <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
                         <p class="text-sm font-bold text-green-800">
                             <i class="fas fa-check-circle mr-2"></i>
-                            ℹœ… Todos los tests pasaron correctamente
+                            ✅ Todos los tests pasaron correctamente
                         </p>
                     </div>
                 `;
@@ -1942,7 +1941,7 @@
                 const data = await response.json();
                 
                 if (response.ok && data.success) {
-                    showSyncNotification(`ℹœ… Conexión exitosa - ${data.courses.length} curso(s) encontrado(s)`, 'success');
+                    showSyncNotification(`✅ Conexión exitosa - ${data.courses.length} curso(s) encontrado(s)`, 'success');
                     console.log('📊 Datos de la base de datos:', data);
                 } else {
                     showSyncNotification(`ℹŒ Error: ${data.error || 'Error desconocido'}`, 'error');
@@ -1957,7 +1956,7 @@
         
         // ðŸ§¹ LIMPIAR CURSOS CON IDS INVñLIDOS O PROBLEMñTICOS
         async function cleanInvalidCourses() {
-            if (!confirm('ℹ️ Esta acción eliminará cursos con IDs Inválidos (0, decimales extraños, duplicados).\n\nℹ¿Continuar?')) {
+            if (!confirm('ℹ️ Esta acción eliminará cursos con IDs Inválidos (0, decimales extraños, duplicados).\n\n¿Continuar?')) {
                 return;
             }
             
@@ -2019,11 +2018,11 @@
                     courseData = null;
                 }
                 
-                const message = `ℹœ… Limpieza completada:\nℹ€¢ ${cleaned} curso(s) eliminado(s)\nℹ€¢ ${fixed} curso(s) corregido(s)\nℹ€¢ ${allCourses.length} curso(s) válido(s) restante(s)`;
+                const message = `✅ Limpieza completada:\n• ${cleaned} curso(s) eliminado(s)\n• ${fixed} curso(s) corregido(s)\n• ${allCourses.length} curso(s) válido(s) restante(s)`;
                 alert(message);
-                console.log('ℹœ… Limpieza exitosa');
+                console.log('✅ Limpieza exitosa');
                 
-                showSyncNotification('ℹœ… Base de datos limpia', 'success');
+                showSyncNotification('✅ Base de datos limpia', 'success');
             } catch (error) {
                 console.error('ℹŒ Error sincronizando despuñ©s de limpieza:', error);
                 alert('ℹ️ Cursos limpiados localmente, pero hubo un error al sincronizar con la base de datos.');
@@ -2058,8 +2057,8 @@
                         loadCourse(currentCourseId);
                     }
                     
-                    showSyncNotification('ℹœ… Sincronización completa', 'success');
-                    console.log('ℹœ… Sincronización bidireccional completada');
+                    showSyncNotification('✅ Sincronización completa', 'success');
+                    console.log('✅ Sincronización bidireccional completada');
                 } else {
                     showSyncNotification('ℹ️ Sin cambios para sincronizar', 'warning');
                 }
@@ -2149,7 +2148,7 @@
                                 console.log(`  📋 Nota [${idx}][${gradeIdx}]: Remote más reciente (${remoteTime} > ${localTime})`);
                                 localStudent.grades[gradeIdx] = JSON.parse(JSON.stringify(remoteGrade));
                             } else {
-                                console.log(`  ℹœ… Nota [${idx}][${gradeIdx}]: Local más reciente (${localTime} >= ${remoteTime})`);
+                                console.log(`  ✅ Nota [${idx}][${gradeIdx}]: Local más reciente (${localTime} >= ${remoteTime})`);
                             }
                         });
                     }
@@ -2175,7 +2174,7 @@
             const remoteCourseTime = new Date(remoteCourse.updatedAt || 0).getTime();
             merged.updatedAt = remoteCourseTime > localCourseTime ? remoteCourse.updatedAt : localCourse.updatedAt;
 
-            console.log(`ℹœ… Merge granular completado para curso ${merged.id}`);
+            console.log(`✅ Merge granular completado para curso ${merged.id}`);
             return merged;
         }
         
@@ -2214,8 +2213,8 @@
                 try {
                     const synced = await syncCoursesToDatabase();
                     if (synced) {
-                        console.log('ℹœ… Migración completada:', localCourses.length, 'cursos sincronizados');
-                        showSyncNotification('ℹœ… Cursos migrados a la nube automáticamente', 'success');
+                        console.log('✅ Migración completada:', localCourses.length, 'cursos sincronizados');
+                        showSyncNotification('✅ Cursos migrados a la nube automáticamente', 'success');
                     }
                 } catch (error) {
                     console.error('ℹŒ Error en migración automática:', error);
@@ -2248,7 +2247,7 @@
                 console.log('ID de curso establecido al primero:', currentCourseId);
             }
             
-            console.log('ℹœ… Carga completada:', allCourses.length, 'curso(s) disponible(s)');
+            console.log('✅ Carga completada:', allCourses.length, 'curso(s) disponible(s)');
             
             // PASO 7: Migración de estructura de evaluación
             migrateEvaluationStructure();
@@ -2347,7 +2346,7 @@
                 const synced = await syncCoursesToDatabase();
                 if (synced) {
                     removeStorageItem('needsSync');
-                    console.log('ℹœ… Cambios pendientes sincronizados');
+                    console.log('✅ Cambios pendientes sincronizados');
                 }
             }
         }
@@ -2378,7 +2377,7 @@
                     
                     // Solo descargar si hay cambios reales
                     if (!checkData.hasUpdates) {
-                        console.log('ℹœ… Sin cambios remotos');
+                        console.log('✅ Sin cambios remotos');
                         return;
                     }
                     
@@ -2421,7 +2420,7 @@
                                     const updatedCourseHash = JSON.stringify(updatedCourse);
                                     
                                     if (currentCourseHash !== updatedCourseHash) {
-                                        console.log('ℹœ¨ Actualizando vista con cambios colaborativos...');
+                                        console.log('⚡ Actualizando vista con cambios colaborativos...');
                                         courseData = updatedCourse;
                                         renderTable();
                                         populateStudentSelect();
@@ -2513,8 +2512,8 @@
                         }
                     }
                     
-                    showNotification('ℹœ… Sincronización completada', 'success');
-                    console.log('ℹœ… Sincronización manual exitosa');
+                    showNotification('✅ Sincronización completada', 'success');
+                    console.log('✅ Sincronización manual exitosa');
                 }
             } catch (error) {
                 console.error('ℹŒ Error en sincronización manual:', error);
@@ -2598,7 +2597,7 @@
                 resetInformesSection();
                 
                 // Mostrar confirmación
-                showTemporaryMessage('ℹœ… Curso anterior guardado y nuevo curso cargado', 'success');
+                showTemporaryMessage('✅ Curso anterior guardado y nuevo curso cargado', 'success');
             }, 100);
         }
         
@@ -2706,7 +2705,7 @@
 
         // Eliminar curso actual
         async function deleteCourse() {
-            if (!confirm(`ℹ¿Eliminar el curso "${courseData.courseName}"? Esta acción no se puede deshacer.`)) {
+            if (!confirm(`¿Eliminar el curso "${courseData.courseName}"? Esta acción no se puede deshacer.`)) {
                 return;
             }
             
@@ -2726,7 +2725,7 @@
             const index = allCourses.findIndex(c => c.id === currentCourseId);
             if (index !== -1) {
                 allCourses.splice(index, 1);
-                console.log(`ℹœ… Curso eliminado del array (posición ${index})`);
+                console.log(`✅ Curso eliminado del array (posición ${index})`);
             }
             
             // PASO 2: Guardar cambios localmente INMEDIATAMENTE
@@ -2760,17 +2759,17 @@
                     },
                     body: JSON.stringify({
                         courseId: courseIdToDelete,
-                        username: username  // ℹœ… Enviar username para respetar namespace
+                        username: username  // ✅ Enviar username para respetar namespace
                     })
                 });                    const result = await response.json();
                     console.log('ðŸ“¡ Respuesta del servidor:', result);
                     
                     if (!response.ok) {
                         console.warn('ℹ️ Error en BD (pero curso ya eliminado localmente):', result.error);
-                        showTemporaryMessage('ℹœ… Curso eliminado (no estaba en base de datos)', 'success');
+                        showTemporaryMessage('✅ Curso eliminado (no estaba en base de datos)', 'success');
                     } else {
-                        console.log('ℹœ… Curso eliminado de BD tambiñ©n');
-                        showTemporaryMessage('ℹœ… Curso eliminado completamente', 'success');
+                        console.log('✅ Curso eliminado de BD tambiñ©n');
+                        showTemporaryMessage('✅ Curso eliminado completamente', 'success');
                     }
                     
                     // Sincronizar para asegurar consistencia
@@ -2778,11 +2777,11 @@
                     
                 } catch (error) {
                     console.error('ℹŒ Error de conexión (pero curso ya eliminado localmente):', error);
-                    showTemporaryMessage('ℹœ… Curso eliminado localmente', 'success');
+                    showTemporaryMessage('✅ Curso eliminado localmente', 'success');
                 }
             } else {
                 // ID inválido, solo confirmar eliminación local
-                showTemporaryMessage('ℹœ… Curso con ID problemático eliminado', 'success');
+                showTemporaryMessage('✅ Curso con ID problemático eliminado', 'success');
                 
                 // Sincronizar para limpiar la BD tambiñ©n
                 try {
@@ -3297,7 +3296,7 @@
                 });
             });
             
-            console.log(`ℹœ… Tarea "${task.name}" agregada. Total tareas: ${courseData.tasks.length}`);
+            console.log(`✅ Tarea "${task.name}" agregada. Total tareas: ${courseData.tasks.length}`);
             console.log(`📊 Estudiantes actualizados: ${courseData.students.length} estudiantes tienen ahora ${courseData.students[0]?.grades.length || 0} columnas de notas`);
             
             closeAddTaskModal();
@@ -3307,7 +3306,7 @@
             // Mostrar confirmación con OAs
             if (selectedOAs.length > 0) {
                 const oasList = selectedOAs.map(oa => oa.codigo).join(', ');
-                showTemporaryMessage(`ℹœ… Tarea "${name}" creada con OAs: ${oasList}`);
+                showTemporaryMessage(`✅ Tarea "${name}" creada con OAs: ${oasList}`);
             }
         }
 
@@ -3326,7 +3325,7 @@
             
             // Confirmar eliminación
             const confirmDelete = confirm(
-                `ℹ¿Estás seguro de eliminar la tarea "${taskName}"?\n\n` +
+                `¿Estás seguro de eliminar la tarea "${taskName}"?\n\n` +
                 `ℹ️ Se eliminarán todas las notas de esta tarea para todos los estudiantes.\n` +
                 `Esta acción NO se puede deshacer.`
             );
@@ -3348,7 +3347,7 @@
             renderTable();
             
             // Mostrar confirmación
-            showTemporaryMessage(`ℹœ… Tarea "${taskName}" eliminada correctamente`, 'success');
+            showTemporaryMessage(`✅ Tarea "${taskName}" eliminada correctamente`, 'success');
         }
 
         // Editar tarea (solo admin)
@@ -3444,7 +3443,7 @@
             saveAllCourses();
             renderTable();
             
-            showTemporaryMessage(`ℹœ… Tarea actualizada: "${oldName}" ℹ†’ "${newName}"`, 'success');
+            showTemporaryMessage(`✅ Tarea actualizada: "${oldName}" ℹ†’ "${newName}"`, 'success');
         }
 
         // Mover tarea hacia arriba (solo admin)
@@ -3469,7 +3468,7 @@
             
             saveAllCourses();
             renderTable();
-            showTemporaryMessage('ℹœ… Tarea movida hacia la izquierda', 'success');
+            showTemporaryMessage('✅ Tarea movida hacia la izquierda', 'success');
         }
 
         // Mover tarea hacia abajo (solo admin)
@@ -3494,7 +3493,7 @@
             
             saveAllCourses();
             renderTable();
-            showTemporaryMessage('ℹœ… Tarea movida hacia la derecha', 'success');
+            showTemporaryMessage('✅ Tarea movida hacia la derecha', 'success');
         }
 
         // Eliminar Múltiples tareas (solo admin)
@@ -3598,7 +3597,7 @@
             const taskNames = selectedIndexes.map(i => courseData.tasks[i].name).join(', ');
             
             const confirmDelete = confirm(
-                `ℹ¿Estás seguro de eliminar ${checkboxes.length} tarea(s)?\n\n` +
+                `¿Estás seguro de eliminar ${checkboxes.length} tarea(s)?\n\n` +
                 `Tareas: ${taskNames}\n\n` +
                 `ℹ️ Se eliminarán todas las notas de estas tareas para todos los estudiantes.\n` +
                 `Esta acción NO se puede deshacer.`
@@ -3621,7 +3620,7 @@
             saveAllCourses();
             renderTable();
             
-            showTemporaryMessage(`ℹœ… ${checkboxes.length} tarea(s) eliminada(s) correctamente`, 'success');
+            showTemporaryMessage(`✅ ${checkboxes.length} tarea(s) eliminada(s) correctamente`, 'success');
         }
 
         // Cerrar modal de agregar tarea
@@ -3800,7 +3799,7 @@
             
             saveAllCourses();
             renderTable();
-            showTemporaryMessage('ℹœ… Tarea actualizada correctamente', 'success');
+            showTemporaryMessage('✅ Tarea actualizada correctamente', 'success');
         }
 
         // Llenar todas las notas
@@ -3809,8 +3808,8 @@
             
             const confirm = window.confirm(
                 value ? 
-                'ℹ¿Marcar TODAS las notas como completadas?' : 
-                'ℹ¿Desmarcar TODAS las notas?'
+                '¿Marcar TODAS las notas como completadas?' : 
+                '¿Desmarcar TODAS las notas?'
             );
             
             if (!confirm) return;
@@ -3828,7 +3827,7 @@
             renderTable();
             saveAllCourses();
             showTemporaryMessage(
-                value ? 'ℹœ… Todas las notas marcadas' : 'ℹœ… Todas las notas desmarcadas', 
+                value ? '✅ Todas las notas marcadas' : '✅ Todas las notas desmarcadas', 
                 'success'
             );
         }
@@ -3849,7 +3848,7 @@
                 return;
             }
             
-            const value = confirm('ℹ¿Marcar como completada (Aceptar) o pendiente (Cancelar)?');
+            const value = confirm('¿Marcar como completada (Aceptar) o pendiente (Cancelar)?');
             
             const timestamp = new Date().toISOString();
             courseData.students.forEach(student => {
@@ -3863,7 +3862,7 @@
             
             renderTable();
             saveAllCourses();
-            showTemporaryMessage(`ℹœ… Columna "${courseData.tasks[index].name}" actualizada`, 'success');
+            showTemporaryMessage(`✅ Columna "${courseData.tasks[index].name}" actualizada`, 'success');
         }
 
         // ℹ­ NUEVA: Marcar/Desmarcar UNA tarea específica con 1 click
@@ -3902,8 +3901,8 @@
             renderTable();
             saveAllCourses();
             
-            const action = value ? 'marcada ℹœ“' : 'desmarcada ℹœ—';
-            showTemporaryMessage(`ℹœ… Tarea "${courseData.tasks[index].name}" ${action} para todos`, 'success');
+            const action = value ? 'marcada ℹ️“' : 'desmarcada ❌';
+            showTemporaryMessage(`✅ Tarea "${courseData.tasks[index].name}" ${action} para todos`, 'success');
         }
 
         // ℹ­ NUEVA: Agregar Múltiples tareas de una vez
@@ -3949,7 +3948,7 @@
             if (added > 0) {
                 renderTable();
                 saveAllCourses();
-                showTemporaryMessage(`ℹœ… ${added} tarea(s) agregada(s) correctamente`, 'success');
+                showTemporaryMessage(`✅ ${added} tarea(s) agregada(s) correctamente`, 'success');
             } else {
                 alert('ℹŒ No se agregó ninguna tarea');
             }
@@ -3964,7 +3963,7 @@
         function editCourseInfo() {
             showTab('curso');
             document.getElementById('courseName').focus();
-            showTemporaryMessage('ℹœï¸ Edita la información en los campos superiores', 'info');
+            showTemporaryMessage('ℹ️ï¸ Edita la información en los campos superiores', 'info');
         }
 
         // Duplicar curso
@@ -3982,7 +3981,7 @@
             saveAllCourses();
             updateCourseSelector();
             
-            showTemporaryMessage(`ℹœ… Curso "${newName}" creado correctamente`, 'success');
+            showTemporaryMessage(`✅ Curso "${newName}" creado correctamente`, 'success');
         }
         // Exportar datos del curso
         function exportCourseData() {
@@ -3997,7 +3996,7 @@
             a.click();
             URL.revokeObjectURL(url);
             
-            showTemporaryMessage('ℹœ… Datos exportados correctamente', 'success');
+            showTemporaryMessage('✅ Datos exportados correctamente', 'success');
         }
 
         // Exportar a JSON
@@ -4021,7 +4020,7 @@
                     saveAllCourses();
                     updateCourseSelector();
                     
-                    showTemporaryMessage('ℹœ… Curso importado correctamente', 'success');
+                    showTemporaryMessage('✅ Curso importado correctamente', 'success');
                 } catch (error) {
                     alert('ℹŒ Error al importar el archivo:\n' + error.message);
                 }
@@ -4424,7 +4423,7 @@
 
         // Eliminar estudiante
         function deleteStudent(index) {
-            if (confirm('ℹ¿Está seguro de eliminar este estudiante?')) {
+            if (confirm('¿Está seguro de eliminar este estudiante?')) {
                 courseData.students.splice(index, 1);
                 renderTable();
                 saveAllCourses();
@@ -4560,7 +4559,7 @@
                     for (let j = 4; j < 4 + numTasksInCSV; j++) {
                         const value = columns[j]?.trim().toUpperCase();
                         const isChecked = value === 'VERDADERO' || value === 'TRUE' || 
-                                         value === '1' || value === 'X' || value === 'ℹœ“';
+                                         value === '1' || value === 'X' || value === 'ℹ️“';
                         student.grades.push({ value: isChecked, updatedAt: timestamp });
                     }
                     
@@ -4574,18 +4573,18 @@
                 }
                 
                 // Mensaje de confirmación detallado
-                let message = `ℹœ… Importación exitosa:\n`;
-                message += `\nℹ€¢ ${studentsImported} estudiante(s) importado(s)`;
-                message += `\nℹ€¢ ${courseData.tasks.length} tarea(s) en total`;
+                let message = `✅ Importación exitosa:\n`;
+                message += `\n• ${studentsImported} estudiante(s) importado(s)`;
+                message += `\n• ${courseData.tasks.length} tarea(s) en total`;
                 if (tasksAdded > 0) {
-                    message += `\nℹ€¢ ${tasksAdded} tarea(s) nueva(s) creada(s) automáticamente`;
+                    message += `\n• ${tasksAdded} tarea(s) nueva(s) creada(s) automáticamente`;
                 }
                 
                 alert(message);
                 renderTable();
                 saveAllCourses();
                 
-                console.log('ℹœ… Importación completada:', {
+                console.log('✅ Importación completada:', {
                     estudiantes: studentsImported,
                     tareas: courseData.tasks.length,
                     tareasCreadas: tasksAdded
@@ -4622,7 +4621,7 @@
                     student.lastName1,
                     student.lastName2,
                     student.name,
-                    ...normalizedGrades.map(g => g ? 'ℹœ“' : ''),
+                    ...normalizedGrades.map(g => g ? 'ℹ️“' : ''),
                     totalPoints,
                     finalGrade.toFixed(1)
                 ]);
@@ -4965,7 +4964,7 @@
                     </div>
                 `;
                 
-                console.log('ℹœ… Informe generado exitosamente');
+                console.log('✅ Informe generado exitosamente');
                 // Mostrar botón de descarga despuñ©s de generar
                 downloadBtn.style.display = 'inline-flex';
                 
@@ -4977,7 +4976,7 @@
                         <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
                         <h4 class="text-xl font-bold text-red-800 mb-2">Error al generar el informe</h4>
                         <p class="text-red-700 mb-4">${error.message}</p>
-                        <p class="text-sm text-gray-600 mb-4">Detalles tñ©cnicos: ${error.stack ? error.stack.split('\n')[0] : 'No disponible'}</p>
+                        <p class="text-sm text-gray-600 mb-4">Detalles técnicos: ${error.stack ? error.stack.split('\n')[0] : 'No disponible'}</p>
                         <details class="text-left mb-4 bg-white p-4 rounded">
                             <summary class="cursor-pointer font-semibold mb-2">Ver stack trace completo</summary>
                             <pre class="text-xs text-gray-700 overflow-x-auto">${error.stack || 'No disponible'}</pre>
@@ -5084,7 +5083,7 @@
                 document.body.removeChild(loadingMsg);
                 
                 // Mostrar mensaje de ñ©xito
-                showNotification('ℹœ… PDF generado exitosamente', 'success');
+                showNotification('✅ PDF generado exitosamente', 'success');
                 
             } catch (error) {
                 console.error('Error generando PDF:', error);
@@ -5371,7 +5370,7 @@ ${courseContext.oasCriticos.length > 0 ? courseContext.oasCriticos.join('\n') : 
 INSTRUCCIONES:
 1. Genera 3-4 recomendaciones pedagógicas concretas y aplicables
 2. Cada recomendación debe tener: título corto, tipo (critical/warning/success/info), y descripción de 2-3 líneas
-3. Usa lenguaje tñ©cnico-pedagógico apropiado para docentes
+3. Usa lenguaje técnico-pedagógico apropiado para docentes
 4. Responde SOLO en formato JSON así:
 [
   {"type": "critical", "icon": "ðŸš¨", "title": "Título", "text": "Descripción detallada"},
@@ -5387,12 +5386,12 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 try {
                     console.log('ðŸ”· Intentando con Gemini API...');
                     aiResponse = await callGeminiAPI(apiKey, prompt);
-                    console.log('ℹœ… Gemini respondió:', aiResponse);
+                    console.log('✅ Gemini respondió:', aiResponse);
                 } catch (geminiError) {
                     console.warn('ℹŒ Gemini falló, intentando con HuggingFace...', geminiError);
                     try {
                         aiResponse = await callHuggingFaceAPI(prompt);
-                        console.log('ℹœ… HuggingFace respondió:', aiResponse);
+                        console.log('✅ HuggingFace respondió:', aiResponse);
                     } catch (hfError) {
                         console.warn('ℹŒ HuggingFace tambiñ©n falló', hfError);
                     }
@@ -5404,7 +5403,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                     const jsonMatch = aiResponse.match(/\[[\s\S]*\]/);
                     if (jsonMatch) {
                         const aiRecommendations = JSON.parse(jsonMatch[0]);
-                        console.log('ℹœ… Recomendaciones de IA parseadas:', aiRecommendations);
+                        console.log('✅ Recomendaciones de IA parseadas:', aiRecommendations);
                         return aiRecommendations;
                     }
                 }
@@ -5435,7 +5434,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             } else if (stats.avg >= 5.5) {
                 recommendations.push({
                     type: 'success',
-                    icon: 'ℹœ…',
+                    icon: '✅',
                     title: 'Excelente rendimiento general',
                     text: `El promedio del curso (${stats.avg.toFixed(2)}) refleja un muy buen nivel. Continuar con estrategias efectivas y desafiar con actividades de mayor complejidad.`
                 });
@@ -5488,7 +5487,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             if (recommendations.length === 0 || recommendations.filter(r => r.type === 'success').length > 0) {
                 recommendations.push({
                     type: 'info',
-                    icon: 'ðŸŒŸ',
+                    icon: '🌟',
                     title: 'Mantener buenas prácticas',
                     text: `El curso muestra un rendimiento sólido. Continuar con retroalimentación formativa, evaluación continua y desafíos graduados según capacidades individuales.`
                 });
@@ -6109,7 +6108,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                     </div>
                     <p class="text-xs text-gray-500 mt-4">
                         <i class="fas fa-info-circle text-blue-500"></i> 
-                        T1, T2, T3... = Tareas numeradas. ℹœ” = Completada, ℹœ– = Pendiente
+                        T1, T2, T3... = Tareas numeradas. ℹ️” = Completada, ⬜ = Pendiente
                     </p>
                 </div>
             `;
@@ -6269,7 +6268,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <p class="text-sm font-semibold text-gray-800 truncate" title="${task.name}">${task.name}</p>
-                                                <p class="text-xs text-green-600">ℹœ“ Completada</p>
+                                                <p class="text-xs text-green-600">ℹ️“ Completada</p>
                                             </div>
                                         </div>
                                     </div>
@@ -6301,7 +6300,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                             `).join('')}
                         </div>
                     </div>
-                    ` : '<div class="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300 p-6 rounded-lg text-center"><div class="text-4xl mb-2">ðŸŽ‰</div><p class="text-green-800 font-bold text-lg">ℹ¡Felicitaciones!</p><p class="text-green-700">Todas las tareas están completadas</p></div>'}
+                    ` : '<div class="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300 p-6 rounded-lg text-center"><div class="text-4xl mb-2">🎉</div><p class="text-green-800 font-bold text-lg">¡Felicitaciones!</p><p class="text-green-700">Todas las tareas están completadas</p></div>'}
                     
                     <!-- Retroalimentación Profesional - Expandible Automáticamente -->
                     <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-5 print:break-inside-avoid">
@@ -6319,7 +6318,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                             <textarea id="studentNotes_${index}" 
                                       class="w-full p-4 border-2 border-blue-200 rounded-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all resize-none overflow-hidden print:border-none print:p-2" 
                                       style="min-height: 250px; height: auto;"
-                                      placeholder="Escriba aquí la retroalimentación personalizada para el estudiante...&#10;&#10;ℹœï¸ Consejos:&#10;ℹ€¢ Mencione logros específicos&#10;ℹ€¢ Identifique áreas de mejora&#10;ℹ€¢ Sugiera estrategias concretas&#10;ℹ€¢ Use lenguaje motivador y constructivo"
+                                      placeholder="Escriba aquí la retroalimentación personalizada para el estudiante...&#10;&#10;ℹ️ï¸ Consejos:&#10;• Mencione logros específicos&#10;• Identifique áreas de mejora&#10;• Sugiera estrategias concretas&#10;• Use lenguaje motivador y constructivo"
                                       oninput="autoResizeTextarea(this)"
                                       onchange="saveStudentNotes(${index}, this.value)">${student.notes || ''}</textarea>
                             ${student.notes ? `
@@ -6498,7 +6497,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 document.body.removeChild(loadingMsg);
                 
                 // Mostrar mensaje de ñ©xito
-                showNotification(`ℹœ… PDF de ${student.name} generado exitosamente`, 'success');
+                showNotification(`✅ PDF de ${student.name} generado exitosamente`, 'success');
                 
             } catch (error) {
                 console.error('Error generando PDF individual:', error);
@@ -6528,13 +6527,13 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             };
             renderTable(); // Recalcular notas con nuevo porcentaje
             saveAllCourses();
-            alert('ℹœ… Configuración guardada. Las notas se han recalculado.');
+            alert('✅ Configuración guardada. Las notas se han recalculado.');
         }
 
         // Resetear datos
         function resetData() {
-            if (confirm('ℹ️ ℹ¿Está COMPLETAMENTE SEGURO de borrar TODOS los datos del curso actual? Esta acción NO se puede deshacer.')) {
-                if (confirm('Esta es su última oportunidad. ℹ¿Confirma que desea borrar todo?')) {
+            if (confirm('ℹ️ ¿Está COMPLETAMENTE SEGURO de borrar TODOS los datos del curso actual? Esta acción NO se puede deshacer.')) {
+                if (confirm('Esta es su última oportunidad. ¿Confirma que desea borrar todo?')) {
                     courseData.students = [];
                     courseData.tasks = [];
                     renderTable();
@@ -7069,7 +7068,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             let feedback = '';
             
             if (cumplido) {
-                feedback = `ℹœ… ${codigo}: Has logrado exitosamente este objetivo de aprendizaje en las siguientes tareas: ${tareas}. `;
+                feedback = `✅ ${codigo}: Has logrado exitosamente este objetivo de aprendizaje en las siguientes tareas: ${tareas}. `;
                 feedback += `Tu desempeño refleja comprensión y dominio de: "${texto.substring(0, 100)}..."`;
             } else {
                 feedback = `ℹ️ ${codigo}: Es necesario reforzar este objetivo de aprendizaje. Tareas pendientes: ${tareas}. `;
@@ -7141,7 +7140,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 html += buildAreaSection('ðŸ“– Lectura y Comprensión', especificas.lectura, 'blue');
             }
             if (especificas.escritura) {
-                html += buildAreaSection('ℹœï¸ Escritura y Producción de Textos', especificas.escritura, 'purple');
+                html += buildAreaSection('ℹ️ï¸ Escritura y Producción de Textos', especificas.escritura, 'purple');
             }
             if (especificas.comunicacion_oral) {
                 html += buildAreaSection('ðŸ—£ï¸ Comunicación Oral', especificas.comunicacion_oral, 'green');
@@ -7300,7 +7299,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                                 Sistema Multi-IA con Triple Respaldo
                             </h4>
                             <div class="text-xs text-gray-700 space-y-1">
-                                <p><strong>ℹœ… Siempre funciona</strong> - 3 mñ©todos de generación:</p>
+                                <p><strong>✅ Siempre funciona</strong> - 3 mñ©todos de generación:</p>
                                 <p>1ï¸ℹƒ£ <strong>Gemini Pro</strong> (Google - si tienes API Key)</p>
                                 <p>2ï¸ℹƒ£ <strong>HuggingFace</strong> (Gratis, sin API Key necesaria)</p>
                                 <p>3ï¸ℹƒ£ <strong>Generador Inteligente</strong> (Siempre disponible)</p>
@@ -7402,7 +7401,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             formatted = formatted.replace(/\((\d+)\)/g, '\n  ($1)');
             
             // Agregar espaciado en puntos principales
-            formatted = formatted.replace(/\nℹ€¢\s/g, '\n  ℹ€¢ ');
+            formatted = formatted.replace(/\n•\s/g, '\n  • ');
             
             return formatted.trim();
         }
@@ -7429,7 +7428,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             
             // Feedback visual
             const originalText = text.substring(0, 50) + '...';
-            showTemporaryMessage(`ℹœ… Retroalimentación insertada y formateada: "${originalText}"`);
+            showTemporaryMessage(`✅ Retroalimentación insertada y formateada: "${originalText}"`);
         }
 
         // Generar retroalimentación completa automática
@@ -7498,7 +7497,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             const apiKey = document.getElementById('geminiApiKey').value.trim();
             if (apiKey) {
                 setStorageItem('geminiApiKey', apiKey);
-                showTemporaryMessage('ℹœ… API Key guardada correctamente');
+                showTemporaryMessage('✅ API Key guardada correctamente');
             } else {
                 alert('Por favor ingresa una API Key válida');
             }
@@ -7552,7 +7551,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 // Insertar la retroalimentación generada
                 if (feedback) {
                     insertFeedback(feedback);
-                    showTemporaryMessage('ℹœ… Retroalimentación generada exitosamente');
+                    showTemporaryMessage('✅ Retroalimentación generada exitosamente');
                     closeFeedbackBank();
                 }
                 
@@ -7567,7 +7566,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                     focus
                 );
                 insertFeedback(simpleFeedback);
-                showTemporaryMessage('ℹœ… Retroalimentación generada (modo offline)');
+                showTemporaryMessage('✅ Retroalimentación generada (modo offline)');
                 closeFeedbackBank();
             } finally {
                 // Ocultar indicador de carga
@@ -7599,7 +7598,7 @@ Rango de calificación: ${levelInfo.nota}
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•\n\n`;
                 
                 if (oasAnalysis.cumplidos.length > 0) {
-                    prompt += `ℹœ… OBJETIVOS DE APRENDIZAJE LOGRADOS (${oasAnalysis.cumplidos.length}):\n`;
+                    prompt += `✅ OBJETIVOS DE APRENDIZAJE LOGRADOS (${oasAnalysis.cumplidos.length}):\n`;
                     oasAnalysis.cumplidos.forEach((oa, index) => {
                         if (index < 4) { // Máximo 4 para no saturar
                             prompt += `\n[${oa.codigo}] ${oa.unidad}:\n`;
@@ -7636,59 +7635,59 @@ Rango de calificación: ${levelInfo.nota}
 ðŸ“‹ ENFOQUE: RETROALIMENTACIñ“N INTEGRAL
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 Elabora una retroalimentación comprehensiva que:
-ℹ€¢ Reconozca logros específicos evidenciados en las tareas completadas
-ℹ€¢ Identifique áreas descendidas con precisión diagnóstica
-ℹ€¢ Establezca relaciones entre los OAs y las competencias comunicativas desarrolladas
-ℹ€¢ Proyecte próximos desafíos de aprendizaje basados en el perfil de egreso
-ℹ€¢ Incluya sugerencias pedagógicas concretas y contextualizadas`,
+• Reconozca logros específicos evidenciados en las tareas completadas
+• Identifique áreas descendidas con precisión diagnóstica
+• Establezca relaciones entre los OAs y las competencias comunicativas desarrolladas
+• Proyecte próximos desafíos de aprendizaje basados en el perfil de egreso
+• Incluya sugerencias pedagógicas concretas y contextualizadas`,
 
                 'oas': `
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 ðŸŽ¯ ENFOQUE: ANñLISIS CURRICULAR POR OBJETIVOS
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 Centra la retroalimentación en los Objetivos de Aprendizaje:
-ℹ€¢ Menciona explícitamente cada OA cumplido (usa los códigos: OA1, OA2, etc.)
-ℹ€¢ Explica cómo las tareas evidencian el logro de cada OA
-ℹ€¢ Detalla las brechas en los OAs no cumplidos
-ℹ€¢ Relaciona los OAs con habilidades del siglo XXI (pensamiento crítico, comunicación efectiva)
-ℹ€¢ Propone actividades remediales específicas para cada OA descendido`,
+• Menciona explícitamente cada OA cumplido (usa los códigos: OA1, OA2, etc.)
+• Explica cómo las tareas evidencian el logro de cada OA
+• Detalla las brechas en los OAs no cumplidos
+• Relaciona los OAs con habilidades del siglo XXI (pensamiento crítico, comunicación efectiva)
+• Propone actividades remediales específicas para cada OA descendido`,
 
                 'motivacional': `
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 ðŸ’ª ENFOQUE: RECONOCIMIENTO Y MOTIVACIñ“N
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 Escribe con ñ©nfasis en el potencial y logros del estudiante:
-ℹ€¢ Inicia reconociendo fortalezas específicas demostradas en las tareas
-ℹ€¢ Usa lenguaje que empodere y genere autoconfianza acadñ©mica
-ℹ€¢ Conecta los logros actuales con capacidades futuras
-ℹ€¢ Presenta las dificultades como oportunidades de crecimiento
-ℹ€¢ Proyecta expectativas positivas pero realistas sobre su trayectoria
-ℹ€¢ Termina con un desafío inspirador y alcanzable`,
+• Inicia reconociendo fortalezas específicas demostradas en las tareas
+• Usa lenguaje que empodere y genere autoconfianza acadñ©mica
+• Conecta los logros actuales con capacidades futuras
+• Presenta las dificultades como oportunidades de crecimiento
+• Proyecta expectativas positivas pero realistas sobre su trayectoria
+• Termina con un desafío inspirador y alcanzable`,
 
                 'estrategias': `
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 ðŸ“– ENFOQUE: ESTRATEGIAS Y ACCIONES CONCRETAS
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 Proporciona un plan de acción específico:
-ℹ€¢ Lista estrategias metacognitivas de comprensión lectora (inferencias, síntesis, evaluación)
-ℹ€¢ Sugiere tñ©cnicas de escritura recursiva (planificación-redacción-revisión)
-ℹ€¢ Recomienda organizadores gráficos específicos (mapas conceptuales, esquemas)
-ℹ€¢ Propone rutinas de estudio y gestión del tiempo
-ℹ€¢ Incluye recursos digitales o bibliográficos de apoyo
-ℹ€¢ Establece metas SMART (específicas, medibles, alcanzables, relevantes, temporales)`,
+• Lista estrategias metacognitivas de comprensión lectora (inferencias, síntesis, evaluación)
+• Sugiere tñ©cnicas de escritura recursiva (planificación-redacción-revisión)
+• Recomienda organizadores gráficos específicos (mapas conceptuales, esquemas)
+• Propone rutinas de estudio y gestión del tiempo
+• Incluye recursos digitales o bibliográficos de apoyo
+• Establece metas SMART (específicas, medibles, alcanzables, relevantes, temporales)`,
 
                 'formativa': `
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 ðŸŒ± ENFOQUE: EVALUACIñ“N PARA EL APRENDIZAJE
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 Retroalimentación procesual y descriptiva:
-ℹ€¢ Usa lenguaje descriptivo en lugar de calificativo
-ℹ€¢ Enfócate en el proceso más que en el resultado final
-ℹ€¢ Identifica patrones de error para orientar la mejora
-ℹ€¢ Promueve la autorregulación y reflexión metacognitiva
-ℹ€¢ Sugiere estrategias de autoevaluación y coevaluación
-ℹ€¢ Establece próximos pasos claros en el continuo de aprendizaje
-ℹ€¢ Evita juicios absolutos, enfatiza el progreso incremental`
+• Usa lenguaje descriptivo en lugar de calificativo
+• Enfócate en el proceso más que en el resultado final
+• Identifica patrones de error para orientar la mejora
+• Promueve la autorregulación y reflexión metacognitiva
+• Sugiere estrategias de autoevaluación y coevaluación
+• Establece próximos pasos claros en el continuo de aprendizaje
+• Evita juicios absolutos, enfatiza el progreso incremental`
             };
 
             prompt += enfoquesDetallados[focus] || enfoquesDetallados['general'];
@@ -7706,29 +7705,29 @@ ESTRUCTURA OBLIGATORIA:
 5. Cierre proyectivo y motivacional
 
 ESTILO Y TONO:
-ℹœ“ Segunda persona (tú/tu) - Dirigirse directamente al estudiante
-ℹœ“ Lenguaje tñ©cnico-pedagógico apropiado (Bases Curriculares, competencias, habilidades)
-ℹœ“ Tono profesional pero cercano y empático
-ℹœ“ Terminología MINEDUC: OAs, competencias comunicativas, perfil de egreso, evaluación formativa
+ℹ️“ Segunda persona (tú/tu) - Dirigirse directamente al estudiante
+ℹ️“ Lenguaje técnico-pedagógico apropiado (Bases Curriculares, competencias, habilidades)
+ℹ️“ Tono profesional pero cercano y empático
+ℹ️“ Terminología MINEDUC: OAs, competencias comunicativas, perfil de egreso, evaluación formativa
 
 CONTENIDO ESPECñFICO:
-ℹœ“ Citar códigos de OAs (ej: "Has demostrado logro del OA2 sobre...")
-ℹœ“ Mencionar nombres exactos de tareas como evidencia
-ℹœ“ Incluir vocabulario disciplinar: coherencia, cohesión, intertextualidad, análisis crítico, etc.
-ℹœ“ Referenciar unidades curriculares trabajadas
+ℹ️“ Citar códigos de OAs (ej: "Has demostrado logro del OA2 sobre...")
+ℹ️“ Mencionar nombres exactos de tareas como evidencia
+ℹ️“ Incluir vocabulario disciplinar: coherencia, cohesión, intertextualidad, análisis crítico, etc.
+ℹ️“ Referenciar unidades curriculares trabajadas
 
 EXTENSIñ“N Y FORMATO:
-ℹœ“ Entre 200-300 palabras (ni muy breve ni excesivamente extensa)
-ℹœ“ Usar negrita para destacar conceptos clave: **OA1**, **comprensión lectora**, etc.
-ℹœ“ Sin emojis (lenguaje profesional)
-ℹœ“ Párrafos bien estructurados con conectores lógicos
+ℹ️“ Entre 200-300 palabras (ni muy breve ni excesivamente extensa)
+ℹ️“ Usar negrita para destacar conceptos clave: **OA1**, **comprensión lectora**, etc.
+ℹ️“ Sin emojis (lenguaje profesional)
+ℹ️“ Párrafos bien estructurados con conectores lógicos
 
 PROHIBIDO:
-ℹœ— Lenguaje informal o coloquial ("choro", "bacán", "está bien nomás")
-ℹœ— Frases genñ©ricas sin sustento ("sigue así", "esfuñ©rzate más")
-ℹœ— Errores ortográficos o gramaticales
-ℹœ— Copiar literal fragmentos de OAs sin contextualizarlos
-ℹœ— Usar más de 300 palabras
+❌ Lenguaje informal o coloquial ("choro", "bacán", "está bien nomás")
+❌ Frases genñ©ricas sin sustento ("sigue así", "esfuñ©rzate más")
+❌ Errores ortográficos o gramaticales
+❌ Copiar literal fragmentos de OAs sin contextualizarlos
+❌ Usar más de 300 palabras
 
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 ðŸŽ¯ GENERA LA RETROALIMENTACIñ“N PROFESIONAL AHORA
@@ -7874,12 +7873,12 @@ PROHIBIDO:
                     oasAnalysis.cumplidos.forEach((oa, index) => {
                         if (index < 3) { // Máximo 3 OAs para no hacer muy largo
                             const oaDescripcion = oa.texto.substring(0, 120);
-                            feedback.push(`\nℹ€¢ **${oa.codigo}** (${oa.unidad}): ${oaDescripcion}... | Evidencia: ${oa.tareas.slice(0, 2).join(', ')}`);
+                            feedback.push(`\n• **${oa.codigo}** (${oa.unidad}): ${oaDescripcion}... | Evidencia: ${oa.tareas.slice(0, 2).join(', ')}`);
                         }
                     });
                     
                     if (oasAnalysis.cumplidos.length > 3) {
-                        feedback.push(`\nℹ€¢ Y ${oasAnalysis.cumplidos.length - 3} objetivo(s) adicional(es) cumplido(s).`);
+                        feedback.push(`\n• Y ${oasAnalysis.cumplidos.length - 3} objetivo(s) adicional(es) cumplido(s).`);
                     }
                 }
                 
@@ -7890,12 +7889,12 @@ PROHIBIDO:
                     oasAnalysis.noCumplidos.forEach((oa, index) => {
                         if (index < 3) {
                             const oaDescripcion = oa.texto.substring(0, 120);
-                            feedback.push(`\nℹ€¢ **${oa.codigo}** (${oa.unidad}): ${oaDescripcion}... | Tareas descendidas: ${oa.tareas.slice(0, 2).join(', ')}`);
+                            feedback.push(`\n• **${oa.codigo}** (${oa.unidad}): ${oaDescripcion}... | Tareas descendidas: ${oa.tareas.slice(0, 2).join(', ')}`);
                         }
                     });
                     
                     if (oasAnalysis.noCumplidos.length > 3) {
-                        feedback.push(`\nℹ€¢ Y ${oasAnalysis.noCumplidos.length - 3} objetivo(s) adicional(es) por trabajar.`);
+                        feedback.push(`\n• Y ${oasAnalysis.noCumplidos.length - 3} objetivo(s) adicional(es) por trabajar.`);
                     }
                 }
             }
@@ -7953,7 +7952,7 @@ PROHIBIDO:
             }
             
             // Mñ©todo 3: Generador inteligente (SIEMPRE funciona)
-            showTemporaryMessage('ℹœ¨ Generando retroalimentación personalizada...');
+            showTemporaryMessage('⚡ Generando retroalimentación personalizada...');
             return generateSmartFeedback(level, studentName, percentage, oasAnalysis, focus);
         }
     </script>
