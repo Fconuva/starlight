@@ -1246,16 +1246,16 @@
         
         // Configuración de docentes
         const DOCENTES_CONFIG = {
-            francisco: {
-                nombre: 'Docente 1',
-                namespace: 'francisco',
-                color: 'indigo',
-                descripcion: '3° y 4° Medio - Lenguaje y Comunicación'
-            },
             javiera: {
                 nombre: 'Docente 1',
                 namespace: 'javiera',
                 color: 'purple',
+                descripcion: 'Espacio independiente'
+            },
+            javiera2: {
+                nombre: 'Docente 2',
+                namespace: 'javiera2',
+                color: 'indigo',
                 descripcion: 'Espacio independiente'
             },
             docente3: {
@@ -1268,12 +1268,6 @@
                 nombre: 'Docente 4',
                 namespace: 'docente4',
                 color: 'orange',
-                descripcion: 'Espacio independiente'
-            },
-            profesor2: {
-                nombre: 'Otro Docente',
-                namespace: 'profesor2',
-                color: 'purple',
                 descripcion: 'Espacio independiente'
             }
         };
@@ -1298,10 +1292,9 @@
                     };
                 }
                 
-                // Actualizar con datos personalizados
-                if (data.teacherName) {
-                    DOCENTES_CONFIG[docenteParam].nombre = data.teacherName;
-                }
+                // Actualizar con datos personalizados (excepto el nombre, que es estático)
+                // NOTA: No sobrescribir el nombre - mantener "Docente 1, 2, 3, 4"
+                
                 if (data.courses && data.subject) {
                     DOCENTES_CONFIG[docenteParam].descripcion = `${data.courses} - ${data.subject}`;
                 } else if (data.courses) {
