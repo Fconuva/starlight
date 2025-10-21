@@ -556,14 +556,20 @@
         }
         
         // Inicializar permisos al cargar la página
-        document.addEventListener('DOMContentLoaded', initializePermissions);
-        
-        document.getElementById('logout-btn').addEventListener('click', function() {
-            sessionStorage.removeItem('isLoggedIn');
-            sessionStorage.removeItem('username');
-            sessionStorage.removeItem('userRole');
-            sessionStorage.removeItem('userFullName');
-            window.location.href = 'index.html';
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePermissions();
+            
+            // Event listener para logout (dentro de DOMContentLoaded para evitar null)
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    sessionStorage.removeItem('isLoggedIn');
+                    sessionStorage.removeItem('username');
+                    sessionStorage.removeItem('userRole');
+                    sessionStorage.removeItem('userFullName');
+                    window.location.href = 'index.html';
+                });
+            }
         });
 
         // VER CURSOS ACTUALES EN LA BASE DE DATOS
@@ -778,63 +784,6 @@
     </script>
 
     <script>
-        // Sistema de Control de Permisos
-        function initializePermissions() {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
-            const userFullName = sessionStorage.getItem('userFullName') || 'Usuario';
-            const username = sessionStorage.getItem('username') || '';
-            
-            // Mostrar bienvenida
-            const welcomeEl = document.getElementById('userWelcome');
-            if (welcomeEl) {
-                welcomeEl.innerHTML = `<i class="fas fa-user-circle mr-1"></i> ${userFullName}`;
-            }
-            
-            // Si NO es admin, ocultar sección de administración
-            if (userRole !== 'admin') {
-                const adminSection = document.getElementById('adminSection');
-                if (adminSection) {
-                    adminSection.style.display = 'none';
-                }
-                
-                // Mostrar mensaje informativo en su lugar
-                const container = adminSection ? adminSection.parentElement : null;
-                if (container) {
-                    const infoCard = document.createElement('div');
-                    infoCard.className = 'bg-purple-50 border-2 border-purple-200 rounded-xl p-6 text-center';
-                    infoCard.innerHTML = `
-                        <div class="text-purple-600 mb-3">
-                            <i class="fas fa-info-circle text-4xl"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-purple-900 mb-2">Cuenta de Administradora</h3>
-                        <p class="text-sm text-purple-700">
-                            Tienes permisos para registrar notas, generar informes y trabajar con cursos existentes.
-                        </p>
-                        <p class="text-xs text-purple-600 mt-2">
-                            <i class="fas fa-lock mr-1"></i>
-                            La gestión avanzada de cursos está reservada para el administrador.
-                        </p>
-                    `;
-                    container.appendChild(infoCard);
-                }
-                
-                console.log(`ðŸ‘¤ Sesión iniciada como: ${userFullName} (Profesora - Permisos limitados)`);
-            } else {
-                console.log(`ðŸ”‘ Sesión iniciada como: ${userFullName} (Administrador - Todos los permisos)`);
-            }
-        }
-        
-        // Inicializar permisos al cargar la página
-        document.addEventListener('DOMContentLoaded', initializePermissions);
-        
-        document.getElementById('logout-btn').addEventListener('click', function() {
-            sessionStorage.removeItem('isLoggedIn');
-            sessionStorage.removeItem('username');
-            sessionStorage.removeItem('userRole');
-            sessionStorage.removeItem('userFullName');
-            window.location.href = 'index.html';
-        });
-
         // VER CURSOS ACTUALES EN LA BASE DE DATOS
         async function verCursosActuales() {
             const btn = document.getElementById('verCursosBtn');
