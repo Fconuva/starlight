@@ -1170,7 +1170,20 @@
                         <div id="taskOAsList" class="space-y-2 max-h-60 overflow-y-auto border border-gray-200 rounded-lg p-3 bg-gray-50">
                             <!-- OAs se cargarán aquí dinámicamente -->
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">Puede seleccionar Múltiples OAs</p>
+                        <p class="text-xs text-gray-500 mt-1">Seleccione los OAs que evaluará en esta tarea</p>
+                    </div>
+
+                    <!-- Selector de Indicadores (aparece al seleccionar OAs) -->
+                    <div id="taskIndicadoresContainer" style="display:none;">
+                        <label class="block text-sm font-medium text-gray-700 mb-2 mt-4">
+                            <i class="fas fa-check-circle mr-1"></i>Indicadores de Evaluación
+                        </label>
+                        <div id="taskIndicadoresList" class="space-y-3">
+                            <!-- Indicadores por cada OA seleccionado -->
+                        </div>
+                        <button type="button" onclick="addCustomIndicador()" class="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center">
+                            <i class="fas fa-plus-circle mr-1"></i>Agregar indicador personalizado
+                        </button>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-6">
@@ -3637,6 +3650,8 @@
         // Cerrar modal de agregar tarea
         function closeAddTaskModal() {
             document.getElementById('addTaskModal').style.display = 'none';
+            document.getElementById('taskIndicadoresContainer').style.display = 'none';
+            document.getElementById('taskIndicadoresList').innerHTML = '';
         }
 
         // ============================================
@@ -6663,9 +6678,11 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             const unitIndex = document.getElementById('taskUnit').value;
             const oasContainer = document.getElementById('taskOAsContainer');
             const oasList = document.getElementById('taskOAsList');
+            const indicadoresContainer = document.getElementById('taskIndicadoresContainer');
             
             if (!level || unitIndex === '') {
                 oasContainer.style.display = 'none';
+                indicadoresContainer.style.display = 'none';
                 return;
             }
             
@@ -6675,37 +6692,28 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             const unidad = data.niveles[level].unidades[parseInt(unitIndex)];
             if (!unidad) return;
             
+            // Guardar los OAs para uso posterior
+            window.currentUnidadOAs = unidad.oas;
+            
             // Limpiar y poblar lista de OAs
             oasList.innerHTML = '';
-            unidad.oas.forEach((oa) => {
+            unidad.oas.forEach((oa, index) => {
                 const div = document.createElement('div');
                 div.className = 'bg-white border border-gray-300 rounded-lg p-3 hover:border-blue-400 transition-all';
-                
-                // Construir HTML con indicadores si existen
-                let indicadoresHTML = '';
-                if (oa.indicadores && oa.indicadores.length > 0) {
-                    indicadoresHTML = `
-                        <div class="mt-2 ml-6 text-xs text-gray-600 border-l-2 border-green-300 pl-3">
-                            <div class="font-semibold text-green-700 mb-1">📋 Indicadores de Evaluación:</div>
-                            <ul class="list-disc list-inside space-y-1">
-                                ${oa.indicadores.map(ind => `<li>${ind}</li>`).join('')}
-                            </ul>
-                        </div>
-                    `;
-                }
                 
                 div.innerHTML = `
                     <label class="flex items-start cursor-pointer">
                         <input type="checkbox" 
-                               class="mt-1 mr-3" 
+                               class="mt-1 mr-3 oa-checkbox" 
                                value="${oa.codigo}" 
+                               data-oa-index="${index}"
                                data-nivel="${level}"
                                data-unidad="${unitIndex}"
-                               name="taskOA">
+                               name="taskOA"
+                               onchange="updateSelectedIndicadores()">
                         <div class="flex-1">
                             <div class="font-semibold text-blue-600 mb-1">${oa.codigo}</div>
                             <div class="text-sm text-gray-700">${oa.texto}</div>
-                            ${indicadoresHTML}
                         </div>
                     </label>
                 `;
@@ -6713,6 +6721,107 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             });
             
             oasContainer.style.display = 'block';
+            indicadoresContainer.style.display = 'none';
+        }
+
+        // Actualizar indicadores según OAs seleccionados
+        function updateSelectedIndicadores() {
+            const indicadoresContainer = document.getElementById('taskIndicadoresContainer');
+            const indicadoresList = document.getElementById('taskIndicadoresList');
+            const selectedCheckboxes = document.querySelectorAll('input[name="taskOA"]:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                indicadoresContainer.style.display = 'none';
+                return;
+            }
+            
+            indicadoresList.innerHTML = '';
+            
+            selectedCheckboxes.forEach(checkbox => {
+                const oaIndex = parseInt(checkbox.dataset.oaIndex);
+                const oa = window.currentUnidadOAs[oaIndex];
+                
+                if (!oa.indicadores || oa.indicadores.length === 0) return;
+                
+                const oaSection = document.createElement('div');
+                oaSection.className = 'border border-blue-200 rounded-lg p-3 bg-blue-50';
+                oaSection.innerHTML = `
+                    <div class="font-semibold text-blue-700 mb-2">
+                        ${oa.codigo} - Indicadores de Evaluación
+                    </div>
+                    <div class="space-y-2">
+                        ${oa.indicadores.map((ind, idx) => `
+                            <label class="flex items-start text-sm cursor-pointer hover:bg-blue-100 p-2 rounded">
+                                <input type="checkbox" 
+                                       class="mt-0.5 mr-2" 
+                                       name="indicador_${oa.codigo}" 
+                                       value="${idx}"
+                                       data-oa="${oa.codigo}"
+                                       data-texto="${ind.replace(/"/g, '&quot;')}">
+                                <span class="text-gray-700">${ind}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                indicadoresList.appendChild(oaSection);
+            });
+            
+            indicadoresContainer.style.display = 'block';
+        }
+
+        // Agregar indicador personalizado
+        function addCustomIndicador() {
+            const indicadoresList = document.getElementById('taskIndicadoresList');
+            const selectedOAs = document.querySelectorAll('input[name="taskOA"]:checked');
+            
+            if (selectedOAs.length === 0) {
+                alert('⚠️ Primero seleccione al menos un OA');
+                return;
+            }
+            
+            let targetOA = selectedOAs[0].value;
+            if (selectedOAs.length > 1) {
+                const oaOptions = Array.from(selectedOAs).map(cb => cb.value).join(', ');
+                targetOA = prompt(`¿Para qué OA es este indicador personalizado?\n(${oaOptions})`);
+                if (!targetOA) return;
+            }
+            
+            const customText = prompt('Escriba el indicador personalizado:');
+            if (!customText || customText.trim() === '') return;
+            
+            let oaSection = document.querySelector(`[data-oa-section="${targetOA}"]`);
+            if (!oaSection) {
+                oaSection = document.createElement('div');
+                oaSection.className = 'border border-green-200 rounded-lg p-3 bg-green-50';
+                oaSection.dataset.oaSection = targetOA;
+                oaSection.innerHTML = `
+                    <div class="font-semibold text-green-700 mb-2">
+                        ${targetOA} - Indicadores Personalizados
+                    </div>
+                    <div class="space-y-2 custom-indicators"></div>
+                `;
+                indicadoresList.appendChild(oaSection);
+            }
+            
+            const customContainer = oaSection.querySelector('.custom-indicators');
+            const customId = `custom_${Date.now()}`;
+            const customDiv = document.createElement('label');
+            customDiv.className = 'flex items-start text-sm cursor-pointer hover:bg-green-100 p-2 rounded';
+            customDiv.innerHTML = `
+                <input type="checkbox" 
+                       class="mt-0.5 mr-2" 
+                       name="indicador_${targetOA}" 
+                       value="${customId}"
+                       data-oa="${targetOA}"
+                       data-texto="${customText.replace(/"/g, '&quot;')}"
+                       data-custom="true"
+                       checked>
+                <span class="text-gray-700">${customText}</span>
+                <button type="button" onclick="this.parentElement.remove()" class="ml-auto text-red-500 hover:text-red-700">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            `;
+            customContainer.appendChild(customDiv);
         }
 
         // Determinar nivel de rendimiento según porcentaje
