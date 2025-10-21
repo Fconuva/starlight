@@ -1613,6 +1613,39 @@
                 }, 500); // Pequeño delay para asegurar que todo esté cargado
             }
             
+            // PASO 9: Configurar formulario de nuevo curso
+            setupNewCourseFormListener();
+            
+            // PASO 10: Configurar listener para mostrar día de la semana en tareas
+            const taskDateInput = document.getElementById('taskDate');
+            if (taskDateInput) {
+                taskDateInput.addEventListener('change', function() {
+                    const date = new Date(this.value + 'T00:00:00');
+                    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+                    const dayName = days[date.getDay()];
+                    document.getElementById('taskDayOfWeek').textContent = `Día: ${dayName}`;
+                });
+            }
+            
+            // PASO 11: Configurar MutationObserver para auto-resize de textareas
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            const textareas = node.querySelectorAll ? node.querySelectorAll('textarea[id^="studentNotes_"]') : [];
+                            textareas.forEach(function(textarea) {
+                                autoResizeTextarea(textarea);
+                            });
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
             console.log('✅ Aplicación lista');
         });
         
@@ -2875,11 +2908,6 @@
                 alert('✅ Curso creado exitosamente: ' + courseName);
             });
         }
-        
-        // Llamar a setupNewCourseFormListener después de DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', () => {
-            setupNewCourseFormListener();
-        });
 
         // Eliminar curso actual
         async function deleteCourse() {
@@ -3404,19 +3432,6 @@
             document.getElementById('taskOAsContainer').style.display = 'none';
             document.getElementById('addTaskModal').style.display = 'block';
         }
-
-        // Listener para mostrar día de la semana
-        document.addEventListener('DOMContentLoaded', function() {
-            const taskDateInput = document.getElementById('taskDate');
-            if (taskDateInput) {
-                taskDateInput.addEventListener('change', function() {
-                    const date = new Date(this.value + 'T00:00:00');
-                    const days = ['Domingo', 'Lunes', 'Martes', 'Miñ©rcoles', 'Jueves', 'Viernes', 'Sábado'];
-                    const dayName = days[date.getDay()];
-                    document.getElementById('taskDayOfWeek').textContent = `Día: ${dayName}`;
-                });
-            }
-        });
 
         // Guardar tarea desde modal
         function saveTask() {
@@ -6544,28 +6559,6 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             textarea.style.height = newHeight + 'px';
         }
         
-        // Inicializar auto-resize en textareas al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            // Observar cambios en el DOM para aplicar auto-resize a nuevos textareas
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    mutation.addedNodes.forEach(function(node) {
-                        if (node.nodeType === 1) { // Element node
-                            const textareas = node.querySelectorAll ? node.querySelectorAll('textarea[id^="studentNotes_"]') : [];
-                            textareas.forEach(function(textarea) {
-                                autoResizeTextarea(textarea);
-                            });
-                        }
-                    });
-                });
-            });
-            
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        });
-
         // Descargar informe individual como PDF
         async function downloadIndividualReportPDF(index) {
             const student = courseData.students[index];
