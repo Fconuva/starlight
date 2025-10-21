@@ -1215,25 +1215,21 @@
 
         // Función para seleccionar docente
         function seleccionarDocente(docenteId) {
-            console.log('ðŸŽ¯ Seleccionando docente:', docenteId);
+            console.log('🎯 Seleccionando docente:', docenteId);
             
             // Guardar en localStorage
             localStorage.setItem('docenteActivo', docenteId);
             docenteActivo = docenteId;
             
-            // Obtener configuración del docente
-            const configKey = `${docenteId}_config`;
-            const configData = localStorage.getItem(configKey);
-            let nombreDocente = docenteId;
+            // Usar nombres estáticos en lugar de leer desde localStorage
+            const nombresEstaticos = {
+                'javiera': 'Docente 1',
+                'javiera2': 'Docente 2',
+                'docente3': 'Docente 3',
+                'docente4': 'Docente 4'
+            };
             
-            if (configData) {
-                try {
-                    const data = JSON.parse(configData);
-                    nombreDocente = data.teacherName || docenteId;
-                } catch (e) {
-                    console.error('Error parseando config:', e);
-                }
-            }
+            const nombreDocente = nombresEstaticos[docenteId] || docenteId;
             
             // Actualizar UI - Quitar selección de todos
             document.querySelectorAll('.docente-selector').forEach(btn => {
@@ -1470,11 +1466,12 @@
                 }
             });
             
-            // Si no es admin, ocultar sección de administración
+            // Si no es admin, ocultar sección de administración (Control Maestro)
             if (!userData.isAdmin) {
-                const adminSection = document.querySelector('.bg-gradient-to-r.from-red-600');
+                const adminSection = document.getElementById('adminSection');
                 if (adminSection) {
-                    adminSection.closest('.mb-8').style.display = 'none';
+                    adminSection.style.display = 'none';
+                    console.log('🚫 Control Maestro oculto - Usuario no admin');
                 }
                 
                 // Ocultar botón de Admin DB
@@ -1482,6 +1479,8 @@
                 if (adminDbButton) {
                     adminDbButton.style.display = 'none';
                 }
+            } else {
+                console.log('✅ Control Maestro visible - Usuario admin');
             }
             
             console.log(`✅ Permisos aplicados para: ${userData.displayName}`);
