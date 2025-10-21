@@ -183,14 +183,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
                 <!-- Docente 1: Javiera Poblete Fernández -->
-                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-purple-400">
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-purple-400" data-docente="javiera">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
                             <div class="p-3 rounded-full bg-purple-100 text-purple-600">
                                 <i class="fas fa-user-tie fa-lg"></i>
                             </div>
                             <div class="ml-4 flex-1">
-                                <h3 id="javiera-name" class="text-lg font-semibold text-gray-800" contenteditable="true" title="Click para editar">Javiera Poblete Fernández Núñez Valenzuela</h3>
+                                <h3 id="javiera-name" class="text-lg font-semibold text-gray-800">Docente 1</h3>
                             </div>
                         </div>
                         <p id="javiera-desc" class="text-gray-600 mb-4 text-sm">Registro nota de proceso Docentes.</p>
@@ -206,14 +206,14 @@
                 </div>
 
                 <!-- Docente 2: Javiera Poblete -->
-                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-purple-400">
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-purple-400" data-docente="javiera2">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
                             <div class="p-3 rounded-full bg-purple-100 text-purple-600">
                                 <i class="fas fa-user-tie fa-lg"></i>
                             </div>
                             <div class="ml-4 flex-1">
-                                <h3 id="javiera2-name" class="text-lg font-semibold text-gray-800">Javiera Poblete</h3>
+                                <h3 id="javiera2-name" class="text-lg font-semibold text-gray-800">Docente 2</h3>
                             </div>
                         </div>
                         <p id="javiera2-desc" class="text-gray-600 mb-4 text-sm">Registro nota de proceso Docentes.</p>
@@ -229,7 +229,7 @@
                 </div>
 
                 <!-- Docente 3 -->
-                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-teal-400">
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-teal-400" data-docente="docente3">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
                             <div class="p-3 rounded-full bg-teal-100 text-teal-600">
@@ -252,7 +252,7 @@
                 </div>
 
                 <!-- Docente 4 -->
-                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-orange-400">
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden border-2 border-orange-400" data-docente="docente4">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
                             <div class="p-3 rounded-full bg-orange-100 text-orange-600">
@@ -1556,6 +1556,127 @@
 
         // ==================== FIN SISTEMA CONTROL MAESTRO ====================
 
+    </script>
+
+
+    <script>
+        // Sistema de autenticación y permisos
+        const USERS = {
+            'javiera': {
+                password: 'javiera123',  // Mantén tu contraseña actual
+                allowedDocentes: ['javiera', 'javiera2', 'docente3', 'docente4'],
+                isAdmin: true,
+                displayName: 'Javiera Poblete'
+            },
+            'marcelo': {
+                password: '123456789',
+                allowedDocentes: ['javiera2'],
+                isAdmin: false,
+                displayName: 'Marcelo'
+            },
+            'francisco': {
+                password: '123456789',
+                allowedDocentes: ['docente3'],
+                isAdmin: false,
+                displayName: 'Francisco'
+            },
+            'valentina': {
+                password: '123456789',
+                allowedDocentes: ['docente4'],
+                isAdmin: false,
+                displayName: 'Valentina'
+            }
+        };
+
+        // Verificar autenticación al cargar
+        function checkAuth() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            
+            if (!isLoggedIn || !currentUser || !USERS[currentUser]) {
+                // Redirigir a login
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Aplicar permisos de visualización
+        function applyPermissions() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            if (!currentUser || !USERS[currentUser]) return;
+            
+            const userData = USERS[currentUser];
+            const allowedDocentes = userData.allowedDocentes;
+            
+            // Mostrar nombre del usuario en el header
+            const userNameElement = document.querySelector('.text-purple-100');
+            if (userNameElement && userNameElement.textContent.includes('Fernández')) {
+                userNameElement.textContent = `${userData.displayName} - Sistema de Evaluación`;
+            }
+            
+            // Ocultar tarjetas de docentes no permitidos
+            document.querySelectorAll('.tool-card[data-docente]').forEach(card => {
+                const docenteId = card.getAttribute('data-docente');
+                if (!allowedDocentes.includes(docenteId)) {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Si no es admin, ocultar sección de administración
+            if (!userData.isAdmin) {
+                const adminSection = document.querySelector('.bg-gradient-to-r.from-red-600');
+                if (adminSection) {
+                    adminSection.closest('.mb-8').style.display = 'none';
+                }
+                
+                // Ocultar botón de Admin DB
+                const adminDbButton = document.querySelector('a[href="admin-db-docentes.html"]');
+                if (adminDbButton) {
+                    adminDbButton.style.display = 'none';
+                }
+            }
+            
+            console.log(`✅ Permisos aplicados para: ${userData.displayName}`);
+            console.log(`   Docentes permitidos: ${allowedDocentes.join(', ')}`);
+        }
+
+        // Cerrar sesión
+        function logout() {
+            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                sessionStorage.clear();
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Agregar botón de cerrar sesión
+        function addLogoutButton() {
+            const header = document.querySelector('.bg-gradient-to-r.from-purple-600');
+            if (header) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.onclick = logout;
+                logoutBtn.className = 'bg-white text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-50 transition-all text-sm font-semibold';
+                logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión';
+                
+                const headerContent = header.querySelector('.flex.items-center.justify-between, .flex.justify-between');
+                if (headerContent) {
+                    headerContent.appendChild(logoutBtn);
+                }
+            }
+        }
+
+        // Ejecutar al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                applyPermissions();
+                addLogoutButton();
+            }
+        });
+
+        // Exponer logout globalmente
+        window.logout = logout;
     </script>
 
 </body>

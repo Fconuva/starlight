@@ -253,9 +253,43 @@
     </div>
 
     <script>
-        const CREDENTIALS = {
-            username: 'Javi',
-            password: 'Jose0201juli3011'
+        // Sistema de usuarios con permisos
+        const USERS = {
+            'Javi': {  // Mantener usuario original de Javiera
+                password: 'Jose0201juli3011',
+                internalUser: 'javiera',
+                displayName: 'Javiera Poblete Fernández',
+                allowedDocentes: ['javiera', 'javiera2', 'docente3', 'docente4'],
+                isAdmin: true
+            },
+            'javiera': {  // Alias alternativo
+                password: 'Jose0201juli3011',
+                internalUser: 'javiera',
+                displayName: 'Javiera Poblete Fernández',
+                allowedDocentes: ['javiera', 'javiera2', 'docente3', 'docente4'],
+                isAdmin: true
+            },
+            'marcelo': {
+                password: '123456789',
+                internalUser: 'marcelo',
+                displayName: 'Marcelo',
+                allowedDocentes: ['javiera2'],
+                isAdmin: false
+            },
+            'francisco': {
+                password: '123456789',
+                internalUser: 'francisco',
+                displayName: 'Francisco',
+                allowedDocentes: ['docente3'],
+                isAdmin: false
+            },
+            'valentina': {
+                password: '123456789',
+                internalUser: 'valentina',
+                displayName: 'Valentina',
+                allowedDocentes: ['docente4'],
+                isAdmin: false
+            }
         };
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -265,19 +299,28 @@
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
 
-            if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
-                // Login exitoso - configurar sesión completa para Javiera
+            // Verificar credenciales
+            const user = USERS[username];
+            
+            if (user && user.password === password) {
+                // Login exitoso
                 sessionStorage.setItem('isLoggedIn', 'true');
-                sessionStorage.setItem('username', 'javiera');
-                sessionStorage.setItem('teacherName', 'Javiera Poblete Fernández');
-                sessionStorage.setItem('currentDocente', 'javiera');
+                sessionStorage.setItem('currentUser', user.internalUser);
+                sessionStorage.setItem('username', username);
+                sessionStorage.setItem('teacherName', user.displayName);
+                sessionStorage.setItem('currentDocente', user.allowedDocentes[0]); // Primer docente permitido
+                sessionStorage.setItem('isAdmin', user.isAdmin);
                 
                 // Mostrar mensaje de éxito
                 const button = document.querySelector('.btn-login');
                 button.innerHTML = '<i class="fas fa-check"></i> Accediendo...';
                 button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
                 
-                // Redirigir después de breve pausa para mostrar confirmación
+                console.log(`✅ Login exitoso: ${user.displayName}`);
+                console.log(`   Docentes permitidos: ${user.allowedDocentes.join(', ')}`);
+                console.log(`   Es admin: ${user.isAdmin}`);
+                
+                // Redirigir después de breve pausa
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 800);

@@ -490,6 +490,64 @@
     </style>
 </head>
 <body class="bg-gray-50">
+
+    <script>
+        // Sistema de protección y permisos
+        (function() {
+            const USERS = {
+                'javiera': {
+                    allowedDocentes: ['javiera', 'javiera2', 'docente3', 'docente4'],
+                    isAdmin: true
+                },
+                'marcelo': {
+                    allowedDocentes: ['javiera2'],
+                    isAdmin: false
+                },
+                'francisco': {
+                    allowedDocentes: ['docente3'],
+                    isAdmin: false
+                },
+                'valentina': {
+                    allowedDocentes: ['docente4'],
+                    isAdmin: false
+                }
+            };
+
+            // Verificar autenticación
+            const currentUser = sessionStorage.getItem('currentUser');
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            
+            if (!isLoggedIn || !currentUser || !USERS[currentUser]) {
+                alert('⚠️ Debes iniciar sesión para acceder al sistema');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Verificar permisos para el docente actual
+            const urlParams = new URLSearchParams(window.location.search);
+            const docenteParam = urlParams.get('docente') || 'javiera';
+            const userData = USERS[currentUser];
+
+            if (!userData.allowedDocentes.includes(docenteParam)) {
+                alert(`❌ Acceso denegado\n\nNo tienes permisos para acceder a este docente.\nTus docentes permitidos: ${userData.allowedDocentes.join(', ')}`);
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            console.log(`✅ Acceso autorizado para ${currentUser} → Docente: ${docenteParam}`);
+            
+            // Establecer restricciones si no es admin
+            if (!userData.isAdmin) {
+                window.IS_ADMIN = false;
+                console.log('ℹ️ Usuario con permisos limitados - No puede eliminar cursos de otros docentes');
+            } else {
+                window.IS_ADMIN = true;
+                console.log('👑 Usuario administrador - Acceso completo');
+            }
+        })();
+    </script>
+
+
     <div id="app-container">
     <!-- Auth Guard -->
     <script>

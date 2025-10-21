@@ -15,6 +15,39 @@
 </head>
 <body class="p-6">
 
+    <script>
+        // Sistema de protección
+        (function() {
+            const USERS = {
+                'javiera': { allowedDocentes: ['javiera', 'javiera2', 'docente3', 'docente4'] },
+                'marcelo': { allowedDocentes: ['javiera2'] },
+                'francisco': { allowedDocentes: ['docente3'] },
+                'valentina': { allowedDocentes: ['docente4'] }
+            };
+
+            const currentUser = sessionStorage.getItem('currentUser');
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            
+            if (!isLoggedIn || !currentUser || !USERS[currentUser]) {
+                alert('⚠️ Debes iniciar sesión');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const docenteParam = urlParams.get('docente') || 'javiera';
+            const userData = USERS[currentUser];
+
+            if (!userData.allowedDocentes.includes(docenteParam)) {
+                alert('❌ No tienes permisos para configurar este perfil');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+        })();
+    </script>
+
+
+
     <div class="max-w-2xl mx-auto">
         <!-- Header -->
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden mb-6">
