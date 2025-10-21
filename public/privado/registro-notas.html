@@ -545,6 +545,49 @@
                 console.log('👑 Usuario administrador - Acceso completo');
             }
         })();
+        
+        // ============================================================
+        // FUNCIONES GLOBALES PARA onclick EN HTML
+        // ============================================================
+        
+        // Modal: Nuevo Curso
+        function showNewCourseModal() {
+            console.log('🔵 Abriendo modal de Nuevo Curso...');
+            const modal = document.getElementById('newCourseModal');
+            
+            if (!modal) {
+                console.error('❌ Modal newCourseModal no encontrado en el DOM');
+                alert('Error: No se pudo abrir el modal. Recarga la página.');
+                return;
+            }
+            
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            
+            // Resetear formulario
+            const form = document.getElementById('newCourseForm');
+            if (form) {
+                form.reset();
+            }
+            
+            // Establecer valores por defecto
+            const yearSelect = document.getElementById('courseYear');
+            const subjectInput = document.getElementById('courseSubject');
+            
+            if (yearSelect) yearSelect.value = '2025';
+            if (subjectInput) subjectInput.value = 'Lenguaje y Comunicación';
+            
+            console.log('✅ Modal abierto correctamente');
+        }
+        
+        function closeNewCourseModal() {
+            console.log('🔴 Cerrando modal de Nuevo Curso');
+            const modal = document.getElementById('newCourseModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
     </script>
 
 
@@ -1475,9 +1518,10 @@
         function resetData() {
             const userRole = sessionStorage.getItem('userRole') || 'teacher';
             
+            // Verificar permisos antes de resetear
+            if (userRole === 'admin' || userRole === 'teacher') {
+                originalResetData();
             }
-            
-            originalResetData();
         }
         
         // Optimizaciones para móvil
