@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -2187,7 +2187,7 @@
             }
         }
         
-        // ðŸ§¹ LIMPIAR CURSOS CON IDS INVñLIDOS O PROBLEMñTICOS
+        // ðŸ§¹ LIMPIAR CURSOS CON IDS INVñLIDOS O problemáTICOS
         async function cleanInvalidCourses() {
             if (!confirm('ℹ️ Esta acción eliminará cursos con IDs Inválidos (0, decimales extraños, duplicados).\n\n¿Continuar?')) {
                 return;
@@ -2704,69 +2704,6 @@
         }
 
         // Sincronización manual (para trabajo colaborativo)
-        async function manualSync() {
-            const btn = event.target.closest('button');
-            const originalHTML = btn.innerHTML;
-            
-            try {
-                // Cambiar botón a estado de carga
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-sync-alt fa-spin mr-2"></i><span class="hidden md:inline">Sincronizando...</span>';
-                
-                console.log('ðŸ”„ Sincronización manual iniciada...');
-                
-                // Mostrar indicador
-                const syncIndicator = document.getElementById('syncIndicator');
-                if (syncIndicator) {
-                    syncIndicator.classList.remove('hidden');
-                }
-                
-                // 1. Subir cambios locales
-                await syncCoursesToDatabase();
-                
-                // 2. Bajar cambios remotos
-                const username = getNamespacedUsername();
-                const response = await fetch(`/api/courses?username=${encodeURIComponent(username)}`);
-                const data = await response.json();
-                
-                if (data.success && data.courses) {
-                    const merged = mergeCoursesByTimestamp(allCourses || [], data.courses || []);
-                    allCourses = merged;
-                    setStorageItem('allCourses', JSON.stringify(allCourses));
-                    
-                    // Actualizar vista del curso actual
-                    if (currentCourseId && courseData) {
-                        const updatedCourse = allCourses.find(c => c.id == currentCourseId);
-                        if (updatedCourse) {
-                            courseData = updatedCourse;
-                            renderTable();
-                            populateStudentSelect();
-                            updateCourseSelector();
-                        }
-                    }
-                    
-                    showNotification('✅ Sincronización completada', 'success');
-                    console.log('✅ Sincronización manual exitosa');
-                }
-            } catch (error) {
-                console.error('ℹŒ Error en sincronización manual:', error);
-                showNotification('ℹŒ Error al sincronizar', 'error');
-            } finally {
-                // Restaurar botón
-                btn.disabled = false;
-                btn.innerHTML = originalHTML;
-                
-                // Ocultar indicador
-                setTimeout(() => {
-                    const syncIndicator = document.getElementById('syncIndicator');
-                    if (syncIndicator) {
-                        syncIndicator.classList.add('hidden');
-                    }
-                }, 1000);
-            }
-        }
-
-        // Cargar un curso específico
         function loadCourse(courseId) {
             // Convertir a número para comparación consistente
             const numId = typeof courseId === 'string' ? parseFloat(courseId) : courseId;
@@ -2983,7 +2920,7 @@
             
             let courseIdToDelete = currentCourseId;
             
-            // ðŸ”§ DETECTAR IDs PROBLEMñTICOS (0, decimales, Inválidos)
+            // ðŸ”§ DETECTAR IDs problemáTICOS (0, decimales, Inválidos)
             const isInvalidId = !courseIdToDelete || 
                                courseIdToDelete === 0 || 
                                courseIdToDelete === '0' ||
