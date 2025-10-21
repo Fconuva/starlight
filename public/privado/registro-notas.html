@@ -596,6 +596,20 @@
                 return window._appFunctions.switchCourse();
             }
         }
+        
+        function manualSync() {
+            if (window._appFunctions.manualSync) {
+                return window._appFunctions.manualSync();
+            }
+            alert('⚠️ Sincronización cargando...');
+        }
+        
+        function saveAllCourses() {
+            if (window._appFunctions.saveAllCourses) {
+                return window._appFunctions.saveAllCourses();
+            }
+            console.warn('⚠️ saveAllCourses aún no cargada');
+        }
     </script>
 
 
@@ -3595,7 +3609,7 @@
 
         // Editar tarea (solo admin)
         function editTask(taskIndex) {
-            }
+            const userRole = sessionStorage.getItem('userRole') || 'teacher';
             
             if (!courseData || !courseData.tasks || taskIndex < 0 || taskIndex >= courseData.tasks.length) {
                 alert('ℹŒ Error: Tarea no encontrada');
@@ -3691,7 +3705,7 @@
 
         // Mover tarea hacia arriba (solo admin)
         function moveTaskUp(taskIndex) {
-            }
+            const userRole = sessionStorage.getItem('userRole') || 'teacher';
             
             if (taskIndex <= 0 || taskIndex >= courseData.tasks.length) {
                 return;
@@ -3716,7 +3730,7 @@
 
         // Mover tarea hacia abajo (solo admin)
         function moveTaskDown(taskIndex) {
-            }
+            const userRole = sessionStorage.getItem('userRole') || 'teacher';
             
             if (taskIndex < 0 || taskIndex >= courseData.tasks.length - 1) {
                 return;
@@ -3741,7 +3755,7 @@
 
         // Eliminar Múltiples tareas (solo admin)
         function deleteMultipleTasks() {
-            }
+            const userRole = sessionStorage.getItem('userRole') || 'teacher';
             
             if (!courseData || !courseData.tasks || courseData.tasks.length === 0) {
                 alert('ℹ️ No hay tareas para eliminar');
@@ -4074,6 +4088,21 @@
                 'success'
             );
         }
+        
+        // ============================================================
+        // REGISTRO DE FUNCIONES GLOBALES
+        // ============================================================
+        console.log('📝 Registrando funciones globales en window._appFunctions...');
+        window._appFunctions.showNewCourseModal = showNewCourseModal;
+        window._appFunctions.closeNewCourseModal = closeNewCourseModal;
+        window._appFunctions.addStudent = addStudent;
+        window._appFunctions.addTask = addTask;
+        window._appFunctions.fillAllGrades = fillAllGrades;
+        window._appFunctions.deleteCourse = deleteCourse;
+        window._appFunctions.switchCourse = switchCourse;
+        window._appFunctions.manualSync = manualSync;
+        window._appFunctions.saveAllCourses = saveAllCourses;
+        console.log('✅ Funciones globales registradas correctamente');
 
         // Llenar columna de tarea
         function fillTaskColumn() {
