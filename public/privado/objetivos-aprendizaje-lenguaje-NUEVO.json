@@ -474,6 +474,58 @@
           ]
         }
       ]
+    },
+    "2°Medio": {
+      "nivel": "2°Medio",
+      "unidades": [
+        {
+          "numero": 1,
+          "nombre": "Sobre la ausencia: exilio, migración e identidad (narrativa)",
+          "oas": [
+            {"codigo": "OA3", "texto": "Analizar las narraciones leídas para enriquecer su comprensión, considerando: el o los conflictos de la historia; un análisis de los personajes; la relación de un fragmento de la obra con el total; cómo el relato está influido por la visión del narrador; personajes tipo, símbolos y tópicos literarios; las creencias, prejuicios y estereotipos presentes en el relato; el efecto producido por recursos narrativos; relaciones intertextuales con otras obras.", "indicadores": ["Analizan el planteamiento de los personajes de las narraciones leídas, considerando sus características, relaciones entre ellos, sus diálogos, mundo personal y social, y sus conflictos y motivaciones.", "Relacionan las creencias, prejuicios y estereotipos presentes en las narraciones leídas con la visión de mundo de su contexto de producción, el contexto actual y sus experiencias de lectura.", "Interpretan el sentido de los recursos narrativos y las relaciones de intertextualidad dadas en las narraciones leídas."]},
+            {"codigo": "OA7", "texto": "Leer y comprender cuentos latinoamericanos modernos y contemporáneos, considerando sus características y el contexto en el que se enmarcan.", "indicadores": ["Infieren algunas de las características en común de los cuentos latinoamericanos a partir del análisis de diferentes narraciones.", "Interpretan los cuentos latinoamericanos leídos a partir de las características propias de los textos y de las relaciones establecidas con sus contextos de producción y de recepción."]},
+            {"codigo": "OA11", "texto": "Leer y comprender textos no literarios para contextualizar y complementar las lecturas literarias realizadas en clases.", "indicadores": ["Relacionan información de los textos leídos con las obras literarias revisadas.", "Fundamentan una opinión sobre las obras literarias leídas, a partir de las ideas de los textos no literarios."]},
+            {"codigo": "OA13", "texto": "Escribir, con el propósito de explicar un tema, textos de diversos géneros caracterizados por: una presentación clara del tema; una organización y redacción propias de la información; la inclusión de hechos, descripciones, ejemplos o explicaciones; una progresión temática clara; el uso de recursos variados que favorezcan el interés del lector; un cierre coherente; el uso de citas y referencias.", "indicadores": ["Organizan sus ideas de acuerdo al género, adecuándose a la situación comunicativa y al propósito de explicar.", "Desarrollan las ideas de sus textos incorporando distintas formas discursivas y otros recursos no verbales.", "Relacionan las ideas de sus textos empleando recursos de cohesión como referencias catafóricas y anafóricas, y conectores textuales."]},
+            {"codigo": "OA20", "texto": "Evaluar el punto de vista de un emisor, su razonamiento y uso de recursos retóricos.", "indicadores": ["Evalúan los recursos discursivos de un emisor al plantear y fundamentar su punto de vista.", "Determinan el punto de vista del emisor considerando el desarrollo argumentativo."]}
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Ciudadanía y trabajo (medios de comunicación)",
+          "oas": [
+            {"codigo": "OA3", "texto": "Analizar las narraciones leídas para enriquecer su comprensión.", "indicadores": ["Analizan el planteamiento de los personajes de las narraciones leídas.", "Relacionan las creencias, prejuicios y estereotipos presentes en las narraciones leídas con la visión de mundo.", "Interpretan el sentido de los recursos narrativos."]},
+            {"codigo": "OA10", "texto": "Analizar y evaluar textos de los medios de comunicación, considerando: los propósitos explícitos e implícitos; las estrategias de persuasión; las evidencias; los efectos causados por recursos no lingüísticos y lingüísticos; similitudes y diferencias en distintas fuentes; qué elementos influyen en las propias opiniones.", "indicadores": ["Determinan la relación entre los recursos empleados en los textos de los medios de comunicación, con los efectos que podrían provocar sobre los lectores y el propósito que persiguen.", "Evalúan críticamente distintos textos de medios de comunicación."]},
+            {"codigo": "OA13", "texto": "Escribir, con el propósito de explicar un tema, textos de diversos géneros.", "indicadores": ["Organizan sus ideas de acuerdo al género.", "Desarrollan las ideas de sus textos.", "Relacionan las ideas empleando recursos de cohesión."]},
+            {"codigo": "OA16", "texto": "Usar consistentemente el estilo directo y el indirecto en textos escritos y orales.", "indicadores": ["Aplican el estilo directo e indirecto de manera coherente con su propósito comunicativo.", "Evalúan el uso de los estilos directo e indirecto."]},
+            {"codigo": "OA17", "texto": "Emplear frases nominales complejas como recurso para compactar la información.", "indicadores": ["Incorporan frases nominales como mecanismo de correferencia en textos escritos."]},
+            {"codigo": "OA20", "texto": "Evaluar el punto de vista de un emisor.", "indicadores": ["Evalúan los recursos discursivos de un emisor.", "Determinan el punto de vista del emisor."]},
+            {"codigo": "OA23", "texto": "Analizar los posibles efectos de los elementos lingüísticos, paralingüísticos y no lingüísticos.", "indicadores": ["Determinan la función que juegan los recursos del lenguaje verbal, paraverbal y no verbal en situaciones comunicativas orales."]}
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Lo divino y lo humano (género lírico)",
+          "oas": [
+            {"codigo": "OA4", "texto": "Analizar los poemas leídos para enriquecer su comprensión, considerando: los símbolos presentes; la actitud del hablante; el significado del lenguaje figurado; el efecto del uso de repeticiones; la relación fragmento-total; relaciones intertextuales; las características del soneto.", "indicadores": ["Interpretan el sentido de los poemas leídos a partir del lenguaje poético, de los recursos estilísticos y de las características del género poético.", "Determinan el sentido de las relaciones intertextuales establecidas en los poemas."]},
+            {"codigo": "OA6", "texto": "Comprender la relevancia de las obras del Siglo de Oro, considerando sus características y el contexto en el que se enmarcan.", "indicadores": ["Interpretan obras del Siglo de Oro, considerando sus tópicos, características, y contexto de producción y recepción.", "Reflexionan críticamente en torno a la relevancia de las obras del Siglo de Oro."]},
+            {"codigo": "OA11", "texto": "Leer y comprender textos no literarios para contextualizar y complementar las lecturas literarias.", "indicadores": ["Relacionan información de los textos leídos con las obras literarias revisadas.", "Fundamentan una opinión sobre las obras literarias leídas."]},
+            {"codigo": "OA13", "texto": "Escribir, con el propósito de explicar un tema, textos de diversos géneros.", "indicadores": ["Organizan sus ideas de acuerdo al género.", "Desarrollan las ideas de sus textos.", "Relacionan las ideas empleando recursos de cohesión."]},
+            {"codigo": "OA23", "texto": "Analizar los posibles efectos de los elementos lingüísticos, paralingüísticos y no lingüísticos.", "indicadores": ["Determinan la función que juegan los recursos del lenguaje verbal, paraverbal y no verbal."]}
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Poder y ambición (género dramático)",
+          "oas": [
+            {"codigo": "OA3", "texto": "Analizar las narraciones leídas para enriquecer su comprensión.", "indicadores": ["Analizan el planteamiento de los personajes de las narraciones leídas.", "Relacionan las creencias, prejuicios y estereotipos presentes en las narraciones.", "Interpretan el sentido de los recursos narrativos."]},
+            {"codigo": "OA5", "texto": "Analizar los textos dramáticos leídos o vistos, considerando: el conflicto y el problema humano; un análisis de los personajes principales; personajes tipo, símbolos y tópicos literarios; las creencias, prejuicios y estereotipos; la atmósfera de la obra; los elementos de la puesta en escena; relaciones intertextuales.", "indicadores": ["Analizan el planteamiento y el desarrollo del conflicto dramático.", "Infieren las características de los personajes de las obras dramáticas.", "Interpretan el sentido de los elementos de la estructura externa, de la puesta en escena y de las relaciones intertextuales."]},
+            {"codigo": "OA6", "texto": "Comprender la relevancia de las obras del Siglo de Oro.", "indicadores": ["Interpretan obras del Siglo de Oro.", "Reflexionan críticamente en torno a la relevancia de las obras del Siglo de Oro."]},
+            {"codigo": "OA11", "texto": "Leer y comprender textos no literarios.", "indicadores": ["Relacionan información de los textos leídos con las obras literarias.", "Fundamentan una opinión sobre las obras literarias leídas."]},
+            {"codigo": "OA20", "texto": "Evaluar el punto de vista de un emisor.", "indicadores": ["Evalúan los recursos discursivos de un emisor.", "Determinan el punto de vista del emisor."]},
+            {"codigo": "OA23", "texto": "Analizar los posibles efectos de los elementos lingüísticos, paralingüísticos y no lingüísticos.", "indicadores": ["Determinan la función que juegan los recursos del lenguaje verbal, paraverbal y no verbal."]}
+          ]
+        }
+      ]
     }
   }
 }
