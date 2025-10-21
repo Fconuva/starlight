@@ -6605,11 +6605,19 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             if (oasData) return oasData;
             
             try {
-                const response = await fetch('objetivos-aprendizaje-lenguaje-NUEVO.json');
+                console.log('📥 Intentando cargar objetivos de aprendizaje...');
+                const response = await fetch('/privado/objetivos-aprendizaje-lenguaje-NUEVO.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 oasData = await response.json();
+                console.log('✅ Objetivos de aprendizaje cargados:', oasData);
                 return oasData;
             } catch (error) {
-                console.error('Error cargando objetivos de aprendizaje:', error);
+                console.error('❌ Error cargando objetivos de aprendizaje:', error);
+                alert('⚠️ No se pudieron cargar los Objetivos de Aprendizaje. Verifica que el archivo objetivos-aprendizaje-lenguaje-NUEVO.json esté en la carpeta /privado/');
                 return null;
             }
         }
