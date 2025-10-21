@@ -1136,9 +1136,19 @@
                         </label>
                         <select id="taskLevel" class="w-full px-3 py-2 border border-gray-300 rounded-lg" onchange="loadUnitsForTask()">
                             <option value="">Sin especificar</option>
-                            <option value="2M">2° Medio</option>
-                            <option value="3M">3° Medio</option>
-                            <option value="4M">4° Medio</option>
+                            <optgroup label="Educación Básica">
+                                <option value="1°Básico">1° Básico</option>
+                                <option value="2°Básico">2° Básico</option>
+                                <option value="3°Básico">3° Básico</option>
+                                <option value="4°Básico">4° Básico</option>
+                                <option value="5°Básico">5° Básico</option>
+                                <option value="6°Básico">6° Básico</option>
+                            </optgroup>
+                            <optgroup label="Educación Media">
+                                <option value="2M">2° Medio</option>
+                                <option value="3M">3° Medio</option>
+                                <option value="4M">4° Medio</option>
+                            </optgroup>
                         </select>
                     </div>
                     
