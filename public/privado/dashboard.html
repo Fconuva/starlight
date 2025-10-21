@@ -1155,71 +1155,10 @@
             }
         });
 
-        // Cargar nombres de docentes desde localStorage
-        function loadDocenteNames() {
-            console.log('ðŸ”„ Iniciando carga de nombres de docentes...');
-            
-            // Listar TODAS las keys de localStorage para debugging
-            console.log('ðŸ“¦ Keys en localStorage:', Object.keys(localStorage));
-            
-            const docentes = [
-                { id: 'javiera', nameId: 'javiera-name', descId: 'javiera-desc' },
-                { id: 'javiera2', nameId: 'javiera2-name', descId: 'javiera2-desc' },
-                { id: 'docente3', nameId: 'docente3-name', descId: 'docente3-desc' },
-                { id: 'docente4', nameId: 'docente4-name', descId: 'docente4-desc' }
-            ];
-            
-            docentes.forEach(docente => {
-                try {
-                    const configKey = `${docente.id}_config`;
-                    const configData = localStorage.getItem(configKey);
-                    
-                    console.log(`ðŸ” Buscando: ${configKey}`);
-                    console.log(`ðŸ“„ Datos encontrados:`, configData);
-                    
-                    if (configData) {
-                        const data = JSON.parse(configData);
-                        console.log(`âœ… Parseado exitoso para ${docente.id}:`, data);
-                        
-                        // Actualizar nombre si existe
-                        if (data.teacherName) {
-                            const nameElement = document.getElementById(docente.nameId);
-                            if (nameElement) {
-                                nameElement.textContent = data.teacherName;
-                                console.log(`âœï¸ Nombre actualizado: ${docente.id} -> ${data.teacherName}`);
-                            } else {
-                                console.warn(`âš ï¸ No se encontró elemento con ID: ${docente.nameId}`);
-                            }
-                        }
-                        
-                        // Actualizar descripción si existe
-                        if (data.subject || data.courses) {
-                            const desc = data.courses && data.subject ? 
-                                `${data.courses} - ${data.subject}` : 
-                                (data.courses || data.subject);
-                            
-                            const descElement = document.getElementById(docente.descId);
-                            if (descElement) {
-                                descElement.textContent = desc;
-                                console.log(`âœï¸ Descripción actualizada: ${docente.id} -> ${desc}`);
-                            } else {
-                                console.warn(`âš ï¸ No se encontró elemento con ID: ${docente.descId}`);
-                            }
-                        }
-                    } else {
-                        console.log(`â„¹ï¸ No hay configuración guardada para: ${docente.id}`);
-                    }
-                } catch (e) {
-                    console.error(`âŒ Error al cargar ${docente.id}:`, e);
-                }
-            });
-            
-            console.log('âœ… Carga de nombres completada');
-        }
+
         
         // Ejecutar al cargar la página
         window.addEventListener('DOMContentLoaded', () => {
-            loadDocenteNames();
             loadDashboardTitle();
         });
         
