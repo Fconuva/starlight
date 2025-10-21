@@ -1105,9 +1105,9 @@
                         </label>
                         <select id="taskEvaluationType" class="w-full px-3 py-2 border border-gray-300 rounded-lg" onchange="handleEvaluationTypeChange()">
                             <option value="binary">✓ Binario (Completado/No completado)</option>
-                            <option value="logro">ðŸ“Š Niveles de Logro (NL/ML/L/D)</option>
-                            <option value="rubrica">ðŸ“ Rúbrica (Criterios personalizados)</option>
-                            <option value="numeric">ðŸ”¢ Nota Numñ©rica (1.0 - 7.0)</option>
+                            <option value="logro">📊 Niveles de Logro (NL/ML/L/D)</option>
+                            <option value="rubrica">📋 Rúbrica (Criterios personalizados)</option>
+                            <option value="numeric">🔢 Nota Numérica (1.0 - 7.0)</option>
                             <option value="percentage">📈 Porcentaje (0% - 100%)</option>
                             <option value="conceptual">📝 Conceptual (I/S/B/MB)</option>
                         </select>
@@ -1565,7 +1565,7 @@
             
             // PASO 3: Si no hay cursos, crear uno por defecto
             if (allCourses.length === 0) {
-                console.log('ðŸ“ No hay cursos, creando uno por defecto...');
+                console.log('📋 No hay cursos, creando uno por defecto...');
                 createDefaultCourse();
             } else {
                 console.log(`ℹœ… ${allCourses.length} curso(s) disponible(s)`);
@@ -1933,7 +1933,7 @@
                 
                 if (response.ok && data.success) {
                     showSyncNotification(`ℹœ… Conexión exitosa - ${data.courses.length} curso(s) encontrado(s)`, 'success');
-                    console.log('ðŸ“Š Datos de la base de datos:', data);
+                    console.log('📊 Datos de la base de datos:', data);
                 } else {
                     showSyncNotification(`ℹŒ Error: ${data.error || 'Error desconocido'}`, 'error');
                 }
@@ -2136,7 +2136,7 @@
 
                             // Comparar timestamps y tomar el más reciente
                             if (remoteTime > localTime) {
-                                console.log(`  ðŸ“ Nota [${idx}][${gradeIdx}]: Remote más reciente (${remoteTime} > ${localTime})`);
+                                console.log(`  📋 Nota [${idx}][${gradeIdx}]: Remote más reciente (${remoteTime} > ${localTime})`);
                                 localStudent.grades[gradeIdx] = JSON.parse(JSON.stringify(remoteGrade));
                             } else {
                                 console.log(`  ℹœ… Nota [${idx}][${gradeIdx}]: Local más reciente (${localTime} >= ${remoteTime})`);
@@ -2224,7 +2224,7 @@
                     console.log('ðŸ“ Usando cursos de localStorage:', allCourses.length);
                 } else {
                     allCourses = [];
-                    console.log('ðŸ“ No hay cursos disponibles');
+                    console.log('📋 No hay cursos disponibles');
                 }
             }
             
@@ -3288,7 +3288,7 @@
             });
             
             console.log(`ℹœ… Tarea "${task.name}" agregada. Total tareas: ${courseData.tasks.length}`);
-            console.log(`ðŸ“Š Estudiantes actualizados: ${courseData.students.length} estudiantes tienen ahora ${courseData.students[0]?.grades.length || 0} columnas de notas`);
+            console.log(`📊 Estudiantes actualizados: ${courseData.students.length} estudiantes tienen ahora ${courseData.students[0]?.grades.length || 0} columnas de notas`);
             
             closeAddTaskModal();
             renderTable();
@@ -3919,7 +3919,7 @@
             if (!courseData) return;
             
             const input = prompt(
-                'ðŸ“ Ingresa los nombres de las tareas (una por línea):\n\n' +
+                '📋 Ingresa los nombres de las tareas (una por línea):\n\n' +
                 'Ejemplo:\n' +
                 'Tarea 1\n' +
                 'Tarea 2\n' +
@@ -4110,7 +4110,7 @@
                     `;
 
                 case EVALUATION_TYPES.RUBRICA:
-                    const rubricaLabel = grade && grade.rubricaScores ? 'ðŸ“' : '-';
+                    const rubricaLabel = grade && grade.rubricaScores ? '📋' : '-';
                     return `
                         <button onclick="openRubricaModal(${studentIndex}, ${gradeIndex})"
                                 class="w-full px-1 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded border border-blue-300"
@@ -4391,7 +4391,7 @@
                 student.grades[gradeIndex].rubricaScores = value.rubricaScores || null;
             }
             
-            console.log(`ðŸ“ Nota actualizada: Estudiante ${studentIndex}, Tarea ${gradeIndex} (${evaluationType}), Valor:`, validatedValue);
+            console.log(`📋 Nota actualizada: Estudiante ${studentIndex}, Tarea ${gradeIndex} (${evaluationType}), Valor:`, validatedValue);
             
             renderTable();
             saveAllCourses();
@@ -4496,9 +4496,9 @@
                         }
                         
                         console.log(`ðŸŽ¯ Datos encontrados en línea ${i + 1}`);
-                        console.log(`ðŸ“Š CSV detectado con ${numTasksInCSV} TAREAS (columnas TRUE/FALSE)`);
+                        console.log(`📊 CSV detectado con ${numTasksInCSV} TAREAS (columnas TRUE/FALSE)`);
                         console.log(`ðŸ“‹ Columnas totales en línea: ${columns.length}`);
-                        console.log(`ðŸ”¢ Primera línea de datos:`, columns.slice(0, 15).join(' | '));
+                        console.log(`🔢 Primera línea de datos:`, columns.slice(0, 15).join(' | '));
                         break;
                     }
                 }
@@ -4508,7 +4508,7 @@
                     return;
                 }
                 
-                console.log(`ðŸ“Š Curso actual tiene ${courseData.tasks.length} tareas`);
+                console.log(`📊 Curso actual tiene ${courseData.tasks.length} tareas`);
                 
                 // Si el CSV tiene más tareas que el curso actual, crear las faltantes
                 let tasksAdded = 0;
@@ -4857,7 +4857,7 @@
                     return;
                 }
                 
-                console.log('ðŸ“Š Iniciando generación de informe...');
+                console.log('📊 Iniciando generación de informe...');
                 console.log('Curso:', courseData.courseName);
                 console.log('Total estudiantes:', courseData.students.length);
                 console.log('Total tareas:', courseData.tasks.length);
@@ -4881,11 +4881,11 @@
                 });
                 console.log('Calificaciones calculadas:', grades.length);
                 
-                console.log('ðŸ“Š Calculando estadísticas avanzadas...');
+                console.log('📊 Calculando estadísticas avanzadas...');
                 const stats = calculateAdvancedStats(grades, activeStudents);
                 console.log('Estadísticas:', stats);
                 
-                console.log('ðŸ“ Analizando tareas...');
+                console.log('📋 Analizando tareas...');
                 const taskAnalysis = analyzeTasksPerformance(activeStudents);
                 console.log('Tareas analizadas:', taskAnalysis ? taskAnalysis.length : 0);
                 
@@ -5420,7 +5420,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 console.warn('ℹš ï¸ No se pudieron generar recomendaciones con IA, usando reglas básicas...');
             } catch (error) {
                 console.error('ℹŒ Error al generar recomendaciones con IA:', error);
-                console.log('ðŸ“ Usando recomendaciones basadas en reglas...');
+                console.log('📋 Usando recomendaciones basadas en reglas...');
             }
             
             // ============ RECOMENDACIONES BASADAS EN REGLAS (FALLBACK) ============
@@ -5453,7 +5453,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             if (stats.passingRate < 60) {
                 recommendations.push({
                     type: 'critical',
-                    icon: 'ðŸ“Š',
+                    icon: '📊',
                     title: 'Tasa de aprobación crítica',
                     text: `Solo el ${stats.passingRate.toFixed(1)}% aprueba. Revisar metodologías, criterios de evaluación y proporcionar apoyo diferenciado urgente.`
                 });
@@ -5465,7 +5465,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 const taskNames = difficultTasks.map(t => t.name).join(', ');
                 recommendations.push({
                     type: 'warning',
-                    icon: 'ðŸ“',
+                    icon: '📋',
                     title: 'Tareas con bajo cumplimiento',
                     text: `Las tareas "${taskNames}" tienen menos del 50% de cumplimiento. Considerar: extender plazos, proporcionar andamiaje adicional o evaluar pertinencia de la actividad.`
                 });
@@ -5520,7 +5520,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-lg shadow-lg print:bg-blue-900">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-2xl font-bold mb-2">ðŸ“Š Informe de Rendimiento Acadñ©mico</h3>
+                            <h3 class="text-2xl font-bold mb-2">📊 Informe de Rendimiento Acadñ©mico</h3>
                             <p class="text-lg font-semibold">${courseData.courseName}</p>
                             <p class="text-sm opacity-90">Asignatura: ${courseData.subject} | Período: ${courseData.period}</p>
                         </div>
@@ -7362,7 +7362,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             }
             
             // Agregar contexto del rendimiento
-            completeFeedback += `\n\nðŸ“Š Resumen: Has completado ${points} de ${totalTasks} tareas (${percentage}%), alcanzando un nivel ${levelInfo.nivel}.`;
+            completeFeedback += `\n\n📊 Resumen: Has completado ${points} de ${totalTasks} tareas (${percentage}%), alcanzando un nivel ${levelInfo.nivel}.`;
             
             insertFeedback(completeFeedback);
             closeFeedbackBank();
@@ -7481,7 +7481,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             let prompt = `Eres un profesor experto de Lenguaje y Comunicación de Chile con 15 años de experiencia en Educación Media. Debes escribir una retroalimentación pedagógica profesional, específica y fundamentada curricularmente.
 
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸ“Š CONTEXTO DEL ESTUDIANTE
+📊 CONTEXTO DEL ESTUDIANTE
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 Nombre: ${studentName}
 Curso: ${courseData.courseName}
@@ -7595,7 +7595,7 @@ Retroalimentación procesual y descriptiva:
             prompt += `
 
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
-ðŸ“ ESPECIFICACIONES DE REDACCIñ“N
+📋 ESPECIFICACIONES DE REDACCIñ“N
 ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•ℹ•
 ESTRUCTURA OBLIGATORIA:
 1. Introducción contextualizada (2-3 oraciones sobre el desempeño general)
