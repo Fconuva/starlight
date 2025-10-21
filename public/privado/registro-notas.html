@@ -1476,9 +1476,6 @@
         function resetData() {
             const userRole = sessionStorage.getItem('userRole') || 'teacher';
             
-            if (userRole !== 'admin') {
-                alert('ℹ›” Acción no permitida\n\nSolo el administrador puede borrar todos los datos del curso.\n\nPor favor, contacta al administrador si necesitas realizar esta acción.');
-                return;
             }
             
             originalResetData();
@@ -1689,7 +1686,7 @@
 
                     return true;
                 } else {
-                    console.warn('ℹš ï¸ No se pudieron cargar cursos de la DB, usando localStorage');
+                    console.warn('ℹ️ No se pudieron cargar cursos de la DB, usando localStorage');
                     return false;
                 }
             } catch (error) {
@@ -1732,12 +1729,12 @@
                     console.log('ℹœ… Sincronización exitosa:', data.message);
                     return true;
                 } else {
-                    console.warn('ℹš ï¸ Respuesta sin ñ©xito:', data.error);
+                    console.warn('ℹ️ Respuesta sin ñ©xito:', data.error);
                     return false;
                 }
             } catch (error) {
                 // Silencioso: solo log, sin notificaciones molestas
-                console.warn('ℹš ï¸ Sincronización diferida (sin conexión o error):', error.message);
+                console.warn('ℹ️ Sincronización diferida (sin conexión o error):', error.message);
                 return false;
             }
         }
@@ -1838,7 +1835,7 @@
                 results.push({
                     test: 'LocalStorage',
                     status: 'warning',
-                    message: `ℹš ï¸ No hay datos en localStorage`,
+                    message: `ℹ️ No hay datos en localStorage`,
                     details: 'Esto es normal si es la primera vez que usas la aplicación'
                 });
             }
@@ -1857,7 +1854,7 @@
                     results.push({
                         test: 'Sincronización',
                         status: 'warning',
-                        message: `ℹš ï¸ Sincronización con advertencias`,
+                        message: `ℹ️ Sincronización con advertencias`,
                         details: 'Los datos se guardan localmente, pero puede haber problemas de conexión'
                     });
                 }
@@ -1876,7 +1873,7 @@
             results.push({
                 test: 'Auto-Refresh',
                 status: autoRefreshActive ? 'success' : 'warning',
-                message: autoRefreshActive ? `ℹœ… Auto-refresh activo (cada 30s)` : `ℹš ï¸ Auto-refresh desactivado`,
+                message: autoRefreshActive ? `ℹœ… Auto-refresh activo (cada 30s)` : `ℹ️ Auto-refresh desactivado`,
                 details: autoRefreshActive ? 'Los cambios de otros dispositivos se sincronizarán automáticamente' : 'Necesitas recargar manualmente'
             });
             
@@ -1906,7 +1903,7 @@
                     <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
                         <p class="text-sm font-bold text-red-800">
                             <i class="fas fa-exclamation-triangle mr-2"></i>
-                            ℹš ï¸ Se detectaron problemas
+                            ℹ️ Se detectaron problemas
                         </p>
                     </div>
                 `;
@@ -1960,7 +1957,7 @@
         
         // ðŸ§¹ LIMPIAR CURSOS CON IDS INVñLIDOS O PROBLEMñTICOS
         async function cleanInvalidCourses() {
-            if (!confirm('ℹš ï¸ Esta acción eliminará cursos con IDs Inválidos (0, decimales extraños, duplicados).\n\nℹ¿Continuar?')) {
+            if (!confirm('ℹ️ Esta acción eliminará cursos con IDs Inválidos (0, decimales extraños, duplicados).\n\nℹ¿Continuar?')) {
                 return;
             }
             
@@ -1990,7 +1987,7 @@
                     validCourses.push(course);
                     fixed++;
                 } else if (isDuplicate) {
-                    console.log(`ℹš ï¸ ID duplicado detectado: "${course.courseName}" (ID: ${id}) - Generando nuevo ID`);
+                    console.log(`ℹ️ ID duplicado detectado: "${course.courseName}" (ID: ${id}) - Generando nuevo ID`);
                     course.id = Date.now() + Math.random() * 10000;
                     seenIds.add(course.id);
                     validCourses.push(course);
@@ -2029,7 +2026,7 @@
                 showSyncNotification('ℹœ… Base de datos limpia', 'success');
             } catch (error) {
                 console.error('ℹŒ Error sincronizando despuñ©s de limpieza:', error);
-                alert('ℹš ï¸ Cursos limpiados localmente, pero hubo un error al sincronizar con la base de datos.');
+                alert('ℹ️ Cursos limpiados localmente, pero hubo un error al sincronizar con la base de datos.');
             }
         }
         
@@ -2064,7 +2061,7 @@
                     showSyncNotification('ℹœ… Sincronización completa', 'success');
                     console.log('ℹœ… Sincronización bidireccional completada');
                 } else {
-                    showSyncNotification('ℹš ï¸ Sin cambios para sincronizar', 'warning');
+                    showSyncNotification('ℹ️ Sin cambios para sincronizar', 'warning');
                 }
             } catch (error) {
                 console.error('ℹŒ Error en sincronización manual:', error);
@@ -2322,7 +2319,7 @@
                     }
                 }
             } catch (e) {
-                console.warn('ℹš ï¸ No se pudo actualizar timestamp del curso:', e.message);
+                console.warn('ℹ️ No se pudo actualizar timestamp del curso:', e.message);
             }
 
             // Guardar localmente (inmediato y confiable)
@@ -2332,7 +2329,7 @@
             // Sincronizar con base de datos (asíncrono, silencioso, no bloquea la UI)
             // Si falla, no importa, localStorage ya tiene los datos
             syncCoursesToDatabase().catch(error => {
-                console.warn('ℹš ï¸ Sincronización en segundo plano falló (no afecta el funcionamiento):', error.message);
+                console.warn('ℹ️ Sincronización en segundo plano falló (no afecta el funcionamiento):', error.message);
                 // Guardar en cola de sincronización pendiente
                 markForLaterSync();
             });
@@ -2585,7 +2582,7 @@
 
         // Cambiar de curso
         function switchCourse() {
-            // ℹš ï¸ CRñTICO: Guardar curso actual ANTES de cambiar
+            // ℹ️ CRñTICO: Guardar curso actual ANTES de cambiar
             console.log('ðŸ’¾ Guardando curso actual antes de cambiar...');
             saveAllCourses();
             
@@ -2722,7 +2719,7 @@
                                (typeof courseIdToDelete === 'number' && courseIdToDelete % 1 !== 0); // Decimal
             
             if (isInvalidId) {
-                console.warn('ℹš ï¸ Curso con ID problemático:', courseIdToDelete, '- Solo eliminación local');
+                console.warn('ℹ️ Curso con ID problemático:', courseIdToDelete, '- Solo eliminación local');
             }
             
             // PASO 1: Eliminar de allCourses
@@ -2769,7 +2766,7 @@
                     console.log('ðŸ“¡ Respuesta del servidor:', result);
                     
                     if (!response.ok) {
-                        console.warn('ℹš ï¸ Error en BD (pero curso ya eliminado localmente):', result.error);
+                        console.warn('ℹ️ Error en BD (pero curso ya eliminado localmente):', result.error);
                         showTemporaryMessage('ℹœ… Curso eliminado (no estaba en base de datos)', 'success');
                     } else {
                         console.log('ℹœ… Curso eliminado de BD tambiñ©n');
@@ -2791,7 +2788,7 @@
                 try {
                     await syncCoursesToDatabase();
                 } catch (e) {
-                    console.warn('ℹš ï¸ Error sincronizando:', e);
+                    console.warn('ℹ️ Error sincronizando:', e);
                 }
             }
         }
@@ -3111,7 +3108,7 @@
             const currentGrade = student.grades[gradeIndex];
 
             if (!task.rubricaCriteria || task.rubricaCriteria.length === 0) {
-                alert('ℹš ï¸ Esta tarea no tiene criterios de Rúbrica definidos');
+                alert('ℹ️ Esta tarea no tiene criterios de Rúbrica definidos');
                 return;
             }
 
@@ -3282,7 +3279,7 @@
             if (evaluationType === 'rubrica') {
                 const criteria = getRubricaCriteria();
                 if (criteria.length === 0) {
-                    alert('ℹš ï¸ Debes definir al menos un criterio para la Rúbrica');
+                    alert('ℹ️ Debes definir al menos un criterio para la Rúbrica');
                     return;
                 }
                 task.rubricaCriteria = criteria;
@@ -3317,10 +3314,6 @@
         // Eliminar tarea (solo admin)
         function deleteTask(taskIndex) {
             // Verificar permisos
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
-            if (userRole !== 'admin') {
-                alert('ℹš ï¸ Solo el administrador puede eliminar tareas');
-                return;
             }
             
             if (!courseData || !courseData.tasks || taskIndex < 0 || taskIndex >= courseData.tasks.length) {
@@ -3334,7 +3327,7 @@
             // Confirmar eliminación
             const confirmDelete = confirm(
                 `ℹ¿Estás seguro de eliminar la tarea "${taskName}"?\n\n` +
-                `ℹš ï¸ Se eliminarán todas las notas de esta tarea para todos los estudiantes.\n` +
+                `ℹ️ Se eliminarán todas las notas de esta tarea para todos los estudiantes.\n` +
                 `Esta acción NO se puede deshacer.`
             );
             
@@ -3360,10 +3353,6 @@
 
         // Editar tarea (solo admin)
         function editTask(taskIndex) {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
-            if (userRole !== 'admin') {
-                alert('ℹš ï¸ Solo el administrador puede editar tareas');
-                return;
             }
             
             if (!courseData || !courseData.tasks || taskIndex < 0 || taskIndex >= courseData.tasks.length) {
@@ -3443,7 +3432,7 @@
             const newDate = document.getElementById('editTaskDate').value;
             
             if (!newName) {
-                alert('ℹš ï¸ El nombre de la tarea no puede estar vacío');
+                alert('ℹ️ El nombre de la tarea no puede estar vacío');
                 return;
             }
             
@@ -3460,10 +3449,6 @@
 
         // Mover tarea hacia arriba (solo admin)
         function moveTaskUp(taskIndex) {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
-            if (userRole !== 'admin') {
-                alert('ℹš ï¸ Solo el administrador puede reordenar tareas');
-                return;
             }
             
             if (taskIndex <= 0 || taskIndex >= courseData.tasks.length) {
@@ -3489,10 +3474,6 @@
 
         // Mover tarea hacia abajo (solo admin)
         function moveTaskDown(taskIndex) {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
-            if (userRole !== 'admin') {
-                alert('ℹš ï¸ Solo el administrador puede reordenar tareas');
-                return;
             }
             
             if (taskIndex < 0 || taskIndex >= courseData.tasks.length - 1) {
@@ -3518,14 +3499,10 @@
 
         // Eliminar Múltiples tareas (solo admin)
         function deleteMultipleTasks() {
-            const userRole = sessionStorage.getItem('userRole') || 'teacher';
-            if (userRole !== 'admin') {
-                alert('ℹš ï¸ Solo el administrador puede eliminar tareas');
-                return;
             }
             
             if (!courseData || !courseData.tasks || courseData.tasks.length === 0) {
-                alert('ℹš ï¸ No hay tareas para eliminar');
+                alert('ℹ️ No hay tareas para eliminar');
                 return;
             }
             
@@ -3613,7 +3590,7 @@
             const checkboxes = document.querySelectorAll('[id^="deleteTask"]:checked');
             
             if (checkboxes.length === 0) {
-                alert('ℹš ï¸ No has seleccionado ninguna tarea');
+                alert('ℹ️ No has seleccionado ninguna tarea');
                 return;
             }
             
@@ -3623,7 +3600,7 @@
             const confirmDelete = confirm(
                 `ℹ¿Estás seguro de eliminar ${checkboxes.length} tarea(s)?\n\n` +
                 `Tareas: ${taskNames}\n\n` +
-                `ℹš ï¸ Se eliminarán todas las notas de estas tareas para todos los estudiantes.\n` +
+                `ℹ️ Se eliminarán todas las notas de estas tareas para todos los estudiantes.\n` +
                 `Esta acción NO se puede deshacer.`
             );
             
@@ -3661,7 +3638,7 @@
         // Mostrar lista de estudiantes para editar
         function showEditStudentsList() {
             if (!courseData || !courseData.students || courseData.students.length === 0) {
-                alert('ℹš ï¸ No hay estudiantes en el curso');
+                alert('ℹ️ No hay estudiantes en el curso');
                 return;
             }
             
@@ -3710,7 +3687,7 @@
         // Mostrar lista de tareas
         function showTasksList() {
             if (!courseData || !courseData.tasks || courseData.tasks.length === 0) {
-                alert('ℹš ï¸ No hay tareas en el curso');
+                alert('ℹ️ No hay tareas en el curso');
                 return;
             }
             
@@ -3760,7 +3737,7 @@
         // Editar tareas modal
         function showEditTasksModal() {
             if (!courseData || !courseData.tasks || courseData.tasks.length === 0) {
-                alert('ℹš ï¸ No hay tareas en el curso');
+                alert('ℹ️ No hay tareas en el curso');
                 return;
             }
             
@@ -3814,7 +3791,7 @@
             const newDate = document.getElementById(`taskDate_${taskIndex}`).value;
             
             if (!newName) {
-                alert('ℹš ï¸ El nombre de la tarea no puede estar vacío');
+                alert('ℹ️ El nombre de la tarea no puede estar vacío');
                 return;
             }
             
@@ -3859,7 +3836,7 @@
         // Llenar columna de tarea
         function fillTaskColumn() {
             if (!courseData || !courseData.tasks || courseData.tasks.length === 0) {
-                alert('ℹš ï¸ No hay tareas en el curso');
+                alert('ℹ️ No hay tareas en el curso');
                 return;
             }
             
@@ -3892,7 +3869,7 @@
         // ℹ­ NUEVA: Marcar/Desmarcar UNA tarea específica con 1 click
         function quickMarkTask(value) {
             if (!courseData || !courseData.tasks || courseData.tasks.length === 0) {
-                alert('ℹš ï¸ No hay tareas en el curso');
+                alert('ℹ️ No hay tareas en el curso');
                 return;
             }
             
@@ -4296,7 +4273,7 @@
                     // Si falta la nota, agregarla automáticamente (corrección de inconsistencias)
                     if (!student.grades[gradeIndex]) {
                         student.grades[gradeIndex] = grade;
-                        console.warn(`ℹš ï¸ Nota faltante para estudiante ${student.name} en tarea ${gradeIndex}, agregada automáticamente`);
+                        console.warn(`ℹ️ Nota faltante para estudiante ${student.name} en tarea ${gradeIndex}, agregada automáticamente`);
                     }
 
                     const cellHtml = renderGradeCell(studentIndex, gradeIndex, grade, task, student.retired);
@@ -5019,7 +4996,7 @@
             const reportContent = document.getElementById('courseReportContent');
             
             if (!reportContent || reportContent.children.length === 0) {
-                alert('ℹš ï¸ No hay informe generado. Por favor, genera el informe primero.');
+                alert('ℹ️ No hay informe generado. Por favor, genera el informe primero.');
                 return;
             }
             
@@ -5398,7 +5375,7 @@ INSTRUCCIONES:
 4. Responde SOLO en formato JSON así:
 [
   {"type": "critical", "icon": "ðŸš¨", "title": "Título", "text": "Descripción detallada"},
-  {"type": "warning", "icon": "ℹš ï¸", "title": "Título", "text": "Descripción detallada"}
+  {"type": "warning", "icon": "ℹ️", "title": "Título", "text": "Descripción detallada"}
 ]
 
 RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
@@ -5432,7 +5409,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                     }
                 }
                 
-                console.warn('ℹš ï¸ No se pudieron generar recomendaciones con IA, usando reglas básicas...');
+                console.warn('ℹ️ No se pudieron generar recomendaciones con IA, usando reglas básicas...');
             } catch (error) {
                 console.error('ℹŒ Error al generar recomendaciones con IA:', error);
                 console.log('📋 Usando recomendaciones basadas en reglas...');
@@ -5451,7 +5428,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             } else if (stats.avg < 4.5) {
                 recommendations.push({
                     type: 'warning',
-                    icon: 'ℹš ï¸',
+                    icon: 'ℹ️',
                     title: 'Promedio descendido',
                     text: `El promedio del curso (${stats.avg.toFixed(2)}) está cercano al límite. Implementar estrategias de reforzamiento y evaluación formativa continua.`
                 });
@@ -6421,7 +6398,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
             const reportElement = document.getElementById('individualReportContent');
             
             if (!reportElement || reportElement.classList.contains('hidden') || !reportElement.innerHTML.trim()) {
-                alert('ℹš ï¸ No se encontró el informe. Por favor, genera el informe primero seleccionando un estudiante.');
+                alert('ℹ️ No se encontró el informe. Por favor, genera el informe primero seleccionando un estudiante.');
                 return;
             }
             
@@ -6556,7 +6533,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
 
         // Resetear datos
         function resetData() {
-            if (confirm('ℹš ï¸ ℹ¿Está COMPLETAMENTE SEGURO de borrar TODOS los datos del curso actual? Esta acción NO se puede deshacer.')) {
+            if (confirm('ℹ️ ℹ¿Está COMPLETAMENTE SEGURO de borrar TODOS los datos del curso actual? Esta acción NO se puede deshacer.')) {
                 if (confirm('Esta es su última oportunidad. ℹ¿Confirma que desea borrar todo?')) {
                     courseData.students = [];
                     courseData.tasks = [];
@@ -7095,7 +7072,7 @@ RESPONDE SOLO CON EL JSON, SIN TEXTO ADICIONAL.`;
                 feedback = `ℹœ… ${codigo}: Has logrado exitosamente este objetivo de aprendizaje en las siguientes tareas: ${tareas}. `;
                 feedback += `Tu desempeño refleja comprensión y dominio de: "${texto.substring(0, 100)}..."`;
             } else {
-                feedback = `ℹš ï¸ ${codigo}: Es necesario reforzar este objetivo de aprendizaje. Tareas pendientes: ${tareas}. `;
+                feedback = `ℹ️ ${codigo}: Es necesario reforzar este objetivo de aprendizaje. Tareas pendientes: ${tareas}. `;
                 feedback += `Debes trabajar en: "${texto.substring(0, 100)}..." Te sugiero revisar los contenidos y solicitar apoyo si es necesario.`;
             }
             
@@ -7637,7 +7614,7 @@ Rango de calificación: ${levelInfo.nota}
                 }
                 
                 if (oasAnalysis.noCumplidos.length > 0) {
-                    prompt += `ℹš ï¸ OBJETIVOS POR CONSOLIDAR (${oasAnalysis.noCumplidos.length}):\n`;
+                    prompt += `ℹ️ OBJETIVOS POR CONSOLIDAR (${oasAnalysis.noCumplidos.length}):\n`;
                     oasAnalysis.noCumplidos.forEach((oa, index) => {
                         if (index < 4) {
                             prompt += `\n[${oa.codigo}] ${oa.unidad}:\n`;
