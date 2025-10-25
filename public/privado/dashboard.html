@@ -355,6 +355,9 @@
                                     <button onclick="accionAdmin('importarCursos')" class="admin-action-btn w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center">
                                         <i class="fas fa-file-import mr-2"></i>Importar Cursos CSV
                                     </button>
+                                    <button onclick="accionAdmin('importarExcel')" class="admin-action-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center">
+                                        <i class="fas fa-file-excel mr-2"></i>Importar desde Excel del Colegio
+                                    </button>
                                     <button onclick="accionAdmin('borrarCursos')" class="admin-action-btn w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center">
                                         <i class="fas fa-trash-alt mr-2"></i>Borrar Todos los Cursos
                                     </button>
@@ -1300,6 +1303,10 @@
                     
                 case 'importarCursos':
                     window.location.href = `importar-cursos.html?docente=${docenteActivo}`;
+                    break;
+                    
+                case 'importarExcel':
+                    window.location.href = `importar-xlsx.html?docente=${docenteActivo}`;
                     break;
                     
                 case 'borrarCursos':

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importar desde Excel del Colegio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SheetJS para leer archivos Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Auth Guard -->
+    <script>
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="dashboard.html" class="text-white hover:text-gray-200">
+                        <i class="fas fa-arrow-left mr-2"></i>Volver
+                    </a>
+                    <span class="text-2xl font-bold text-white">
+                        <i class="fas fa-file-excel mr-2"></i>Importar desde Excel del Colegio
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto py-8 px-4">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                    <i class="fas fa-info-circle text-emerald-500 mr-2"></i>Instrucciones
+                </h2>
+                <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-4">
+                    <p class="text-sm text-gray-700 mb-2">
+                        <strong>Esta herramienta importa cursos desde los archivos Excel oficiales del colegio.</strong>
+                    </p>
+                    <p class="text-sm text-gray-700">
+                        El archivo debe contener las columnas:<br>
+                        • <strong>Nº de Orden</strong> (número de lista)<br>
+                        • <strong>Nº de Matr.</strong> (matrícula)<br>
+                        • <strong>FECHA</strong> (ingreso/retiro)<br>
+                        • <strong>NOMBRE COMPLETO</strong><br>
+                        • <strong>RUN</strong><br>
+                        • <strong>FECHA NACIMIENTO</strong>
+                    </p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                    <p class="text-xs text-gray-600">
+                        <i class="fas fa-lightbulb mr-1 text-blue-500"></i>
+                        Los datos adicionales (RUN, matrícula, fecha nacimiento) quedarán almacenados para futuros informes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Selector de Docente Destino -->
+            <div class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-lg p-6">
+                <label class="block text-lg font-bold text-gray-800 mb-4">
+                    <i class="fas fa-user-graduate mr-2 text-purple-600"></i>¿A qué docente deseas importar el curso?
+                </label>
+                <div class="space-y-3">
+                    <label class="flex items-center p-4 border-2 border-indigo-300 rounded-lg hover:bg-indigo-50 cursor-pointer transition bg-white">
+                        <input type="radio" name="targetDocente" value="francisco" checked class="w-5 h-5 text-indigo-600 mr-4">
+                        <div class="flex-1">
+                            <div class="font-bold text-indigo-700 text-lg">Prof. Francisco Conuva</div>
+                            <div class="text-sm text-gray-600">3° y 4° Medio - Lenguaje y Comunicación</div>
+                            <div class="text-xs text-gray-500 mt-1">Storage: francisco_allCourses</div>
+                        </div>
+                        <i class="fas fa-user-graduate text-3xl text-indigo-500"></i>
+                    </label>
+                    
+                    <label class="flex items-center p-4 border-2 border-purple-300 rounded-lg hover:bg-purple-50 cursor-pointer transition bg-white">
+                        <input type="radio" name="targetDocente" value="profesor2" class="w-5 h-5 text-purple-600 mr-4">
+                        <div class="flex-1">
+                            <div class="font-bold text-purple-700 text-lg" id="profesor2DisplayName">Javiera Poblete</div>
+                            <div class="text-sm text-gray-600" id="profesor2DisplayInfo">Espacio independiente</div>
+                            <div class="text-xs text-gray-500 mt-1">Storage: profesor2_allCourses</div>
+                        </div>
+                        <i class="fas fa-user-graduate text-3xl text-purple-500"></i>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Información del curso a crear -->
+            <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-chalkboard mr-1"></i>Nombre del Curso
+                    </label>
+                    <input type="text" id="courseName" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                           placeholder="Ej: 2° Año B">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-book mr-1"></i>Asignatura
+                    </label>
+                    <input type="text" id="subject" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                           placeholder="Ej: Lenguaje y Comunicación">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-calendar mr-1"></i>Período
+                    </label>
+                    <input type="text" id="period" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                           placeholder="Ej: 2024" value="2025">
+                </div>
+            </div>
+
+            <!-- Selector de archivo -->
+            <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-700 mb-4">
+                    <i class="fas fa-upload mr-2"></i>Selecciona el archivo Excel (.xlsx)
+                </label>
+                <input type="file" id="xlsxFile" accept=".xlsx,.xls" 
+                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                <p class="mt-2 text-xs text-gray-500">Formatos aceptados: .xlsx, .xls</p>
+            </div>
+
+            <!-- Vista previa -->
+            <div id="preview" class="hidden mb-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-3">
+                    <i class="fas fa-eye mr-2 text-emerald-600"></i>Vista Previa
+                </h3>
+                <div id="previewContent" class="bg-gray-50 rounded-lg p-4 border border-gray-200 max-h-96 overflow-auto"></div>
+            </div>
+
+            <button onclick="importFromExcel()" 
+                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+                <i class="fas fa-file-import mr-2"></i>Importar Curso desde Excel
+            </button>
+
+            <div id="results" class="mt-8"></div>
+
+            <div class="mt-8 text-center">
+                <a href="#" id="linkToSystem" onclick="goToSystem(event)"
+                   class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg shadow transition duration-300">
+                    <i class="fas fa-arrow-right mr-2"></i>Ir al Sistema de Notas
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let parsedData = null;
+        let allCourses = [];
+        let currentCourseId = null;
+
+        // Cargar configuración de Profesor 2 al inicio
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const config = localStorage.getItem('profesor2_config');
+                if (config) {
+                    const data = JSON.parse(config);
+                    const nameElement = document.getElementById('profesor2DisplayName');
+                    const infoElement = document.getElementById('profesor2DisplayInfo');
+                    
+                    if (nameElement && data.teacherName) {
+                        nameElement.textContent = data.teacherName;
+                    }
+                    
+                    if (infoElement && (data.subject || data.courses)) {
+                        let info = '';
+                        if (data.courses) info += data.courses;
+                        if (data.subject) info += (info ? ' - ' : '') + data.subject;
+                        infoElement.textContent = info;
+                    }
+                }
+            } catch (e) {
+                console.log('No hay configuración de Profesor 2');
+            }
+
+            // Listener para vista previa automática
+            document.getElementById('xlsxFile').addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    await previewExcel(file);
+                }
+            });
+        });
+
+        // Función para ir al sistema del docente seleccionado
+        function goToSystem(e) {
+            e.preventDefault();
+            const namespace = getTargetNamespace();
+            window.location.href = `registro-notas.html?docente=${namespace}`;
+        }
+
+        // Obtener el namespace del docente seleccionado
+        function getTargetNamespace() {
+            const selectedRadio = document.querySelector('input[name="targetDocente"]:checked');
+            return selectedRadio ? selectedRadio.value : 'francisco';
+        }
+
+        // Helper functions con namespace
+        function getStorageItem(key) {
+            const namespace = getTargetNamespace();
+            const namespacedKey = `${namespace}_${key}`;
+            return localStorage.getItem(namespacedKey);
+        }
+
+        function setStorageItem(key, value) {
+            const namespace = getTargetNamespace();
+            const namespacedKey = `${namespace}_${key}`;
+            localStorage.setItem(namespacedKey, value);
+        }
+
+        // Cargar cursos existentes del docente seleccionado
+        function loadExistingCourses() {
+            const saved = getStorageItem('allCourses');
+            if (saved) {
+                allCourses = JSON.parse(saved);
+            } else {
+                allCourses = [];
+            }
+            
+            const savedCurrentId = getStorageItem('currentCourseId');
+            if (savedCurrentId) {
+                currentCourseId = parseInt(savedCurrentId);
+            }
+        }
+
+        // Guardar todos los cursos con namespace
+        function saveAllCourses() {
+            setStorageItem('allCourses', JSON.stringify(allCourses));
+            if (currentCourseId) {
+                setStorageItem('currentCourseId', currentCourseId);
+            }
+        }
+
+        // Vista previa del archivo Excel
+        async function previewExcel(file) {
+            try {
+                const data = await parseXLSX(file);
+                parsedData = data;
+
+                // Autocompletar campos si se detectaron del Excel
+                if (data.courseName) {
+                    document.getElementById('courseName').value = data.courseName;
+                }
+                if (data.period) {
+                    document.getElementById('period').value = data.period;
+                }
+
+                // Mostrar vista previa
+                const previewDiv = document.getElementById('preview');
+                const previewContent = document.getElementById('previewContent');
+                
+                previewDiv.classList.remove('hidden');
+                previewContent.innerHTML = `
+                    <div class="mb-4">
+                        <div class="text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-info-circle mr-1 text-blue-500"></i>
+                            Datos detectados:
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div><strong>Curso:</strong> ${data.courseName || 'No detectado'}</div>
+                            <div><strong>Año:</strong> ${data.period || 'No detectado'}</div>
+                            <div><strong>Total estudiantes:</strong> ${data.students.length}</div>
+                            <div><strong>Con datos completos:</strong> ${data.students.filter(s => s.run && s.birthDate).length}</div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-xs">
+                            <thead class="bg-emerald-100">
+                                <tr>
+                                    <th class="px-2 py-1 text-left">Nº</th>
+                                    <th class="px-2 py-1 text-left">Nombre Completo</th>
+                                    <th class="px-2 py-1 text-left">RUN</th>
+                                    <th class="px-2 py-1 text-left">F. Nacimiento</th>
+                                    <th class="px-2 py-1 text-left">Matrícula</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.students.slice(0, 10).map(s => `
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-2 py-1">${s.number}</td>
+                                        <td class="px-2 py-1">${s.fullName}</td>
+                                        <td class="px-2 py-1">${s.run || '-'}</td>
+                                        <td class="px-2 py-1">${s.birthDate || '-'}</td>
+                                        <td class="px-2 py-1">${s.matricula || '-'}</td>
+                                    </tr>
+                                `).join('')}
+                                ${data.students.length > 10 ? `
+                                    <tr>
+                                        <td colspan="5" class="px-2 py-2 text-center text-gray-500">
+                                            ... y ${data.students.length - 10} estudiantes más
+                                        </td>
+                                    </tr>
+                                ` : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error al previsualizar:', error);
+                alert('Error al leer el archivo: ' + error.message);
+            }
+        }
+
+        // Parsear archivo XLSX
+        function parseXLSX(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        // Tomar la primera hoja
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        
+                        // Convertir a JSON (array de arrays)
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+                        
+                        console.log('📊 Datos del Excel:', jsonData);
+
+                        // Detectar el curso y año del encabezado
+                        let courseName = '';
+                        let period = '2024';
+                        
+                        // Buscar en las primeras filas el patrón "CURSO: X° AÑO "Y" ... YYYY"
+                        for (let i = 0; i < Math.min(5, jsonData.length); i++) {
+                            const row = jsonData[i];
+                            const rowText = row.join(' ').toString();
+                            
+                            // Buscar patrón: "CURSO: 2° AÑO "B" EGB 2024"
+                            const courseMatch = rowText.match(/CURSO:\s*(\d+)°?\s*AÑO\s*[""]?([A-Z])[""]?\s*([A-Z]*)\s*(\d{4})?/i);
+                            if (courseMatch) {
+                                const year = courseMatch[1];
+                                const section = courseMatch[2];
+                                const level = courseMatch[3] || 'EGB';
+                                const detectedPeriod = courseMatch[4];
+                                
+                                courseName = `${year}° Año "${section}" ${level}`;
+                                if (detectedPeriod) {
+                                    period = detectedPeriod;
+                                }
+                                break;
+                            }
+                        }
+
+                        // Encontrar la fila de encabezados (buscar "NOMBRE COMPLETO")
+                        let headerRowIndex = -1;
+                        let colIndexes = {
+                            orden: -1,
+                            matricula: -1,
+                            ingreso: -1,
+                            retiro: -1,
+                            nombreCompleto: -1,
+                            run: -1,
+                            fechaNacimiento: -1
+                        };
+
+                        for (let i = 0; i < Math.min(10, jsonData.length); i++) {
+                            const row = jsonData[i];
+                            for (let j = 0; j < row.length; j++) {
+                                const cell = (row[j] || '').toString().toUpperCase().trim();
+                                
+                                if (cell.includes('NOMBRE COMPLETO') || cell === 'NOMBRE COMPLETO') {
+                                    headerRowIndex = i;
+                                    colIndexes.nombreCompleto = j;
+                                }
+                                if (cell.includes('ORDEN') || cell === 'Nº DE ORDEN') {
+                                    colIndexes.orden = j;
+                                }
+                                if (cell.includes('MATR') || cell === 'Nº DE MATR.') {
+                                    colIndexes.matricula = j;
+                                }
+                                if (cell === 'RUN') {
+                                    colIndexes.run = j;
+                                }
+                                if (cell.includes('NACIMIENTO') || cell === 'FECHA NACIMIENTO') {
+                                    colIndexes.fechaNacimiento = j;
+                                }
+                                if (cell === 'INGRESO') {
+                                    colIndexes.ingreso = j;
+                                }
+                                if (cell === 'RETIRO') {
+                                    colIndexes.retiro = j;
+                                }
+                            }
+                            
+                            if (headerRowIndex !== -1) break;
+                        }
+
+                        if (headerRowIndex === -1 || colIndexes.nombreCompleto === -1) {
+                            reject(new Error('No se pudo encontrar la columna "NOMBRE COMPLETO" en el archivo'));
+                            return;
+                        }
+
+                        console.log('📋 Índices de columnas:', colIndexes);
+
+                        // Procesar estudiantes
+                        const students = [];
+                        for (let i = headerRowIndex + 1; i < jsonData.length; i++) {
+                            const row = jsonData[i];
+                            
+                            // Verificar que haya datos en la fila
+                            if (!row || row.length === 0) continue;
+                            
+                            const nombreCompleto = (row[colIndexes.nombreCompleto] || '').toString().trim();
+                            if (!nombreCompleto) continue; // Saltar filas vacías
+                            
+                            const orden = colIndexes.orden !== -1 ? parseInt(row[colIndexes.orden]) : students.length + 1;
+                            const matricula = colIndexes.matricula !== -1 ? (row[colIndexes.matricula] || '').toString().trim() : '';
+                            const run = colIndexes.run !== -1 ? (row[colIndexes.run] || '').toString().trim() : '';
+                            const fechaNacimiento = colIndexes.fechaNacimiento !== -1 ? (row[colIndexes.fechaNacimiento] || '').toString().trim() : '';
+                            const ingreso = colIndexes.ingreso !== -1 ? (row[colIndexes.ingreso] || '').toString().trim() : '';
+                            const retiro = colIndexes.retiro !== -1 ? (row[colIndexes.retiro] || '').toString().trim() : '';
+
+                            // Separar nombre completo en partes
+                            const nameParts = nombreCompleto.split(' ').filter(p => p.length > 0);
+                            let lastName1 = '', lastName2 = '', firstName = '';
+                            
+                            if (nameParts.length >= 3) {
+                                lastName1 = nameParts[0];
+                                lastName2 = nameParts[1];
+                                firstName = nameParts.slice(2).join(' ');
+                            } else if (nameParts.length === 2) {
+                                lastName1 = nameParts[0];
+                                firstName = nameParts[1];
+                            } else {
+                                firstName = nombreCompleto;
+                            }
+
+                            students.push({
+                                id: Date.now() + i,
+                                number: orden || students.length + 1,
+                                lastName1: lastName1.toUpperCase(),
+                                lastName2: lastName2.toUpperCase(),
+                                name: firstName.toUpperCase(),
+                                fullName: nombreCompleto.toUpperCase(),
+                                run: run,
+                                birthDate: fechaNacimiento,
+                                matricula: matricula,
+                                ingreso: ingreso,
+                                retiro: retiro,
+                                grades: [],
+                                notes: '',
+                                retired: !!retiro
+                            });
+                        }
+
+                        if (students.length === 0) {
+                            reject(new Error('No se encontraron estudiantes en el archivo'));
+                            return;
+                        }
+
+                        resolve({
+                            courseName: courseName,
+                            period: period,
+                            students: students
+                        });
+
+                    } catch (error) {
+                        console.error('Error al procesar Excel:', error);
+                        reject(new Error('Error al procesar el archivo Excel: ' + error.message));
+                    }
+                };
+
+                reader.onerror = function() {
+                    reject(new Error('Error al leer el archivo'));
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // Importar desde Excel
+        async function importFromExcel() {
+            const fileInput = document.getElementById('xlsxFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Por favor selecciona un archivo Excel');
+                return;
+            }
+
+            const courseName = document.getElementById('courseName').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const period = document.getElementById('period').value.trim();
+
+            if (!courseName) {
+                alert('Por favor ingresa el nombre del curso');
+                return;
+            }
+
+            if (!subject) {
+                alert('Por favor ingresa la asignatura');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-4xl text-emerald-600"></i><p class="mt-2">Procesando...</p></div>';
+
+            try {
+                // Si no tenemos datos parseados, parsear ahora
+                if (!parsedData) {
+                    parsedData = await parseXLSX(file);
+                }
+
+                const targetNamespace = getTargetNamespace();
+                const targetNames = {
+                    francisco: 'Prof. Francisco Conuva',
+                    profesor2: document.getElementById('profesor2DisplayName')?.textContent || 'Javiera Poblete'
+                };
+
+                loadExistingCourses();
+
+                // Crear el curso
+                const courseData = {
+                    id: Date.now() + Math.floor(Math.random() * 10000),
+                    courseName: courseName,
+                    subject: subject,
+                    period: period,
+                    students: parsedData.students,
+                    tasks: [],
+                    config: {
+                        subject: subject,
+                        period: period,
+                        gradeType: 'Chileno',
+                        minGrade: 1.0,
+                        maxGrade: 7.0,
+                        passingGrade: 4.0,
+                        passingPercentage: 60
+                    }
+                };
+
+                allCourses.push(courseData);
+
+                // Establecer como curso actual si no hay ninguno
+                if (!currentCourseId) {
+                    currentCourseId = courseData.id;
+                }
+
+                saveAllCourses();
+
+                // Sincronizar con la base de datos
+                try {
+                    const username = sessionStorage.getItem('username') || 'fconuva';
+                    const response = await fetch('/api/courses/save', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            courses: allCourses
+                        })
+                    });
+
+                    if (!response.ok) {
+                        console.warn('No se pudo sincronizar con la base de datos');
+                    }
+                } catch (error) {
+                    console.warn('Error al sincronizar con BD:', error);
+                }
+
+                resultsDiv.innerHTML = `
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-check-circle text-3xl text-green-600 mr-3"></i>
+                            <div>
+                                <h3 class="text-xl font-bold text-green-800">¡Importación Exitosa!</h3>
+                                <p class="text-sm text-green-700">El curso ha sido importado correctamente</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded p-4 text-sm">
+                            <p class="mb-2"><strong>Docente:</strong> ${targetNames[targetNamespace]}</p>
+                            <p class="mb-2"><strong>Curso:</strong> ${courseName}</p>
+                            <p class="mb-2"><strong>Asignatura:</strong> ${subject}</p>
+                            <p class="mb-2"><strong>Período:</strong> ${period}</p>
+                            <p class="mb-2"><strong>Estudiantes:</strong> ${parsedData.students.length}</p>
+                            <p class="mb-2"><strong>Con RUN:</strong> ${parsedData.students.filter(s => s.run).length}</p>
+                            <p class="mb-2"><strong>Con fecha nacimiento:</strong> ${parsedData.students.filter(s => s.birthDate).length}</p>
+                        </div>
+                    </div>
+                `;
+
+                // Limpiar
+                parsedData = null;
+                fileInput.value = '';
+                document.getElementById('preview').classList.add('hidden');
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <p class="text-red-800"><i class="fas fa-exclamation-triangle mr-2"></i>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+
+</body>
+</html>
