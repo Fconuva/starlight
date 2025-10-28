@@ -2306,7 +2306,15 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                 });
 
                 if (!response.ok) {
-                    throw new Error('Error en la API de Gemini');
+                    const errorData = await response.json().catch(() => ({}));
+                    
+                    if (response.status === 429) {
+                        throw new Error('LÍMITE_ALCANZADO');
+                    } else if (response.status === 403) {
+                        throw new Error('API_KEY_INVÁLIDA');
+                    } else {
+                        throw new Error(`Error ${response.status}: ${errorData.error || 'Error desconocido'}`);
+                    }
                 }
 
                 const data = await response.json();
@@ -2315,14 +2323,45 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                 // Mostrar el informe generado
                 let reportHtml = '<div class="feedback-section">';
                 reportHtml += '<h3><i class="fas fa-robot"></i> Informe Generado por IA</h3>';
-                reportHtml += '<div style="line-height: 1.6; white-space: pre-wrap; background: white; padding: 20px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">' + aiReport + '</div>';
+                reportHtml += '<div style="line-height: 1.6; white-space: pre-wrap; background: white; padding: 20px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #333;">' + aiReport + '</div>';
                 reportHtml += '</div>';
 
                 document.getElementById('reportContent').innerHTML += reportHtml;
 
             } catch (error) {
                 console.error('Error generando reporte con IA:', error);
-                alert('Error al generar el informe con IA. Por favor intenta nuevamente.');
+                
+                let errorMessage = 'Error al generar el informe con IA. ';
+                
+                if (error.message === 'LÍMITE_ALCANZADO') {
+                    errorMessage = `⚠️ LÍMITE DE SOLICITUDES ALCANZADO
+
+La API de Google Gemini tiene límites de uso:
+• Versión gratuita: 15 solicitudes por minuto
+• Has excedido este límite temporalmente
+
+SOLUCIONES:
+1. ⏱️ Espera 1 minuto e intenta nuevamente
+2. 💾 Usa los reportes en PDF (no requieren IA)
+3. 📊 Los gráficos y estadísticas están disponibles
+4. 🔑 Considera actualizar tu API key a una versión de pago
+
+Los datos están guardados y puedes generar el reporte más tarde.`;
+                } else if (error.message === 'API_KEY_INVÁLIDA') {
+                    errorMessage = `❌ API KEY INVÁLIDA
+
+La clave de API de Gemini no es válida o ha expirado.
+
+SOLUCIÓN:
+1. Ve a https://makersuite.google.com/app/apikey
+2. Genera una nueva API key
+3. Actualiza la variable GEMINI_API_KEY en Netlify
+4. Verifica que la key tenga permisos para Gemini API`;
+                } else {
+                    errorMessage += `\n\nError técnico: ${error.message}\n\nPuedes descargar el reporte en PDF que incluye todas las estadísticas.`;
+                }
+                
+                alert(errorMessage);
             } finally {
                 button.innerHTML = originalText;
                 button.disabled = false;
