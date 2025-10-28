@@ -8,6 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -715,8 +720,127 @@
         </div>
     </div>
 
-    <script type="module">
-        import { FirebaseDB } from './firebase-config.js';
+    <script>
+        // Firebase Configuration Loader
+        let firebaseApp = null;
+        let firebaseDatabase = null;
+        let firebaseConfigLoaded = false;
+
+        async function initFirebase() {
+            if (firebaseConfigLoaded) return;
+            
+            try {
+                const response = await fetch('/.netlify/functions/firebase-config');
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar la configuración de Firebase');
+                }
+                const config = await response.json();
+                
+                firebaseApp = firebase.initializeApp(config);
+                firebaseDatabase = firebase.database();
+                firebaseConfigLoaded = true;
+                console.log('Firebase inicializado correctamente');
+            } catch (error) {
+                console.error('Error al inicializar Firebase:', error);
+                throw error;
+            }
+        }
+
+        // Firebase DB Class
+        class FirebaseDB {
+            constructor(docenteId) {
+                this.docenteId = docenteId;
+            }
+
+            getDb() {
+                return firebaseDatabase;
+            }
+
+            async getAll(storeName) {
+                try {
+                    const db = this.getDb();
+                    const snapshot = await db.ref(`courses/${this.docenteId}/${storeName}`).once('value');
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        return Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    }
+                    return [];
+                } catch (error) {
+                    console.error(`Error getting ${storeName}:`, error);
+                    return [];
+                }
+            }
+
+            async add(storeName, data) {
+                try {
+                    const db = this.getDb();
+                    const newRef = db.ref(`courses/${this.docenteId}/${storeName}`).push();
+                    await newRef.set(data);
+                    return newRef.key;
+                } catch (error) {
+                    console.error(`Error adding to ${storeName}:`, error);
+                    throw error;
+                }
+            }
+
+            async update(storeName, id, data) {
+                try {
+                    const db = this.getDb();
+                    await db.ref(`courses/${this.docenteId}/${storeName}/${id}`).update(data);
+                } catch (error) {
+                    console.error(`Error updating ${storeName}:`, error);
+                    throw error;
+                }
+            }
+
+            async delete(storeName, id) {
+                try {
+                    const db = this.getDb();
+                    await db.ref(`courses/${this.docenteId}/${storeName}/${id}`).remove();
+                } catch (error) {
+                    console.error(`Error deleting from ${storeName}:`, error);
+                    throw error;
+                }
+            }
+
+            async getEvaluations() {
+                try {
+                    const db = this.getDb();
+                    const snapshot = await db.ref(`courses/${this.docenteId}/evaluations`).once('value');
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        return Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('Error getting evaluations:', error);
+                    return [];
+                }
+            }
+
+            async upsertEvaluation(taskId, studentId, value) {
+                try {
+                    const evaluations = await this.getEvaluations();
+                    const existing = evaluations.find(e => e.taskId === taskId && e.studentId === studentId);
+
+                    if (existing) {
+                        await this.update('evaluations', existing.id, { taskId, studentId, value });
+                    } else {
+                        await this.add('evaluations', { taskId, studentId, value });
+                    }
+                } catch (error) {
+                    console.error('Error upserting evaluation:', error);
+                    throw error;
+                }
+            }
+
+            async getEvaluationsMap() {
+                const evals = await this.getEvaluations();
+                const map = new Map();
+                evals.forEach(ev => map.set(ev.taskId + ':' + ev.studentId, ev));
+                return map;
+            }
+        }
 
         const DB_NAME = 'EvaluacionDB';
         let db, docenteActual = null, courseActual = null, firebaseDB = null;
@@ -734,6 +858,7 @@
             await loadOAData();
 
             // Initialize Firebase
+            await initFirebase();
             firebaseDB = new FirebaseDB(docenteActual);
 
             // Check if migration is needed
@@ -1020,6 +1145,11 @@
 
             tbody.innerHTML = bodyHTML;
             meta.textContent = (course?.name||'') + ' - ' + activeStudents.length + ' estudiantes activos (' + courseStudents.length + ' total), ' + courseTasks.length + ' tareas';
+        }
+
+        // Modal utilities
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
 
         function openAddStudentModal() {
