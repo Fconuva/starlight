@@ -783,6 +783,9 @@
                 <select id="courseSelect" onchange="loadPlanilla()">
                     <option value="">-- Seleccionar --</option>
                 </select>
+                <button class="btn-small btn-danger" onclick="deleteCourse()" style="margin-left: 10px;">
+                    <i class="fas fa-trash"></i> Eliminar Curso
+                </button>
                 <span id="meta" style="margin-left: auto;"></span>
             </div>
 
@@ -1392,6 +1395,55 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
         }
 
+        async function deleteCourse() {
+            if (!courseActual) {
+                alert('Selecciona un curso primero');
+                return;
+            }
+
+            const courses = await getAllData('courses');
+            const course = courses.find(c => c.id === courseActual);
+            
+            if (!confirm(`¿Estás seguro de eliminar el curso "${course?.name}"?\n\nEsto también eliminará todos los estudiantes, tareas y evaluaciones asociadas.`)) {
+                return;
+            }
+
+            try {
+                console.log('🗑️ Eliminando curso:', courseActual);
+
+                // Eliminar estudiantes del curso
+                const students = await getAllData('students');
+                const courseStudents = students.filter(s => s.courseId === courseActual);
+                for (const student of courseStudents) {
+                    await deleteData('students', student.id);
+                }
+
+                // Eliminar tareas del curso
+                const tasks = await getAllData('tasks');
+                const courseTasks = tasks.filter(t => t.courseId === courseActual);
+                for (const task of courseTasks) {
+                    await deleteData('tasks', task.id);
+                }
+
+                // Eliminar evaluaciones (si existen como objetos separados)
+                // Las evaluaciones están anidadas, no es necesario eliminarlas por separado
+
+                // Eliminar el curso
+                await deleteData('courses', courseActual);
+
+                console.log('✅ Curso eliminado correctamente');
+
+                courseActual = null;
+                await loadCourses();
+                await loadPlanilla();
+
+                alert('Curso eliminado correctamente');
+            } catch (error) {
+                console.error('❌ Error al eliminar curso:', error);
+                alert(`Error al eliminar el curso: ${error.message}`);
+            }
+        }
+
         async function loadPlanilla() {
             courseActual = document.getElementById('courseSelect').value; // Mantener como string
             console.log('📚 Curso seleccionado:', courseActual);
@@ -1423,8 +1475,8 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 if (t.oa && oaData[t.oa]) {
                     oaInfo = '<br><small style="color: #666;">' + t.oa + '</small>';
                     if (t.indicators && t.indicators.length > 0) {
-                        const selectedIndicators = t.indicators.map(idx => oaData[t.oa].indicadores[idx]).join('; ');
-                        oaInfo += '<br><small style="color: #888; font-size: 9px;">' + selectedIndicators + '</small>';
+                        // Mostrar solo el número de indicadores, no el texto completo
+                        oaInfo += '<br><small style="color: #888; font-size: 9px;">' + t.indicators.length + ' indicador(es)</small>';
                     }
                 }
                 oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px;">Editar</button>';
