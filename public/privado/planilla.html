@@ -601,6 +601,7 @@
             </div>
             <div class="card">
                 <h3>Gestor</h3>
+                <button class="card-btn" onclick="openAddCourseModal()"><i class="fas fa-graduation-cap"></i> Agregar Curso</button>
                 <button class="card-btn" onclick="openAddStudentModal()"><i class="fas fa-user-plus"></i> Agregar Estudiante</button>
                 <button class="card-btn" onclick="openAddTaskModal()"><i class="fas fa-tasks"></i> Agregar Tarea</button>
             </div>
@@ -633,6 +634,34 @@
                         <tr><td colspan="7" class="empty-state">Seleccione un curso</td></tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: AGREGAR CURSO -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('courseModal')">&times;</button>
+            <div class="modal-header">Agregar Curso</div>
+            <div class="form-group">
+                <label>Nombre del Curso:</label>
+                <input type="text" id="courseName" placeholder="Ej: Lenguaje y Comunicación">
+            </div>
+            <div class="form-group">
+                <label>Letra:</label>
+                <input type="text" id="courseLetter" placeholder="Ej: A" maxlength="1">
+            </div>
+            <div class="form-group">
+                <label>Tipo:</label>
+                <select id="courseType">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="Basica">Básica</option>
+                    <option value="Media">Media</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" onclick="saveCourse()">Guardar</button>
+                <button class="modal-btn modal-btn-cancel" onclick="closeModal('courseModal')">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1074,6 +1103,32 @@
             });
         }
 
+        // Course functions
+        function openAddCourseModal() {
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        async function saveCourse() {
+            const name = document.getElementById('courseName').value.trim();
+            const letter = document.getElementById('courseLetter').value.trim().toUpperCase();
+            const type = document.getElementById('courseType').value;
+
+            if (!name || !letter || !type) {
+                alert('Completa todos los campos');
+                return;
+            }
+
+            await addData('courses', { name, letter, type });
+            
+            closeModal('courseModal');
+            document.getElementById('courseName').value = '';
+            document.getElementById('courseLetter').value = '';
+            document.getElementById('courseType').value = '';
+            
+            await loadCourses();
+            alert('Curso agregado correctamente');
+        }
+
         async function loadPlanilla() {
             courseActual = parseInt(document.getElementById('courseSelect').value);
             const tbody = document.getElementById('planillaBody');
@@ -1150,6 +1205,12 @@
         // Modal utilities
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
+        }
+
+        function logout() {
+            localStorage.removeItem('docenteActual');
+            sessionStorage.removeItem('docenteActual');
+            window.location.href = 'index.html';
         }
 
         function openAddStudentModal() {
