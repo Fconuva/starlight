@@ -2308,8 +2308,22 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     
+                    console.error('❌ Error API Response:', errorData);
+                    
                     if (response.status === 503) {
-                        throw new Error('Todos los proveedores de IA están temporalmente no disponibles. Intenta más tarde.');
+                        let debugMsg = 'Todos los proveedores fallaron.';
+                        if (errorData.details) {
+                            debugMsg += '\n\nDetalles:\n' + errorData.details.map(e => 
+                                `${e.provider}: ${e.error} (${e.status || 'N/A'})`
+                            ).join('\n');
+                        }
+                        if (errorData.debug) {
+                            debugMsg += '\n\nAPI Keys configuradas:\n' + 
+                                `Gemini: ${errorData.debug.hasGeminiKey ? '✅' : '❌'}\n` +
+                                `OpenAI: ${errorData.debug.hasOpenAIKey ? '✅' : '❌'}\n` +
+                                `HuggingFace: ${errorData.debug.hasHFKey ? '✅' : '❌'}`;
+                        }
+                        throw new Error(debugMsg);
                     } else if (response.status === 429) {
                         throw new Error('LÍMITE_ALCANZADO');
                     } else if (response.status === 403) {

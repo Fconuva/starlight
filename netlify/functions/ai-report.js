@@ -38,7 +38,7 @@ export async function handler(event) {
     { name: 'HuggingFace', fn: callHuggingFace }
   ];
 
-  let lastError = null;
+  let errors = [];
   
   for (const provider of providers) {
     try {
@@ -56,14 +56,14 @@ export async function handler(event) {
         })
       };
     } catch (error) {
-      console.error(`❌ ${provider.name} falló:`, error.message);
-      lastError = error;
+      console.error(`❌ ${provider.name} falló:`, error.message, error.status);
+      errors.push({
+        provider: provider.name,
+        error: error.message,
+        status: error.status
+      });
       
-      // Si es error 429 (rate limit) o 403 (quota), intentar siguiente
-      if (error.status === 429 || error.status === 403) {
-        continue;
-      }
-      // Si es otro error, también intentar siguiente
+      // Intentar siguiente proveedor
       continue;
     }
   }
@@ -73,8 +73,12 @@ export async function handler(event) {
     statusCode: 503,
     body: JSON.stringify({
       error: 'Todos los proveedores de IA fallaron',
-      lastError: lastError?.message || 'Unknown error',
-      providers: providers.map(p => p.name)
+      details: errors,
+      debug: {
+        hasGeminiKey: !!process.env.GEMINI_API_KEY,
+        hasOpenAIKey: !!process.env.OPENAI_API_KEY,
+        hasHFKey: !!process.env.HUGGINGFACE_API_KEY
+      }
     })
   };
 }
