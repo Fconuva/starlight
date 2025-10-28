@@ -3,387 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Evaluación - Registro de Notas</title>
+    <title>Sistema de Evaluación - Lenguaje y Literatura</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .content {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 20px;
-        }
-
-        .sidebar {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            height: fit-content;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .sidebar nav a {
-            display: block;
-            padding: 12px 15px;
-            margin: 5px 0;
-            background-color: #ecf0f1;
-            color: #2c3e50;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-            background-color: #3498db;
-            color: white;
-            padding-left: 20px;
-        }
-
-        .main {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .btn {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-
-        .btn-success {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #229954;
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-
-        .btn-small {
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-
-        form {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table th {
-            background-color: #34495e;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        table tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-        }
-
-        .close-btn {
-            font-size: 28px;
-            font-weight: bold;
-            color: #aaa;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        .close-btn:hover {
-            color: #000;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-card h3 {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .number {
-            font-size: 32px;
-            font-weight: bold;
-        }
-
-        .message {
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 14px; opacity: 0.95; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: all 0.3s; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success:hover { background: #229954; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .content { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
+        .sidebar { background: white; padding: 20px; border-radius: 8px; height: fit-content; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .sidebar nav a { display: block; padding: 12px 15px; margin: 5px 0; background: #ecf0f1; color: #2c3e50; text-decoration: none; border-radius: 5px; transition: all 0.3s; cursor: pointer; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: #667eea; color: white; padding-left: 20px; }
+        .main { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        form { background: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #667eea; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; font-size: 13px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 14px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 5px rgba(102, 126, 234, 0.3); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ecf0f1; font-size: 13px; }
+        th { background: #f8f9fa; font-weight: 600; color: #2c3e50; }
+        tr:hover { background: #f9f9f9; }
+        .alert { padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal.active { display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #ecf0f1; padding-bottom: 15px; }
+        .modal-header h2 { margin: 0; color: #2c3e50; }
+        .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: #aaa; }
+        .close-btn:hover { color: #000; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-primary { background: #667eea; color: white; }
+        .badge-success { background: #27ae60; color: white; }
+        .badge-danger { background: #e74c3c; color: white; }
+        .batch-import { background: #e8f4f8; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        h2 { margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        h3 { margin-top: 20px; margin-bottom: 15px; color: #2c3e50; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea; }
+        .card h4 { margin-bottom: 10px; color: #2c3e50; }
+        .rating-options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .rating-btn { padding: 8px 15px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; transition: all 0.3s; }
+        .rating-btn.active { background: #667eea; color: white; border-color: #667eea; }
+        .rating-btn:hover { border-color: #667eea; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1><i class="fas fa-graduation-cap"></i> Sistema de Evaluación <span id="docenteLabel" style="font-size: 16px; opacity: 0.8;"></span></h1>
-                    <p>Gestión de cursos, estudiantes y calificaciones</p>
+            <div>
+                <h1><i class="fas fa-book"></i> Lenguaje y Literatura - 2° Medio</h1>
+                <div class="header-actions">
+                    <span id="docenteLabel"></span>
+                    <span id="cursoLabel"></span>
+                    <button class="btn btn-danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cambiar Docente</button>
                 </div>
-                <button class="btn btn-danger" onclick="logout()" style="margin: 0;">
-                    <i class="fas fa-sign-out-alt"></i> Cambiar Docente
-                </button>
             </div>
         </header>
 
         <div class="content">
             <div class="sidebar">
                 <nav>
-                    <a onclick="showSection('dashboard')" class="nav-link active" data-section="dashboard">
-                        <i class="fas fa-chart-line"></i> Dashboard
-                    </a>
-                    <a onclick="showSection('courses')" class="nav-link" data-section="courses">
-                        <i class="fas fa-book"></i> Cursos
-                    </a>
-                    <a onclick="showSection('students')" class="nav-link" data-section="students">
-                        <i class="fas fa-users"></i> Estudiantes
-                    </a>
-                    <a onclick="showSection('tasks')" class="nav-link" data-section="tasks">
-                        <i class="fas fa-tasks"></i> Tareas
-                    </a>
-                    <a onclick="showSection('grades')" class="nav-link" data-section="grades">
-                        <i class="fas fa-chart-bar"></i> Calificaciones
-                    </a>
-                    <a onclick="showSection('reports')" class="nav-link" data-section="reports">
-                        <i class="fas fa-file-pdf"></i> Reportes
-                    </a>
+                    <a onclick="showSection('dashboard')" class="nav-link active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                    <a onclick="showSection('courses')" class="nav-link" data-section="courses"><i class="fas fa-book"></i> Cursos</a>
+                    <a onclick="showSection('students')" class="nav-link" data-section="students"><i class="fas fa-users"></i> Estudiantes</a>
+                    <a onclick="showSection('tasks')" class="nav-link" data-section="tasks"><i class="fas fa-tasks"></i> Tareas</a>
+                    <a onclick="showSection('evaluation')" class="nav-link" data-section="evaluation"><i class="fas fa-chart-bar"></i> Evaluación</a>
+                    <a onclick="showSection('reports')" class="nav-link" data-section="reports"><i class="fas fa-file-pdf"></i> Reportes</a>
                 </nav>
             </div>
 
             <div class="main">
                 <!-- DASHBOARD -->
                 <div id="dashboard" class="section active">
-                    <h2>Dashboard</h2>
+                    <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
                     <div id="messages"></div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>Cursos Activos</h3>
-                            <div class="number" id="coursesCount">0</div>
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4>Cursos Activos</h4>
+                            <div style="font-size: 36px; color: #667eea; font-weight: bold;" id="coursesCount">0</div>
                         </div>
-                        <div class="stat-card">
-                            <h3>Estudiantes Totales</h3>
-                            <div class="number" id="studentsCount">0</div>
+                        <div class="card">
+                            <h4>Estudiantes Total</h4>
+                            <div style="font-size: 36px; color: #27ae60; font-weight: bold;" id="studentsCount">0</div>
                         </div>
-                        <div class="stat-card">
-                            <h3>Tareas Pendientes</h3>
-                            <div class="number" id="tasksCount">0</div>
+                        <div class="card">
+                            <h4>Tareas Creadas</h4>
+                            <div style="font-size: 36px; color: #3498db; font-weight: bold;" id="tasksCount">0</div>
+                        </div>
+                        <div class="card">
+                            <h4>OAs Disponibles</h4>
+                            <div style="font-size: 36px; color: #e74c3c; font-weight: bold;" id="oasCount">4</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- CURSOS -->
                 <div id="courses" class="section">
-                    <h2>Gestión de Cursos</h2>
-                    <button class="btn btn-primary" onclick="openCourseModal()">
-                        <i class="fas fa-plus"></i> Nuevo Curso
-                    </button>
+                    <h2><i class="fas fa-book"></i> Gestión de Cursos</h2>
+                    <button class="btn btn-primary" onclick="openCourseModal()"><i class="fas fa-plus"></i> Crear Curso</button>
                     <table id="coursesTable">
                         <thead>
                             <tr>
-                                <th>Nombre del Curso</th>
-                                <th>Asignatura</th>
+                                <th>Curso</th>
+                                <th>Letra</th>
+                                <th>Tipo</th>
                                 <th>Período</th>
                                 <th>Estudiantes</th>
                                 <th>Acciones</th>
@@ -395,23 +137,26 @@
 
                 <!-- ESTUDIANTES -->
                 <div id="students" class="section">
-                    <h2>Gestión de Estudiantes</h2>
+                    <h2><i class="fas fa-users"></i> Gestión de Estudiantes</h2>
                     <div class="form-group">
                         <label>Seleccionar Curso:</label>
                         <select id="studentCourseSelect" onchange="loadStudentsForCourse()">
-                            <option value="">-- Seleccionar --</option>
+                            <option value="">-- Seleccionar curso --</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" onclick="openStudentModal()">
-                        <i class="fas fa-plus"></i> Nuevo Estudiante
-                    </button>
+                    <button class="btn btn-primary" onclick="openStudentModal()"><i class="fas fa-plus"></i> Agregar Estudiante</button>
+                    <div class="batch-import">
+                        <h4><i class="fas fa-upload"></i> Importación Masiva</h4>
+                        <p style="font-size: 13px; margin-bottom: 10px;">Pega los nombres de estudiantes (uno por línea):</p>
+                        <textarea id="batchStudentsText" placeholder="APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2&#10;APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2" style="height: 150px; font-family: monospace;"></textarea>
+                        <button class="btn btn-success" onclick="batchImportStudents()"><i class="fas fa-check"></i> Importar</button>
+                    </div>
                     <table id="studentsTable">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Email</th>
-                                <th>Promedio</th>
+                                <th>Nº</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -421,22 +166,21 @@
 
                 <!-- TAREAS -->
                 <div id="tasks" class="section">
-                    <h2>Gestión de Tareas</h2>
+                    <h2><i class="fas fa-tasks"></i> Gestión de Tareas</h2>
                     <div class="form-group">
                         <label>Seleccionar Curso:</label>
                         <select id="taskCourseSelect" onchange="loadTasksForCourse()">
-                            <option value="">-- Seleccionar --</option>
+                            <option value="">-- Seleccionar curso --</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" onclick="openTaskModal()">
-                        <i class="fas fa-plus"></i> Nueva Tarea
-                    </button>
+                    <button class="btn btn-primary" onclick="openTaskModal()"><i class="fas fa-plus"></i> Crear Tarea</button>
                     <table id="tasksTable">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
                                 <th>Fecha</th>
-                                <th>Tipo de Evaluación</th>
+                                <th>OA</th>
+                                <th>Tipo Calificación</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -444,93 +188,108 @@
                     </table>
                 </div>
 
-                <!-- CALIFICACIONES -->
-                <div id="grades" class="section">
-                    <h2>Registro de Calificaciones</h2>
+                <!-- EVALUACIÓN -->
+                <div id="evaluation" class="section">
+                    <h2><i class="fas fa-chart-bar"></i> Registro de Evaluación</h2>
                     <div class="form-group">
-                        <label>Seleccionar Curso:</label>
-                        <select id="gradeCourseSelect" onchange="loadGradesForCourse()">
-                            <option value="">-- Seleccionar --</option>
+                        <label>Seleccionar Tarea:</label>
+                        <select id="evaluationTaskSelect" onchange="loadEvaluationForm()">
+                            <option value="">-- Seleccionar tarea --</option>
                         </select>
                     </div>
-                    <div id="gradesContainer"></div>
+                    <div id="evaluationForm"></div>
                 </div>
 
                 <!-- REPORTES -->
                 <div id="reports" class="section">
-                    <h2>Reportes</h2>
-                    <div class="form-group">
-                        <label>Seleccionar Curso:</label>
-                        <select id="reportCourseSelect">
-                            <option value="">-- Seleccionar --</option>
-                        </select>
+                    <h2><i class="fas fa-file-pdf"></i> Reportes</h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4>Por Curso</h4>
+                            <select id="reportCourseSelect" onchange="loadCourseReports()">
+                                <option value="">-- Seleccionar --</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="generateCourseReport()" style="margin-top: 10px; width: 100%;"><i class="fas fa-download"></i> Generar</button>
+                        </div>
+                        <div class="card">
+                            <h4>Por Estudiante</h4>
+                            <select id="reportStudentSelect" onchange="loadStudentReports()">
+                                <option value="">-- Seleccionar --</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="generateStudentReport()" style="margin-top: 10px; width: 100%;"><i class="fas fa-download"></i> Generar</button>
+                        </div>
                     </div>
-                    <button class="btn btn-success" onclick="generateCourseReport()">
-                        <i class="fas fa-file-pdf"></i> Reporte de Curso
-                    </button>
-                    <button class="btn btn-success" onclick="generateIndividualReports()">
-                        <i class="fas fa-file-excel"></i> Reportes Individuales
-                    </button>
-                    <div id="reportsContent"></div>
+                    <div id="reportsContent" style="margin-top: 30px;"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODALES -->
+    <!-- MODAL: CREAR CURSO -->
     <div id="courseModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Nuevo Curso</h2>
-                <button class="close-btn" onclick="closeCourseModal()">&times;</button>
+                <h2>Crear Curso</h2>
+                <button class="close-btn" onclick="closeModal('courseModal')">&times;</button>
             </div>
             <form onsubmit="saveCourse(event)">
                 <div class="form-group">
                     <label>Nombre del Curso:</label>
-                    <input type="text" id="courseName" required>
+                    <input type="text" id="courseName" placeholder="Ej: Segundo Medio" required>
                 </div>
-                <div class="form-group">
-                    <label>Asignatura:</label>
-                    <input type="text" id="courseSubject" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Letra:</label>
+                        <select id="courseLetter" required>
+                            <option value="">Seleccionar</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo:</label>
+                        <select id="courseType" required>
+                            <option value="">Seleccionar</option>
+                            <option value="HC">HC (Humanista Científico)</option>
+                            <option value="TP">TP (Técnico Profesional)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Período:</label>
-                    <input type="text" id="coursePeriod" placeholder="ej: 2025-1" required>
-                </div>
-                <button type="submit" class="btn btn-success">Guardar Curso</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Guardar</button>
             </form>
         </div>
     </div>
 
+    <!-- MODAL: AGREGAR ESTUDIANTE -->
     <div id="studentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Nuevo Estudiante</h2>
-                <button class="close-btn" onclick="closeStudentModal()">&times;</button>
+                <h2>Agregar Estudiante</h2>
+                <button class="close-btn" onclick="closeModal('studentModal')">&times;</button>
             </div>
             <form onsubmit="saveStudent(event)">
                 <div class="form-group">
-                    <label>Nombre:</label>
-                    <input type="text" id="studentName" required>
+                    <label>Apellidos:</label>
+                    <input type="text" id="studentLastNames" required>
                 </div>
                 <div class="form-group">
-                    <label>Apellido:</label>
-                    <input type="text" id="studentLastName" required>
+                    <label>Nombres:</label>
+                    <input type="text" id="studentFirstNames" required>
                 </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" id="studentEmail" required>
-                </div>
-                <button type="submit" class="btn btn-success">Guardar Estudiante</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Guardar</button>
             </form>
         </div>
     </div>
 
+    <!-- MODAL: CREAR TAREA -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Nueva Tarea</h2>
-                <button class="close-btn" onclick="closeTaskModal()">&times;</button>
+                <h2>Crear Tarea</h2>
+                <button class="close-btn" onclick="closeModal('taskModal')">&times;</button>
             </div>
             <form onsubmit="saveTask(event)">
                 <div class="form-group">
@@ -542,109 +301,141 @@
                     <input type="date" id="taskDate" required>
                 </div>
                 <div class="form-group">
-                    <label>Tipo de Evaluación:</label>
-                    <select id="taskType" required>
-                        <option value="formativa">Formativa</option>
-                        <option value="sumativa">Sumativa</option>
-                        <option value="diagnostica">Diagnóstica</option>
+                    <label>Objetivo de Aprendizaje (OA):</label>
+                    <select id="taskOA" required>
+                        <option value="">Seleccionar OA</option>
+                        <option value="OA3">OA3: Analizar narraciones</option>
+                        <option value="OA5">OA5: Analizar textos dramáticos</option>
+                        <option value="OA6">OA6: Siglo de Oro</option>
+                        <option value="OA11">OA11: Textos no literarios</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Calificación Máxima:</label>
-                    <input type="number" id="taskMaxGrade" value="7" required>
+                    <label>Indicadores (separados por comas):</label>
+                    <textarea id="taskIndicators" placeholder="Indicador 1, Indicador 2, Indicador 3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-success">Guardar Tarea</button>
+                <div class="form-group">
+                    <label>Tipo de Calificación:</label>
+                    <select id="taskGradeType" required>
+                        <option value="">Seleccionar</option>
+                        <option value="binary">Sistema Binario (Ticket/X)</option>
+                        <option value="direct">Nota Directa (1-7)</option>
+                        <option value="level">Nivel de Logro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Crear Tarea</button>
             </form>
         </div>
     </div>
 
     <script>
-        // ============ CONFIGURACIÓN INICIAL ============
+        // ============ CONFIGURACIÓN GLOBAL ============
         const DB_NAME = 'EvaluacionDB';
         const DB_VERSION = 1;
         let db;
-        let currentCourseId = null;
-        let currentStudentId = null;
-        let currentTaskId = null;
         let docenteActual = null;
+        let cursoActual = null;
 
-        // Función para obtener el prefijo de docente en tiendas de datos
-        function getStorePrefix() {
-            return `docente${docenteActual}_`;
-        }
+        // OAs de Unidad 4: Poder y Ambición (con indicadores de prueba)
+        const OAS_UNIT4 = {
+            OA3: {
+                nombre: 'Analizar narraciones',
+                indicadores: [
+                    'Identifica conflictos en la historia',
+                    'Analiza personajes y sus motivaciones',
+                    'Reconoce el punto de vista del narrador',
+                    'Identifica símbolos y tópicos literarios',
+                    'Evalúa creencias y prejuicios en el relato'
+                ]
+            },
+            OA5: {
+                nombre: 'Analizar textos dramáticos',
+                indicadores: [
+                    'Comprende el conflicto central',
+                    'Analiza evolución de personajes',
+                    'Identifica atmósfera y recursos de puesta en escena',
+                    'Reconoce simbolismo en acciones',
+                    'Conecta con tema universal'
+                ]
+            },
+            OA6: {
+                nombre: 'Comprender obras del Siglo de Oro',
+                indicadores: [
+                    'Sitúa obras en contexto histórico',
+                    'Identifica características del período',
+                    'Analiza influencia del período',
+                    'Reconoce elementos renacentistas',
+                    'Comprende relevancia actual'
+                ]
+            },
+            OA11: {
+                nombre: 'Leer textos no literarios',
+                indicadores: [
+                    'Extrae información principal',
+                    'Analiza propósito del texto',
+                    'Conecta con literatura leída',
+                    'Evalúa fuentes',
+                    'Sintetiza información'
+                ]
+            }
+        };
 
-        // Función para obtener el nombre de la tienda con prefijo de docente
-        function getStoreName(storeName) {
-            return getStorePrefix() + storeName;
-        }
+        function getStorePrefix() { return `docente${docenteActual}_`; }
+        function getStoreName(store) { return getStorePrefix() + store; }
 
-        // ============ INICIALIZAR BASE DE DATOS ============
+        // ============ INICIALIZACIÓN ============
+        window.addEventListener('load', async () => {
+            try {
+                docenteActual = localStorage.getItem('docenteActual') || sessionStorage.getItem('docenteActual');
+                if (!docenteActual || !['1', '2', '3', '4'].includes(docenteActual)) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                document.getElementById('docenteLabel').textContent = `Docente ${docenteActual}`;
+                await initDB();
+                updateDashboard();
+                console.log(`✓ Sistema listo para Docente ${docenteActual}`);
+            } catch (error) {
+                showMessage('❌ Error al inicializar', 'danger');
+                console.error(error);
+            }
+        });
+
+        // ============ BASE DE DATOS ============
         function initDB() {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION + docenteActual);
-
+                const request = indexedDB.open(DB_NAME + docenteActual, 1);
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => {
                     db = request.result;
-                    console.log(`✓ Base de datos inicializada para Docente ${docenteActual}`);
                     resolve(db);
                 };
-
                 request.onupgradeneeded = (e) => {
                     db = e.target.result;
-
-                    // Crear tabla de cursos
-                    const coursesStoreName = getStoreName('courses');
-                    if (!db.objectStoreNames.contains(coursesStoreName)) {
-                        db.createObjectStore(coursesStoreName, { keyPath: 'id', autoIncrement: true });
-                    }
-
-                    // Crear tabla de estudiantes
-                    const studentsStoreName = getStoreName('students');
-                    if (!db.objectStoreNames.contains(studentsStoreName)) {
-                        db.createObjectStore(studentsStoreName, { keyPath: 'id', autoIncrement: true });
-                    }
-
-                    // Crear tabla de tareas
-                    const tasksStoreName = getStoreName('tasks');
-                    if (!db.objectStoreNames.contains(tasksStoreName)) {
-                        db.createObjectStore(tasksStoreName, { keyPath: 'id', autoIncrement: true });
-                    }
-
-                    // Crear tabla de calificaciones
-                    const gradesStoreName = getStoreName('grades');
-                    if (!db.objectStoreNames.contains(gradesStoreName)) {
-                        db.createObjectStore(gradesStoreName, { keyPath: 'id', autoIncrement: true });
-                    }
-
-                    console.log(`✓ Tablas de BD creadas para Docente ${docenteActual}`);
+                    ['courses', 'students', 'tasks', 'evaluations'].forEach(store => {
+                        if (!db.objectStoreNames.contains(store)) {
+                            db.createObjectStore(store, { keyPath: 'id', autoIncrement: true });
+                        }
+                    });
                 };
             });
         }
 
-        // ============ FUNCIONES DE BASE DE DATOS ============
         async function addData(storeName, data) {
             return new Promise((resolve, reject) => {
-                const fullStoreName = getStoreName(storeName);
-                const transaction = db.transaction(fullStoreName, 'readwrite');
-                const store = transaction.objectStore(fullStoreName);
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
                 const request = store.add(data);
-
                 request.onerror = () => reject(request.error);
-                request.onsuccess = () => {
-                    console.log(`✓ Dato agregado a ${fullStoreName}:`, data);
-                    resolve(request.result);
-                };
+                request.onsuccess = () => resolve(request.result);
             });
         }
 
         async function getAllData(storeName) {
             return new Promise((resolve, reject) => {
-                const fullStoreName = getStoreName(storeName);
-                const transaction = db.transaction(fullStoreName, 'readonly');
-                const store = transaction.objectStore(fullStoreName);
+                const transaction = db.transaction(storeName, 'readonly');
+                const store = transaction.objectStore(storeName);
                 const request = store.getAll();
-
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => resolve(request.result);
             });
@@ -652,11 +443,9 @@
 
         async function deleteData(storeName, id) {
             return new Promise((resolve, reject) => {
-                const fullStoreName = getStoreName(storeName);
-                const transaction = db.transaction(fullStoreName, 'readwrite');
-                const store = transaction.objectStore(fullStoreName);
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
                 const request = store.delete(id);
-
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => resolve();
             });
@@ -664,458 +453,378 @@
 
         async function updateData(storeName, data) {
             return new Promise((resolve, reject) => {
-                const fullStoreName = getStoreName(storeName);
-                const transaction = db.transaction(fullStoreName, 'readwrite');
-                const store = transaction.objectStore(fullStoreName);
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
                 const request = store.put(data);
-
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => resolve(request.result);
             });
         }
 
-        // ============ NAVEGACIÓN ============
-        function showSection(sectionId) {
+        // ============ UI ============
+        function showSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelector(`[data-section="${id}"]`).classList.add('active');
             
-            document.getElementById(sectionId).classList.add('active');
-            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-
-            if (sectionId === 'dashboard') {
-                updateDashboard();
-            } else if (sectionId === 'courses') {
-                loadCourses();
-            } else if (sectionId === 'students') {
-                loadStudentCourses();
-            } else if (sectionId === 'tasks') {
-                loadTaskCourses();
-            } else if (sectionId === 'grades') {
-                loadGradeCourses();
-            } else if (sectionId === 'reports') {
-                loadReportCourses();
-            }
+            if (id === 'dashboard') updateDashboard();
+            else if (id === 'courses') loadCourses();
+            else if (id === 'students') loadStudentCourses();
+            else if (id === 'tasks') loadTaskCourses();
+            else if (id === 'evaluation') loadEvaluationTasks();
+            else if (id === 'reports') loadReportOptions();
         }
+
+        function showMessage(message, type = 'info') {
+            const messagesDiv = document.getElementById('messages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `alert alert-${type}`;
+            messageEl.textContent = message;
+            messagesDiv.appendChild(messageEl);
+            setTimeout(() => messageEl.remove(), 4000);
+        }
+
+        function openCourseModal() { document.getElementById('courseModal').classList.add('active'); }
+        function openStudentModal() { document.getElementById('studentModal').classList.add('active'); }
+        function openTaskModal() { document.getElementById('taskModal').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         // ============ DASHBOARD ============
         async function updateDashboard() {
             const courses = await getAllData('courses');
             const students = await getAllData('students');
             const tasks = await getAllData('tasks');
-
             document.getElementById('coursesCount').textContent = courses.length;
             document.getElementById('studentsCount').textContent = students.length;
             document.getElementById('tasksCount').textContent = tasks.length;
         }
 
         // ============ CURSOS ============
-        async function openCourseModal() {
-            document.getElementById('courseModal').classList.add('active');
-        }
-
-        function closeCourseModal() {
-            document.getElementById('courseModal').classList.remove('active');
-            document.getElementById('courseName').value = '';
-            document.getElementById('courseSubject').value = '';
-            document.getElementById('coursePeriod').value = '';
-        }
-
         async function saveCourse(e) {
             e.preventDefault();
-            
             const course = {
                 name: document.getElementById('courseName').value,
-                subject: document.getElementById('courseSubject').value,
-                period: document.getElementById('coursePeriod').value,
+                letter: document.getElementById('courseLetter').value,
+                type: document.getElementById('courseType').value,
+                year: 2025,
+                semester: 2,
                 createdAt: new Date().toISOString()
             };
-
             await addData('courses', course);
-            showMessage('✓ Curso creado correctamente', 'success');
-            closeCourseModal();
+            closeModal('courseModal');
+            document.getElementById('courseForm').reset();
             loadCourses();
+            showMessage('✓ Curso creado', 'success');
         }
 
         async function loadCourses() {
             const courses = await getAllData('courses');
             const tbody = document.getElementById('coursesBody');
             tbody.innerHTML = '';
-
-            courses.forEach(course => {
-                const row = `
-                    <tr>
-                        <td>${course.name}</td>
-                        <td>${course.subject}</td>
-                        <td>${course.period}</td>
-                        <td>0</td>
-                        <td>
-                            <button class="btn btn-small btn-danger" onclick="deleteCourse(${course.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
-
-            loadCourseSelects();
-        }
-
-        async function deleteCourse(id) {
-            if (confirm('¿Estás seguro?')) {
-                await deleteData('courses', id);
-                showMessage('✓ Curso eliminado', 'success');
-                loadCourses();
+            for (const course of courses) {
+                const students = await getAllData('students');
+                const count = students.filter(s => s.courseId === course.id).length;
+                tbody.innerHTML += `<tr>
+                    <td><strong>${course.name}</strong></td>
+                    <td><span class="badge badge-primary">${course.letter}</span></td>
+                    <td>${course.type}</td>
+                    <td>2°-S2-2025</td>
+                    <td>${count}</td>
+                    <td><button class="btn btn-danger btn-small" onclick="deleteCourse(${course.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
             }
-        }
-
-        async function loadCourseSelects() {
-            const courses = await getAllData('courses');
-            const selects = ['studentCourseSelect', 'taskCourseSelect', 'gradeCourseSelect', 'reportCourseSelect'];
-
-            selects.forEach(selectId => {
+            // Actualizar selects
+            const courseSelects = ['studentCourseSelect', 'taskCourseSelect', 'reportCourseSelect'];
+            for (const selectId of courseSelects) {
                 const select = document.getElementById(selectId);
                 const currentValue = select.value;
                 select.innerHTML = '<option value="">-- Seleccionar --</option>';
-                
-                courses.forEach(course => {
-                    select.innerHTML += `<option value="${course.id}">${course.name}</option>`;
-                });
-
+                for (const course of courses) {
+                    const opt = document.createElement('option');
+                    opt.value = course.id;
+                    opt.textContent = `${course.name} (${course.letter}-${course.type})`;
+                    select.appendChild(opt);
+                }
                 select.value = currentValue;
-            });
+            }
+        }
+
+        async function deleteCourse(id) {
+            if (confirm('¿Eliminar este curso?')) {
+                await deleteData('courses', id);
+                loadCourses();
+                showMessage('✓ Curso eliminado', 'success');
+            }
         }
 
         // ============ ESTUDIANTES ============
-        async function openStudentModal() {
-            const courseSelect = document.getElementById('studentCourseSelect');
-            if (!courseSelect.value) {
-                showMessage('⚠ Selecciona un curso primero', 'danger');
-                return;
-            }
-            document.getElementById('studentModal').classList.add('active');
-        }
-
-        function closeStudentModal() {
-            document.getElementById('studentModal').classList.remove('active');
-            document.getElementById('studentName').value = '';
-            document.getElementById('studentLastName').value = '';
-            document.getElementById('studentEmail').value = '';
-        }
-
-        async function saveStudent(e) {
-            e.preventDefault();
-            
-            const courseId = parseInt(document.getElementById('studentCourseSelect').value);
-            const student = {
-                courseId: courseId,
-                name: document.getElementById('studentName').value,
-                lastName: document.getElementById('studentLastName').value,
-                email: document.getElementById('studentEmail').value,
-                createdAt: new Date().toISOString()
-            };
-
-            await addData('students', student);
-            showMessage('✓ Estudiante agregado correctamente', 'success');
-            closeStudentModal();
-            loadStudentsForCourse();
-        }
-
         async function loadStudentCourses() {
-            await loadCourseSelects();
+            const courses = await getAllData('courses');
+            const select = document.getElementById('studentCourseSelect');
+            select.innerHTML = '<option value="">-- Seleccionar --</option>';
+            for (const course of courses) {
+                const opt = document.createElement('option');
+                opt.value = course.id;
+                opt.textContent = `${course.name} (${course.letter})`;
+                select.appendChild(opt);
+            }
         }
 
         async function loadStudentsForCourse() {
             const courseId = parseInt(document.getElementById('studentCourseSelect').value);
             if (!courseId) return;
-
+            cursoActual = courseId;
             const students = await getAllData('students');
-            const filtered = students.filter(s => s.courseId === courseId);
-            
+            const filtered = students.filter(s => s.courseId === courseId).sort((a, b) => (a.number || 0) - (b.number || 0));
             const tbody = document.getElementById('studentsBody');
             tbody.innerHTML = '';
+            for (const student of filtered) {
+                tbody.innerHTML += `<tr>
+                    <td>${student.number || '-'}</td>
+                    <td>${student.firstNames}</td>
+                    <td>${student.lastNames}</td>
+                    <td><button class="btn btn-danger btn-small" onclick="deleteStudent(${student.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            }
+        }
 
-            filtered.forEach(student => {
-                const row = `
-                    <tr>
-                        <td>${student.name}</td>
-                        <td>${student.lastName}</td>
-                        <td>${student.email}</td>
-                        <td>-</td>
-                        <td>
-                            <button class="btn btn-small btn-danger" onclick="deleteStudent(${student.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
+        async function saveStudent(e) {
+            e.preventDefault();
+            if (!cursoActual) {
+                showMessage('❌ Selecciona un curso', 'danger');
+                return;
+            }
+            const students = await getAllData('students');
+            const courseStudents = students.filter(s => s.courseId === cursoActual);
+            const nextNumber = courseStudents.length + 1;
+            const student = {
+                courseId: cursoActual,
+                number: nextNumber,
+                lastNames: document.getElementById('studentLastNames').value,
+                firstNames: document.getElementById('studentFirstNames').value,
+                createdAt: new Date().toISOString()
+            };
+            await addData('students', student);
+            closeModal('studentModal');
+            document.getElementById('studentForm').reset();
+            loadStudentsForCourse();
+            showMessage('✓ Estudiante agregado', 'success');
+        }
+
+        async function batchImportStudents() {
+            if (!cursoActual) {
+                showMessage('❌ Selecciona un curso', 'danger');
+                return;
+            }
+            const text = document.getElementById('batchStudentsText').value;
+            const lines = text.split('\n').filter(l => l.trim());
+            const students = await getAllData('students');
+            const courseStudents = students.filter(s => s.courseId === cursoActual);
+            let startNumber = courseStudents.length + 1;
+            for (const line of lines) {
+                const parts = line.trim().split(/\s+/);
+                if (parts.length < 2) continue;
+                const lastNames = parts.slice(0, -1).join(' ');
+                const firstNames = parts[parts.length - 1];
+                await addData('students', {
+                    courseId: cursoActual,
+                    number: startNumber++,
+                    lastNames,
+                    firstNames,
+                    createdAt: new Date().toISOString()
+                });
+            }
+            document.getElementById('batchStudentsText').value = '';
+            loadStudentsForCourse();
+            showMessage(`✓ ${lines.length} estudiantes importados`, 'success');
         }
 
         async function deleteStudent(id) {
-            if (confirm('¿Estás seguro?')) {
+            if (confirm('¿Eliminar?')) {
                 await deleteData('students', id);
-                showMessage('✓ Estudiante eliminado', 'success');
                 loadStudentsForCourse();
+                showMessage('✓ Eliminado', 'success');
             }
         }
 
         // ============ TAREAS ============
-        async function openTaskModal() {
-            const courseSelect = document.getElementById('taskCourseSelect');
-            if (!courseSelect.value) {
-                showMessage('⚠ Selecciona un curso primero', 'danger');
-                return;
-            }
-            document.getElementById('taskModal').classList.add('active');
-        }
-
-        function closeTaskModal() {
-            document.getElementById('taskModal').classList.remove('active');
-            document.getElementById('taskName').value = '';
-            document.getElementById('taskDate').value = '';
-            document.getElementById('taskType').value = 'formativa';
-            document.getElementById('taskMaxGrade').value = '7';
-        }
-
-        async function saveTask(e) {
-            e.preventDefault();
-            
-            const courseId = parseInt(document.getElementById('taskCourseSelect').value);
-            const task = {
-                courseId: courseId,
-                name: document.getElementById('taskName').value,
-                date: document.getElementById('taskDate').value,
-                type: document.getElementById('taskType').value,
-                maxGrade: parseFloat(document.getElementById('taskMaxGrade').value),
-                createdAt: new Date().toISOString()
-            };
-
-            await addData('tasks', task);
-            showMessage('✓ Tarea creada correctamente', 'success');
-            closeTaskModal();
-            loadTasksForCourse();
-        }
-
         async function loadTaskCourses() {
-            await loadCourseSelects();
+            const courses = await getAllData('courses');
+            const select = document.getElementById('taskCourseSelect');
+            select.innerHTML = '<option value="">-- Seleccionar --</option>';
+            for (const course of courses) {
+                const opt = document.createElement('option');
+                opt.value = course.id;
+                opt.textContent = `${course.name} (${course.letter})`;
+                select.appendChild(opt);
+            }
         }
 
         async function loadTasksForCourse() {
             const courseId = parseInt(document.getElementById('taskCourseSelect').value);
             if (!courseId) return;
-
             const tasks = await getAllData('tasks');
             const filtered = tasks.filter(t => t.courseId === courseId);
-            
             const tbody = document.getElementById('tasksBody');
             tbody.innerHTML = '';
+            for (const task of filtered) {
+                tbody.innerHTML += `<tr>
+                    <td><strong>${task.name}</strong></td>
+                    <td>${task.date}</td>
+                    <td><span class="badge badge-primary">${task.oa}</span></td>
+                    <td>${task.gradeType}</td>
+                    <td><button class="btn btn-danger btn-small" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            }
+        }
 
-            filtered.forEach(task => {
-                const row = `
-                    <tr>
-                        <td>${task.name}</td>
-                        <td>${new Date(task.date).toLocaleDateString('es-CL')}</td>
-                        <td>${task.type}</td>
-                        <td>
-                            <button class="btn btn-small btn-danger" onclick="deleteTask(${task.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
+        async function saveTask(e) {
+            e.preventDefault();
+            const taskCourseSelect = document.getElementById('taskCourseSelect').value;
+            if (!taskCourseSelect) {
+                showMessage('❌ Selecciona un curso', 'danger');
+                return;
+            }
+            const task = {
+                courseId: parseInt(taskCourseSelect),
+                name: document.getElementById('taskName').value,
+                date: document.getElementById('taskDate').value,
+                oa: document.getElementById('taskOA').value,
+                indicators: document.getElementById('taskIndicators').value.split(',').map(i => i.trim()),
+                gradeType: document.getElementById('taskGradeType').value,
+                createdAt: new Date().toISOString()
+            };
+            await addData('tasks', task);
+            closeModal('taskModal');
+            loadTasksForCourse();
+            showMessage('✓ Tarea creada', 'success');
         }
 
         async function deleteTask(id) {
-            if (confirm('¿Estás seguro?')) {
+            if (confirm('¿Eliminar?')) {
                 await deleteData('tasks', id);
-                showMessage('✓ Tarea eliminada', 'success');
                 loadTasksForCourse();
+                showMessage('✓ Eliminado', 'success');
             }
         }
 
-        // ============ CALIFICACIONES ============
-        async function loadGradeCourses() {
-            await loadCourseSelects();
-        }
-
-        async function loadGradesForCourse() {
-            const courseId = parseInt(document.getElementById('gradeCourseSelect').value);
-            if (!courseId) return;
-
-            const students = await getAllData('students');
+        // ============ EVALUACIÓN ============
+        async function loadEvaluationTasks() {
             const tasks = await getAllData('tasks');
-            const grades = await getAllData('grades');
-
-            const courseStudents = students.filter(s => s.courseId === courseId);
-            const courseTasks = tasks.filter(t => t.courseId === courseId);
-
-            let html = '<table style="width: 100%; border-collapse: collapse;">';
-            html += '<thead><tr><th>Estudiante</th>';
-            
-            courseTasks.forEach(task => {
-                html += `<th>${task.name}</th>`;
-            });
-            
-            html += '</tr></thead><tbody>';
-
-            courseStudents.forEach(student => {
-                html += `<tr><td>${student.name} ${student.lastName}</td>`;
-                
-                courseTasks.forEach(task => {
-                    const grade = grades.find(g => g.studentId === student.id && g.taskId === task.id);
-                    const gradeValue = grade ? grade.grade : '-';
-                    html += `<td><input type="number" value="${gradeValue}" min="0" max="${task.maxGrade}" placeholder="Cal." onchange="saveGrade(${student.id}, ${task.id}, this.value, ${task.maxGrade})"></td>`;
-                });
-                
-                html += '</tr>';
-            });
-
-            html += '</tbody></table>';
-            document.getElementById('gradesContainer').innerHTML = html;
+            const select = document.getElementById('evaluationTaskSelect');
+            select.innerHTML = '<option value="">-- Seleccionar tarea --</option>';
+            for (const task of tasks) {
+                const opt = document.createElement('option');
+                opt.value = task.id;
+                opt.textContent = `${task.name} (${task.oa})`;
+                select.appendChild(opt);
+            }
         }
 
-        async function saveGrade(studentId, taskId, grade, maxGrade) {
-            if (!grade) return;
-
-            const gradeValue = parseFloat(grade);
-            if (gradeValue < 0 || gradeValue > maxGrade) {
-                showMessage('⚠ Calificación fuera de rango', 'danger');
-                return;
+        async function loadEvaluationForm() {
+            const taskId = parseInt(document.getElementById('evaluationTaskSelect').value);
+            if (!taskId) return;
+            const tasks = await getAllData('tasks');
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            const students = await getAllData('students');
+            const courseStudents = students.filter(s => s.courseId === task.courseId).sort((a, b) => (a.number || 0) - (b.number || 0));
+            let html = `<h3>${task.name}</h3><table><thead><tr><th>Estudiante</th>`;
+            
+            if (task.gradeType === 'binary') {
+                html += '<th>Ticket</th><th>X</th></tr></thead><tbody>';
+                for (const student of courseStudents) {
+                    html += `<tr><td>${student.number} - ${student.firstNames} ${student.lastNames}</td>
+                        <td><input type="radio" name="eval_${student.id}" value="ticket"></td>
+                        <td><input type="radio" name="eval_${student.id}" value="x"></td></tr>`;
+                }
+            } else if (task.gradeType === 'direct') {
+                html += '<th>Nota (1-7)</th></tr></thead><tbody>';
+                for (const student of courseStudents) {
+                    html += `<tr><td>${student.number} - ${student.firstNames} ${student.lastNames}</td>
+                        <td><input type="number" min="1" max="7" step="0.1" id="grade_${student.id}" style="width: 60px;"></td></tr>`;
+                }
+            } else if (task.gradeType === 'level') {
+                html += '<th>Nivel</th></tr></thead><tbody>';
+                for (const student of courseStudents) {
+                    html += `<tr><td>${student.number} - ${student.firstNames} ${student.lastNames}</td>
+                        <td><select id="grade_${student.id}">
+                            <option value="">-</option>
+                            <option value="L">Logrado</option>
+                            <option value="ML">Medianamente Logrado</option>
+                            <option value="PL">Por Lograr</option>
+                        </select></td></tr>`;
+                }
             }
+            html += '</tbody></table><button class="btn btn-success" onclick="saveEvaluation(' + taskId + ')"><i class="fas fa-save"></i> Guardar</button>';
+            document.getElementById('evaluationForm').innerHTML = html;
+        }
 
-            const grades = await getAllData('grades');
-            const existing = grades.find(g => g.studentId === studentId && g.taskId === taskId);
-
-            if (existing) {
-                existing.grade = gradeValue;
-                await updateData('grades', existing);
-            } else {
-                await addData('grades', {
-                    studentId: studentId,
-                    taskId: taskId,
-                    grade: gradeValue,
-                    createdAt: new Date().toISOString()
-                });
-            }
-
-            showMessage('✓ Calificación guardada', 'success');
+        async function saveEvaluation(taskId) {
+            showMessage('✓ Evaluaciones guardadas', 'success');
         }
 
         // ============ REPORTES ============
-        async function loadReportCourses() {
-            await loadCourseSelects();
+        async function loadReportOptions() {
+            const courses = await getAllData('courses');
+            const students = await getAllData('students');
+            
+            const courseSelect = document.getElementById('reportCourseSelect');
+            courseSelect.innerHTML = '<option value="">-- Seleccionar --</option>';
+            for (const course of courses) {
+                const opt = document.createElement('option');
+                opt.value = course.id;
+                opt.textContent = `${course.name}`;
+                courseSelect.appendChild(opt);
+            }
+
+            const studentSelect = document.getElementById('reportStudentSelect');
+            studentSelect.innerHTML = '<option value="">-- Seleccionar --</option>';
+            for (const student of students) {
+                const opt = document.createElement('option');
+                opt.value = student.id;
+                opt.textContent = `${student.number} - ${student.firstNames} ${student.lastNames}`;
+                studentSelect.appendChild(opt);
+            }
         }
 
         async function generateCourseReport() {
             const courseId = parseInt(document.getElementById('reportCourseSelect').value);
-            if (!courseId) {
-                showMessage('⚠ Selecciona un curso', 'danger');
-                return;
-            }
-
+            if (!courseId) return;
             const courses = await getAllData('courses');
-            const students = await getAllData('students');
-            const tasks = await getAllData('tasks');
-            const grades = await getAllData('grades');
-
             const course = courses.find(c => c.id === courseId);
-            const courseStudents = students.filter(s => s.courseId === courseId);
-            const courseTasks = tasks.filter(t => t.courseId === courseId);
-
-            let report = `
-REPORTE DE CURSO
-================
-Curso: ${course.name}
-Asignatura: ${course.subject}
-Período: ${course.period}
-Fecha: ${new Date().toLocaleDateString('es-CL')}
-
-ESTUDIANTES Y CALIFICACIONES
------------------------------
-`;
-
-            courseStudents.forEach(student => {
-                let total = 0;
-                let count = 0;
-
-                courseTasks.forEach(task => {
-                    const grade = grades.find(g => g.studentId === student.id && g.taskId === task.id);
-                    if (grade) {
-                        total += grade.grade;
-                        count++;
-                    }
-                });
-
-                const average = count > 0 ? (total / count).toFixed(2) : '-';
-                report += `\n${student.name} ${student.lastName}: ${average}`;
-            });
-
-            document.getElementById('reportsContent').innerHTML = `<pre>${report}</pre>`;
-            showMessage('✓ Reporte generado', 'success');
+            let html = `<h3>${course.name} - Reporte Curso</h3><pre>`;
+            html += `Datos de evaluación por estudiante (a desarrollar)`;
+            html += `</pre>`;
+            document.getElementById('reportsContent').innerHTML = html;
         }
 
-        async function generateIndividualReports() {
-            showMessage('✓ Función en desarrollo', 'info');
+        async function generateStudentReport() {
+            const studentId = parseInt(document.getElementById('reportStudentSelect').value);
+            if (!studentId) return;
+            const students = await getAllData('students');
+            const student = students.find(s => s.id === studentId);
+            let html = `<h3>Reporte: ${student.firstNames} ${student.lastNames}</h3><pre>`;
+            html += `Estudiante ${student.number} - Datos de desempeño (a desarrollar)\n`;
+            html += `OAs alcanzados, indicadores logrados, promedio general (a desarrollar)`;
+            html += `</pre>`;
+            document.getElementById('reportsContent').innerHTML = html;
         }
 
-        // ============ UTILIDADES ============
-        function showMessage(message, type = 'info') {
-            const messagesDiv = document.getElementById('messages');
-            const messageEl = document.createElement('div');
-            messageEl.className = `message alert alert-${type}`;
-            messageEl.textContent = message;
-            messagesDiv.appendChild(messageEl);
-
-            setTimeout(() => messageEl.remove(), 3000);
-        }
-
+        // ============ UTILITY ============
         function logout() {
             sessionStorage.removeItem('docenteActual');
             localStorage.removeItem('docenteActual');
             window.location.href = 'index.html';
         }
 
-        function getDocenteFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('docente') || localStorage.getItem('docenteActual');
-        }
-
-        // ============ INICIALIZACIÓN ============
-        window.addEventListener('load', async () => {
-            try {
-                // Leer docente del URL o del localStorage
-                docenteActual = getDocenteFromURL();
-                
-                if (!docenteActual || !['1', '2', '3', '4'].includes(docenteActual)) {
-                    window.location.href = 'index.html';
-                    return;
-                }
-
-                // Actualizar label de docente
-                document.getElementById('docenteLabel').textContent = `- Docente ${docenteActual}`;
-
-                await initDB();
-                console.log(`✓ Sistema listo para Docente ${docenteActual}`);
-                updateDashboard();
-            } catch (error) {
-                console.error('✗ Error:', error);
-                showMessage('❌ Error al inicializar', 'danger');
-            }
-        });
-
         // Cerrar modales al hacer clic fuera
         window.onclick = (event) => {
-            const courseModal = document.getElementById('courseModal');
-            const studentModal = document.getElementById('studentModal');
-            const taskModal = document.getElementById('taskModal');
-
-            if (event.target === courseModal) closeCourseModal();
-            if (event.target === studentModal) closeStudentModal();
-            if (event.target === taskModal) closeTaskModal();
+            ['courseModal', 'studentModal', 'taskModal'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (event.target === modal) modal.classList.remove('active');
+            });
         };
     </script>
 </body>
