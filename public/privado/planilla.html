@@ -930,18 +930,32 @@
             if (firebaseConfigLoaded) return;
             
             try {
+                console.log('🔄 Cargando configuración de Firebase...');
                 const response = await fetch('/.netlify/functions/firebase-config');
                 if (!response.ok) {
                     throw new Error('No se pudo cargar la configuración de Firebase');
                 }
                 const config = await response.json();
+                console.log('📋 Config recibida (databaseURL):', config.databaseURL);
                 
                 firebaseApp = firebase.initializeApp(config);
                 firebaseDatabase = firebase.database();
                 firebaseConfigLoaded = true;
-                console.log('Firebase inicializado correctamente');
+                
+                // Test connection
+                const testRef = firebaseDatabase.ref('.info/connected');
+                testRef.on('value', (snapshot) => {
+                    if (snapshot.val() === true) {
+                        console.log('✅ Firebase conectado exitosamente');
+                    } else {
+                        console.log('⚠️ Firebase desconectado');
+                    }
+                });
+                
+                console.log('✅ Firebase inicializado correctamente');
             } catch (error) {
-                console.error('Error al inicializar Firebase:', error);
+                console.error('❌ Error al inicializar Firebase:', error);
+                alert('Error de conexión con Firebase. Verifica tu configuración.');
                 throw error;
             }
         }
@@ -959,14 +973,19 @@
             async getAll(storeName) {
                 try {
                     const db = this.getDb();
-                    const snapshot = await db.ref(`courses/${this.docenteId}/${storeName}`).once('value');
+                    const path = `courses/${this.docenteId}/${storeName}`;
+                    console.log(`📖 Leyendo de Firebase: ${path}`);
+                    const snapshot = await db.ref(path).once('value');
                     if (snapshot.exists()) {
                         const data = snapshot.val();
-                        return Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                        const result = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                        console.log(`✅ Datos encontrados en ${storeName}:`, result);
+                        return result;
                     }
+                    console.log(`⚠️ No hay datos en ${storeName}`);
                     return [];
                 } catch (error) {
-                    console.error(`Error getting ${storeName}:`, error);
+                    console.error(`❌ Error getting ${storeName}:`, error);
                     return [];
                 }
             }
@@ -976,9 +995,11 @@
                     const db = this.getDb();
                     const newRef = db.ref(`courses/${this.docenteId}/${storeName}`).push();
                     await newRef.set(data);
+                    console.log(`✅ Guardado en Firebase: courses/${this.docenteId}/${storeName}/${newRef.key}`, data);
                     return newRef.key;
                 } catch (error) {
-                    console.error(`Error adding to ${storeName}:`, error);
+                    console.error(`❌ Error adding to ${storeName}:`, error);
+                    alert(`Error al guardar en Firebase: ${error.message}`);
                     throw error;
                 }
             }
@@ -1050,7 +1071,9 @@
         // Cargar datos de OA al iniciar
         window.addEventListener('load', async () => {
             docenteActual = localStorage.getItem('docenteActual') || sessionStorage.getItem('docenteActual');
+            console.log(`👤 Docente actual: ${docenteActual}`);
             if (!docenteActual || !['1','2','3','4'].includes(docenteActual)) {
+                console.error('❌ No hay docente válido, redirigiendo...');
                 window.location.href = 'index.html';
                 return;
             }
@@ -1060,6 +1083,7 @@
             // Initialize Firebase
             await initFirebase();
             firebaseDB = new FirebaseDB(docenteActual);
+            console.log(`🔥 FirebaseDB inicializado para docente ${docenteActual}`);
 
             // Check if migration is needed
             const needsMigration = await checkMigrationNeeded();
@@ -1299,20 +1323,28 @@
                 grade: '2° Medio'
             };
 
-            const newCourseId = await addData('courses', courseData);
+            console.log('💾 Intentando guardar curso:', courseData);
             
-            closeModal('courseModal');
-            document.getElementById('courseLetter').value = '';
-            document.getElementById('courseModality').value = '';
-            
-            await loadCourses();
-            
-            // Seleccionar automáticamente el curso recién creado
-            document.getElementById('courseSelect').value = newCourseId;
-            courseActual = newCourseId;
-            await loadPlanilla();
-            
-            alert(`Curso "${courseName}" creado y seleccionado. Ya puedes agregar estudiantes.`);
+            try {
+                const newCourseId = await addData('courses', courseData);
+                console.log('✅ Curso guardado con ID:', newCourseId);
+                
+                closeModal('courseModal');
+                document.getElementById('courseLetter').value = '';
+                document.getElementById('courseModality').value = '';
+                
+                await loadCourses();
+                
+                // Seleccionar automáticamente el curso recién creado
+                document.getElementById('courseSelect').value = newCourseId;
+                courseActual = newCourseId;
+                await loadPlanilla();
+                
+                alert(`Curso "${courseName}" creado y seleccionado. Ya puedes agregar estudiantes.`);
+            } catch (error) {
+                console.error('❌ Error al guardar curso:', error);
+                alert(`Error al guardar el curso: ${error.message}\n\nRevisa la consola para más detalles.`);
+            }
         }
 
         async function loadPlanilla() {
