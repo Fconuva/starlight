@@ -46,6 +46,12 @@
         .btn-small:hover { background: #2980b9; }
         .btn-danger { background: #e74c3c; }
         .btn-danger:hover { background: #c0392b; }
+        .student-retirado { text-decoration: line-through; color: #999; opacity: 0.6; }
+        .student-retirado td { background: #f8f8f8 !important; }
+        .btn-ai { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; margin: 5px; }
+        .btn-ai:hover { background: linear-gradient(135deg, #ee5a24, #ff6b6b); }
+        .ai-loading { display: inline-block; width: 16px; height: 16px; border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .empty-state { padding: 40px; text-align: center; color: #999; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
         .modal.active { display: flex; }
@@ -174,12 +180,26 @@
         </div>
     </div>
 
+    <!-- MODAL: EDITAR ESTUDIANTE -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('editStudentModal')">&times;</button>
+            <div class="modal-header">Editar Estudiante</div>
+            <div id="editStudentContent">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: REPORTE -->
     <div id="reportModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('reportModal')">&times;</button>
             <div class="modal-header" id="reportTitle"></div>
             <div id="reportContent" style="max-height: 60vh; overflow-y: auto; font-size: 12px;"></div>
+            <div class="modal-buttons" id="reportButtons" style="margin-top: 15px;">
+                <!-- Botones dinámicos -->
+            </div>
         </div>
     </div>
 
@@ -304,6 +324,7 @@
 
             const course = courses.find(c => c.id === courseActual);
             const courseStudents = students.filter(s => s.courseId === courseActual).sort((a,b) => (a.number||0)-(b.number||0));
+            const activeStudents = courseStudents.filter(s => !s.retirado);
             const courseTasks = tasks.filter(t => t.courseId === courseActual);
 
             let headerHTML = '<th class="col-num">N</th><th class="col-apellido-p">APELLIDO PATERNO</th><th class="col-apellido-m">APELLIDO MATERNO</th><th class="col-nombre">NOMBRE</th>';
@@ -319,8 +340,10 @@
                 const paterno = apellidos[0] || '';
                 const materno = apellidos.slice(1).join(' ') || '';
                 let puntos = 0;
+                const isRetirado = st.retirado || false;
+                const rowClass = isRetirado ? 'student-retirado' : '';
 
-                bodyHTML += '<tr><td class="col-num">' + (st.number||'') + '</td>';
+                bodyHTML += '<tr class="' + rowClass + '"><td class="col-num">' + (st.number||'') + '</td>';
                 bodyHTML += '<td class="col-apellido-p">' + paterno + '</td>';
                 bodyHTML += '<td class="col-apellido-m">' + materno + '</td>';
                 bodyHTML += '<td class="col-nombre">' + st.firstNames + '</td>';
@@ -328,20 +351,20 @@
                 courseTasks.forEach(t => {
                     const existing = evalMap.get(t.id + ':' + st.id);
                     const checked = existing ? !!existing.value : false;
-                    if (checked) puntos++;
-                    bodyHTML += '<td><input type="checkbox" ' + (checked?'checked':'') + ' onchange="upsertEvaluation(' + t.id + ', ' + st.id + ', this.checked)"></td>';
+                    if (checked && !isRetirado) puntos++;
+                    bodyHTML += '<td><input type="checkbox" ' + (checked?'checked':'') + ' onchange="upsertEvaluation(' + t.id + ', ' + st.id + ', this.checked)" ' + (isRetirado?'disabled':'') + '></td>';
                 });
 
                 const max = courseTasks.length || 1;
                 const nota = max > 0 ? (1 + (puntos/max)*6).toFixed(1) : '1.0';
                 bodyHTML += '<td class="col-puntos">' + puntos + '</td>';
                 bodyHTML += '<td class="col-nota">' + nota + '</td>';
-                bodyHTML += '<td class="col-acciones"><button class="btn-small btn-danger" onclick="deleteStudent(' + st.id + ')">Eliminar</button></td>';
+                bodyHTML += '<td class="col-acciones"><button class="btn-small" onclick="editStudent(' + st.id + ')">Editar</button></td>';
                 bodyHTML += '</tr>';
             });
 
             tbody.innerHTML = bodyHTML;
-            meta.textContent = (course?.name||'') + ' - ' + courseStudents.length + ' estudiantes, ' + courseTasks.length + ' tareas';
+            meta.textContent = (course?.name||'') + ' - ' + activeStudents.length + ' estudiantes activos (' + courseStudents.length + ' total), ' + courseTasks.length + ' tareas';
         }
 
         function openAddStudentModal() {
@@ -377,6 +400,46 @@
                 await deleteData('students', id);
                 loadPlanilla();
             }
+        }
+
+        async function editStudent(studentId) {
+            const students = await getAllData('students');
+            const student = students.find(s => s.id === studentId);
+
+            const html = `
+                <div class="form-group">
+                    <label>Nombre completo:</label>
+                    <div style="padding: 8px; background: #f5f5f5; border-radius: 4px; margin-bottom: 15px;">
+                        ${student.firstNames} ${student.lastNames}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="studentRetirado" ${student.retirado ? 'checked' : ''} style="margin-right: 8px;">
+                        Marcar como estudiante retirado
+                    </label>
+                    <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                        Los estudiantes retirados aparecen tachados y no cuentan en las estadísticas
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-primary" onclick="saveStudentEdit(${studentId})">Guardar Cambios</button>
+                    <button class="modal-btn modal-btn-cancel" onclick="closeModal('editStudentModal')">Cancelar</button>
+                </div>
+            `;
+
+            document.getElementById('editStudentContent').innerHTML = html;
+            document.getElementById('editStudentModal').classList.add('active');
+        }
+
+        async function saveStudentEdit(studentId) {
+            const retirado = document.getElementById('studentRetirado').checked;
+            const students = await getAllData('students');
+            const student = students.find(s => s.id === studentId);
+            student.retirado = retirado;
+            await updateData('students', student);
+            closeModal('editStudentModal');
+            loadPlanilla();
         }
 
         function openAddTaskModal() {
@@ -421,24 +484,62 @@
             ]);
 
             const course = courses.find(c => c.id === courseActual);
-            const courseStudents = students.filter(s => s.courseId === courseActual);
+            const courseStudents = students.filter(s => s.courseId === courseActual && !s.retirado);
             const courseTasks = tasks.filter(t => t.courseId === courseActual);
 
             let html = '<strong>' + (course?.name||'') + '</strong><br><br>';
 
             if (type === 'grupal') {
-                html += '<strong>Resumen del Curso:</strong><br>';
-                html += 'Estudiantes: ' + courseStudents.length + '<br>';
-                html += 'Tareas: ' + courseTasks.length + '<br><br>';
+                // Estadísticas del curso
+                let totalPuntos = 0;
+                let estudiantesCompletaron = 0;
+                let tareasCompletadas = 0;
+
+                courseStudents.forEach(st => {
+                    let puntosEstudiante = 0;
+                    courseTasks.forEach(t => {
+                        const existing = evalMap.get(t.id + ':' + st.id);
+                        if (existing && existing.value) {
+                            puntosEstudiante++;
+                            tareasCompletadas++;
+                        }
+                    });
+                    totalPuntos += puntosEstudiante;
+                    if (puntosEstudiante === courseTasks.length) estudiantesCompletaron++;
+                });
+
+                const promedioCurso = courseStudents.length > 0 ? (totalPuntos / courseStudents.length).toFixed(1) : '0.0';
+                const notaPromedio = courseTasks.length > 0 ? (1 + (parseFloat(promedioCurso)/courseTasks.length)*6).toFixed(1) : '1.0';
+
+                html += '<strong>Estadísticas del Curso:</strong><br>';
+                html += 'Estudiantes activos: ' + courseStudents.length + '<br>';
+                html += 'Tareas totales: ' + courseTasks.length + '<br>';
+                html += 'Tareas completadas: ' + tareasCompletadas + '<br>';
+                html += 'Estudiantes que completaron todo: ' + estudiantesCompletaron + '<br>';
+                html += 'Promedio de puntos: ' + promedioCurso + '<br>';
+                html += 'Nota promedio: ' + notaPromedio + '<br><br>';
+
                 html += '<strong>Tareas:</strong><br>';
                 courseTasks.forEach(t => {
-                    html += '- ' + t.name + ' (' + (t.date||'') + ') ' + (t.oa||'') + '<br>';
+                    let completaron = 0;
+                    courseStudents.forEach(st => {
+                        const existing = evalMap.get(t.id + ':' + st.id);
+                        if (existing && existing.value) completaron++;
+                    });
+                    const porcentaje = courseStudents.length > 0 ? ((completaron/courseStudents.length)*100).toFixed(0) : '0';
+                    html += '- ' + t.name + ' (' + (t.date||'') + ') ' + (t.oa||'') + ' - ' + completaron + '/' + courseStudents.length + ' (' + porcentaje + '%)<br>';
                 });
+
+                // Botones para IA
+                document.getElementById('reportButtons').innerHTML = '<button class="btn-ai" onclick="generateAIReport(\'grupal\')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
             } else {
                 html += '<strong>Seleccione un estudiante:</strong><br>';
                 courseStudents.forEach(st => {
                     html += '<button class="card-btn" onclick="showStudentDetail(' + st.id + ')" style="margin:5px 0;text-align:left;">' + st.firstNames + ' ' + st.lastNames + '</button>';
                 });
+
+                // Botón para IA grupal de estudiantes
+                document.getElementById('reportButtons').innerHTML = '<button class="btn-ai" onclick="generateAIReport(\'estudiantes\')"><i class="fas fa-robot"></i> Análisis General con IA</button>';
             }
 
             document.getElementById('reportContent').innerHTML = html;
@@ -456,23 +557,235 @@
             let html = '<strong>Estudiante: ' + student.firstNames + ' ' + student.lastNames + '</strong><br><br>';
 
             let puntos = 0;
-            html += '<strong>Tareas:</strong><br>';
+            let completadas = 0;
+            html += '<strong>Desempeño por Tarea:</strong><br>';
             courseTasks.forEach(t => {
                 const existing = evalMap.get(t.id + ':' + studentId);
                 const checked = existing ? !!existing.value : false;
-                if (checked) puntos++;
-                html += '- ' + t.name + ': ' + (checked ? 'Completado' : 'Pendiente') + '<br>';
+                if (checked) {
+                    puntos++;
+                    completadas++;
+                }
+                const status = checked ? '<span style="color: green;">✓ Completado</span>' : '<span style="color: red;">✗ Pendiente</span>';
+                html += '- ' + t.name + ' (' + (t.date||'') + ') ' + (t.oa||'') + ': ' + status + '<br>';
             });
 
             const max = courseTasks.length || 1;
             const nota = max > 0 ? (1 + (puntos/max)*6).toFixed(1) : '1.0';
-            html += '<br><strong>Puntos: ' + puntos + ' / Nota: ' + nota + '</strong>';
+            const porcentaje = max > 0 ? ((completadas/max)*100).toFixed(0) : '0';
+
+            html += '<br><strong>Resumen:</strong><br>';
+            html += 'Tareas completadas: ' + completadas + '/' + max + ' (' + porcentaje + '%)<br>';
+            html += 'Puntos obtenidos: ' + puntos + '<br>';
+            html += 'Nota final: ' + nota + '<br>';
 
             document.getElementById('reportContent').innerHTML = html;
+
+            // Botón para IA individual
+            document.getElementById('reportButtons').innerHTML = '<button class="btn-ai" onclick="generateAIReport(\'individual\', ' + studentId + ')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+        async function generateAIReport(type, studentId = null) {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="ai-loading"></span>Generando...';
+            button.disabled = true;
+
+            try {
+                const [courses, students, tasks, evalMap] = await Promise.all([
+                    getAllData('courses'),
+                    getAllData('students'),
+                    getAllData('tasks'),
+                    getEvaluationsMap()
+                ]);
+
+                const course = courses.find(c => c.id === courseActual);
+                const courseStudents = students.filter(s => s.courseId === courseActual && !s.retirado);
+                const courseTasks = tasks.filter(t => t.courseId === courseActual);
+
+                let prompt = '';
+
+                if (type === 'grupal') {
+                    // Estadísticas para el prompt
+                    let stats = {
+                        totalStudents: courseStudents.length,
+                        totalTasks: courseTasks.length,
+                        completedTasks: 0,
+                        studentsCompletedAll: 0,
+                        taskCompletion: []
+                    };
+
+                    courseStudents.forEach(st => {
+                        let studentCompleted = 0;
+                        courseTasks.forEach(t => {
+                            const existing = evalMap.get(t.id + ':' + st.id);
+                            if (existing && existing.value) {
+                                studentCompleted++;
+                                stats.completedTasks++;
+                            }
+                        });
+                        if (studentCompleted === courseTasks.length) stats.studentsCompletedAll++;
+                    });
+
+                    courseTasks.forEach(t => {
+                        let completed = 0;
+                        courseStudents.forEach(st => {
+                            const existing = evalMap.get(t.id + ':' + st.id);
+                            if (existing && existing.value) completed++;
+                        });
+                        stats.taskCompletion.push({
+                            name: t.name,
+                            oa: t.oa,
+                            completed: completed,
+                            total: courseStudents.length,
+                            percentage: ((completed/courseStudents.length)*100).toFixed(0)
+                        });
+                    });
+
+                    prompt = `Analiza el desempeño de un curso de ${course?.name || 'Lenguaje'} con ${stats.totalStudents} estudiantes y ${stats.totalTasks} tareas evaluadas.
+
+Estadísticas generales:
+- Estudiantes activos: ${stats.totalStudents}
+- Tareas totales: ${stats.totalTasks}
+- Tareas completadas en total: ${stats.completedTasks}
+- Estudiantes que completaron todas las tareas: ${stats.studentsCompletedAll}
+
+Desempeño por tarea:
+${stats.taskCompletion.map(t => `- ${t.name} (${t.oa || 'Sin OA'}): ${t.completed}/${t.total} estudiantes (${t.percentage}%)`).join('\n')}
+
+Genera un informe educativo profesional que incluya:
+1. Evaluación general del curso
+2. Fortalezas y áreas de mejora
+3. Recomendaciones pedagógicas específicas
+4. Análisis de objetivos de aprendizaje (OA) si están presentes
+5. Sugerencias para mejorar el rendimiento estudiantil
+
+El informe debe ser constructivo, específico y orientado a la mejora educativa.`;
+
+                } else if (type === 'individual' && studentId) {
+                    const student = students.find(s => s.id === studentId);
+                    let studentTasks = [];
+
+                    courseTasks.forEach(t => {
+                        const existing = evalMap.get(t.id + ':' + studentId);
+                        const completed = existing ? !!existing.value : false;
+                        studentTasks.push({
+                            name: t.name,
+                            oa: t.oa,
+                            date: t.date,
+                            completed: completed
+                        });
+                    });
+
+                    const completedCount = studentTasks.filter(t => t.completed).length;
+                    const completionRate = ((completedCount / courseTasks.length) * 100).toFixed(0);
+
+                    prompt = `Analiza el desempeño individual del estudiante ${student.firstNames} ${student.lastNames} en el curso ${course?.name || 'Lenguaje'}.
+
+Información del estudiante:
+- Nombre: ${student.firstNames} ${student.lastNames}
+- Tareas totales: ${courseTasks.length}
+- Tareas completadas: ${completedCount}
+- Tasa de completación: ${completionRate}%
+
+Desempeño detallado por tarea:
+${studentTasks.map(t => `- ${t.name} (${t.oa || 'Sin OA'}) - Fecha: ${t.date || 'Sin fecha'}: ${t.completed ? 'Completado' : 'Pendiente'}`).join('\n')}
+
+Genera un informe individual que incluya:
+1. Evaluación del desempeño general
+2. Fortalezas del estudiante
+3. Áreas que necesitan atención
+4. Recomendaciones específicas para mejorar
+5. Sugerencias de actividades o estrategias pedagógicas
+6. Análisis de objetivos de aprendizaje trabajados
+
+El informe debe ser personalizado, motivador y constructivo.`;
+
+                } else if (type === 'estudiantes') {
+                    let studentAnalysis = [];
+
+                    courseStudents.forEach(st => {
+                        let completed = 0;
+                        let oaAnalysis = {};
+
+                        courseTasks.forEach(t => {
+                            const existing = evalMap.get(t.id + ':' + st.id);
+                            if (existing && existing.value) {
+                                completed++;
+                                if (t.oa) {
+                                    oaAnalysis[t.oa] = (oaAnalysis[t.oa] || 0) + 1;
+                                }
+                            }
+                        });
+
+                        const completionRate = ((completed / courseTasks.length) * 100).toFixed(0);
+                        studentAnalysis.push({
+                            name: `${st.firstNames} ${st.lastNames}`,
+                            completed: completed,
+                            total: courseTasks.length,
+                            rate: completionRate,
+                            oaProgress: oaAnalysis
+                        });
+                    });
+
+                    prompt = `Analiza el desempeño general de ${courseStudents.length} estudiantes en el curso ${course?.name || 'Lenguaje'}.
+
+Resumen de estudiantes:
+${studentAnalysis.map(s => `- ${s.name}: ${s.completed}/${s.total} tareas (${s.rate}%)`).join('\n')}
+
+Genera un análisis grupal que identifique:
+1. Patrones de desempeño general
+2. Estudiantes que necesitan más apoyo
+3. Estrategias grupales de mejora
+4. Distribución del rendimiento
+5. Recomendaciones para intervenciones pedagógicas
+
+El análisis debe ser objetivo y orientado a la toma de decisiones educativas.`;
+                }
+
+                // Llamar a Google Gemini API
+                const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=AIzaSyDl3Gp320sAbpEeOPf217ryya-4E0QT984', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            topK: 40,
+                            topP: 0.95,
+                            maxOutputTokens: 2048,
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la API de Gemini');
+                }
+
+                const data = await response.json();
+                const aiReport = data.candidates[0].content.parts[0].text;
+
+                // Mostrar el informe generado
+                let reportHtml = '<div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #667eea;">';
+                reportHtml += '<h4 style="margin: 0 0 10px 0; color: #667eea;"><i class="fas fa-robot"></i> Informe Generado por IA</h4>';
+                reportHtml += '<div style="line-height: 1.6; white-space: pre-wrap;">' + aiReport + '</div>';
+                reportHtml += '</div>';
+
+                document.getElementById('reportContent').innerHTML += reportHtml;
+
+            } catch (error) {
+                console.error('Error generando reporte con IA:', error);
+                alert('Error al generar el informe con IA. Por favor intenta nuevamente.');
+            } finally {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
         }
 
         function logout() {
