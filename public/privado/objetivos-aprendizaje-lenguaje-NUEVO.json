@@ -1,0 +1,42 @@
+{
+  "OA3": {
+    "titulo": "Comprende y produce textos orales y escritos de diversos tipos y formatos, utilizando estrategias de comprensión y producción textual",
+    "indicadores": [
+      "Identifica el propósito comunicativo de diferentes tipos de textos",
+      "Utiliza estrategias de comprensión lectora adecuadas al tipo de texto",
+      "Produce textos coherentes y cohesionados según el tipo y propósito",
+      "Revisa y edita sus propios textos considerando aspectos formales y de contenido",
+      "Adapta el lenguaje y registro según el contexto y destinatario"
+    ]
+  },
+  "OA5": {
+    "titulo": "Comprende y utiliza el sistema de la lengua española en sus niveles fonológico, morfosintáctico, léxico y textual",
+    "indicadores": [
+      "Reconoce y utiliza correctamente las reglas fonéticas y ortográficas",
+      "Identifica y emplea las categorías gramaticales y estructuras sintácticas",
+      "Amplía y diversifica su vocabulario en contextos diversos",
+      "Utiliza conectores y marcadores textuales apropiados",
+      "Reconoce y corrige errores gramaticales en sus producciones"
+    ]
+  },
+  "OA6": {
+    "titulo": "Reflexiona sobre el lenguaje y su uso social, considerando aspectos culturales, históricos y contextuales",
+    "indicadores": [
+      "Analiza cómo el lenguaje refleja y construye realidades sociales",
+      "Reconoce variaciones lingüísticas según contextos socioculturales",
+      "Reflexiona sobre el impacto del lenguaje en la construcción de identidades",
+      "Valora la diversidad lingüística y cultural",
+      "Utiliza el lenguaje de manera ética y responsable"
+    ]
+  },
+  "OA11": {
+    "titulo": "Utiliza estrategias de aprendizaje autónomo y colaborativo para desarrollar competencias lingüísticas",
+    "indicadores": [
+      "Planifica y organiza su proceso de aprendizaje",
+      "Utiliza recursos tecnológicos para el aprendizaje de lenguas",
+      "Trabaja colaborativamente en proyectos lingüísticos",
+      "Evalúa su propio progreso y establece metas de mejora",
+      "Desarrolla hábitos de lectura y escritura autónomos"
+    ]
+  }
+}

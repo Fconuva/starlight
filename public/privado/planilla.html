@@ -164,14 +164,20 @@
                 <input type="date" id="taskDate">
             </div>
             <div class="form-group">
-                <label>OA:</label>
-                <select id="taskOA">
+                <label>OA (Objetivo de Aprendizaje):</label>
+                <select id="taskOA" onchange="updateOAPreview()">
                     <option value="">Sin OA</option>
-                    <option value="OA3">OA3</option>
-                    <option value="OA5">OA5</option>
-                    <option value="OA6">OA6</option>
-                    <option value="OA11">OA11</option>
+                    <option value="OA3">OA3 - Comprensión y producción textual</option>
+                    <option value="OA5">OA5 - Sistema de la lengua española</option>
+                    <option value="OA6">OA6 - Reflexión sobre el lenguaje</option>
+                    <option value="OA11">OA11 - Aprendizaje autónomo</option>
                 </select>
+            </div>
+            <div id="oaPreview" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #667eea;">
+                <div style="font-weight: bold; margin-bottom: 8px; color: #667eea;" id="oaTitle"></div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 10px;" id="oaDescription"></div>
+                <div style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">Indicadores (selecciona los relevantes):</div>
+                <div id="oaIndicators" style="font-size: 12px;"></div>
             </div>
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-primary" onclick="saveTask()">Guardar</button>
@@ -180,12 +186,12 @@
         </div>
     </div>
 
-    <!-- MODAL: EDITAR ESTUDIANTE -->
-    <div id="editStudentModal" class="modal">
+    <!-- MODAL: EDITAR TAREA -->
+    <div id="editTaskModal" class="modal">
         <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('editStudentModal')">&times;</button>
-            <div class="modal-header">Editar Estudiante</div>
-            <div id="editStudentContent">
+            <button class="close-btn" onclick="closeModal('editTaskModal')">&times;</button>
+            <div class="modal-header">Editar Tarea</div>
+            <div id="editTaskContent">
                 <!-- Contenido dinámico -->
             </div>
         </div>
@@ -207,6 +213,9 @@
         const DB_NAME = 'EvaluacionDB';
         let db, docenteActual = null, courseActual = null;
 
+        let oaData = {};
+
+        // Cargar datos de OA al iniciar
         window.addEventListener('load', async () => {
             docenteActual = localStorage.getItem('docenteActual') || sessionStorage.getItem('docenteActual');
             if (!docenteActual || !['1','2','3','4'].includes(docenteActual)) {
@@ -214,9 +223,59 @@
                 return;
             }
             document.getElementById('docenteLabel').textContent = 'Docente ' + docenteActual;
+            await loadOAData();
             await initDB();
             await loadCourses();
         });
+
+        async function loadOAData() {
+            try {
+                const response = await fetch('objetivos-aprendizaje-lenguaje-NUEVO.json');
+                oaData = await response.json();
+            } catch (error) {
+                console.error('Error cargando datos de OA:', error);
+                // Datos de respaldo en caso de error
+                oaData = {
+                    "OA3": { "titulo": "Comprensión y producción textual", "indicadores": ["Indicador 1", "Indicador 2"] },
+                    "OA5": { "titulo": "Sistema de la lengua", "indicadores": ["Indicador 1", "Indicador 2"] },
+                    "OA6": { "titulo": "Reflexión sobre el lenguaje", "indicadores": ["Indicador 1", "Indicador 2"] },
+                    "OA11": { "titulo": "Aprendizaje autónomo", "indicadores": ["Indicador 1", "Indicador 2"] }
+                };
+            }
+        }
+
+        function updateOAPreview() {
+            const oaSelect = document.getElementById('taskOA');
+            const oaPreview = document.getElementById('oaPreview');
+            const oaTitle = document.getElementById('oaTitle');
+            const oaDescription = document.getElementById('oaDescription');
+            const oaIndicators = document.getElementById('oaIndicators');
+
+            const selectedOA = oaSelect.value;
+
+            if (selectedOA && oaData[selectedOA]) {
+                const oa = oaData[selectedOA];
+                oaTitle.textContent = selectedOA + ': ' + oa.titulo;
+                oaDescription.textContent = oa.titulo;
+
+                // Crear checkboxes para indicadores
+                let indicatorsHtml = '';
+                oa.indicadores.forEach((indicador, index) => {
+                    indicatorsHtml += `
+                        <div style="margin-bottom: 6px;">
+                            <label style="display: flex; align-items: flex-start; cursor: pointer;">
+                                <input type="checkbox" class="oa-indicator" value="${index}" style="margin-right: 8px; margin-top: 2px;">
+                                <span>${indicador}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                oaIndicators.innerHTML = indicatorsHtml;
+                oaPreview.style.display = 'block';
+            } else {
+                oaPreview.style.display = 'none';
+            }
+        }
 
         function initDB() {
             return new Promise((resolve, reject) => {
@@ -329,7 +388,16 @@
 
             let headerHTML = '<th class="col-num">N</th><th class="col-apellido-p">APELLIDO PATERNO</th><th class="col-apellido-m">APELLIDO MATERNO</th><th class="col-nombre">NOMBRE</th>';
             courseTasks.forEach(t => {
-                headerHTML += '<th class="task-header">' + t.name + '<span class="task-subtitle">' + (t.date||'') + ' ' + (t.oa||'') + '</span></th>';
+                let oaInfo = '';
+                if (t.oa && oaData[t.oa]) {
+                    oaInfo = '<br><small style="color: #666;">' + t.oa + '</small>';
+                    if (t.indicators && t.indicators.length > 0) {
+                        const selectedIndicators = t.indicators.map(idx => oaData[t.oa].indicadores[idx]).join('; ');
+                        oaInfo += '<br><small style="color: #888; font-size: 9px;">' + selectedIndicators + '</small>';
+                    }
+                }
+                oaInfo += '<br><button class="btn-small" onclick="editTask(' + t.id + ')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px;">Editar</button>';
+                headerHTML += '<th class="task-header">' + t.name + oaInfo + '<span class="task-subtitle">' + (t.date||'') + '</span></th>';
             });
             headerHTML += '<th class="col-puntos">PUNTOS</th><th class="col-nota">NOTA</th><th class="col-acciones">ACCIONES</th>';
             tableHead.innerHTML = headerHTML;
@@ -444,6 +512,7 @@
 
         function openAddTaskModal() {
             if (!courseActual) { alert('Seleccione un curso primero'); return; }
+            document.getElementById('oaPreview').style.display = 'none';
             document.getElementById('taskModal').classList.add('active');
         }
 
@@ -451,13 +520,22 @@
             const name = document.getElementById('taskName').value;
             const date = document.getElementById('taskDate').value;
             const oa = document.getElementById('taskOA').value;
+
             if (!name) { alert('Ingresa un nombre'); return; }
+
+            // Obtener indicadores seleccionados
+            const selectedIndicators = [];
+            const indicatorCheckboxes = document.querySelectorAll('.oa-indicator:checked');
+            indicatorCheckboxes.forEach(checkbox => {
+                selectedIndicators.push(parseInt(checkbox.value));
+            });
 
             await addData('tasks', {
                 courseId: courseActual,
                 name,
                 date: date || '',
                 oa: oa || '',
+                indicators: selectedIndicators, // Guardar índices de indicadores seleccionados
                 gradeType: 'binary'
             });
 
@@ -465,6 +543,7 @@
             document.getElementById('taskName').value = '';
             document.getElementById('taskDate').value = '';
             document.getElementById('taskOA').value = '';
+            document.getElementById('oaPreview').style.display = 'none';
             loadPlanilla();
         }
 
@@ -792,6 +871,119 @@ El análisis debe ser objetivo y orientado a la toma de decisiones educativas.`;
             sessionStorage.removeItem('docenteActual');
             localStorage.removeItem('docenteActual');
             window.location.href = 'index.html';
+        }
+
+        async function editTask(taskId) {
+            const tasks = await getAllData('tasks');
+            const task = tasks.find(t => t.id === taskId);
+
+            const html = `
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="editTaskName" value="${task.name}" placeholder="Ej: Tarea 1">
+                </div>
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" id="editTaskDate" value="${task.date || ''}">
+                </div>
+                <div class="form-group">
+                    <label>OA (Objetivo de Aprendizaje):</label>
+                    <select id="editTaskOA" onchange="updateEditOAPreview()">
+                        <option value="">Sin OA</option>
+                        <option value="OA3" ${task.oa === 'OA3' ? 'selected' : ''}>OA3 - Comprensión y producción textual</option>
+                        <option value="OA5" ${task.oa === 'OA5' ? 'selected' : ''}>OA5 - Sistema de la lengua española</option>
+                        <option value="OA6" ${task.oa === 'OA6' ? 'selected' : ''}>OA6 - Reflexión sobre el lenguaje</option>
+                        <option value="OA11" ${task.oa === 'OA11' ? 'selected' : ''}>OA11 - Aprendizaje autónomo</option>
+                    </select>
+                </div>
+                <div id="editOAPreview" style="display: ${task.oa ? 'block' : 'none'}; background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #667eea;">
+                    <div style="font-weight: bold; margin-bottom: 8px; color: #667eea;" id="editOATitle"></div>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;" id="editOADescription"></div>
+                    <div style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">Indicadores (selecciona los relevantes):</div>
+                    <div id="editOAIndicators" style="font-size: 12px;"></div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-primary" onclick="saveEditedTask(${taskId})">Guardar Cambios</button>
+                    <button class="modal-btn modal-btn-cancel" onclick="closeModal('editTaskModal')">Cancelar</button>
+                </div>
+            `;
+
+            document.getElementById('editTaskContent').innerHTML = html;
+
+            // Cargar indicadores si hay OA seleccionado
+            if (task.oa) {
+                setTimeout(() => {
+                    updateEditOAPreview();
+                    // Marcar indicadores previamente seleccionados
+                    if (task.indicators) {
+                        task.indicators.forEach(idx => {
+                            const checkbox = document.querySelector(`#editOAIndicators input[value="${idx}"]`);
+                            if (checkbox) checkbox.checked = true;
+                        });
+                    }
+                }, 100);
+            }
+
+            document.getElementById('editTaskModal').classList.add('active');
+        }
+
+        function updateEditOAPreview() {
+            const oaSelect = document.getElementById('editTaskOA');
+            const oaPreview = document.getElementById('editOAPreview');
+            const oaTitle = document.getElementById('editOATitle');
+            const oaDescription = document.getElementById('editOADescription');
+            const oaIndicators = document.getElementById('editOAIndicators');
+
+            const selectedOA = oaSelect.value;
+
+            if (selectedOA && oaData[selectedOA]) {
+                const oa = oaData[selectedOA];
+                oaTitle.textContent = selectedOA + ': ' + oa.titulo;
+                oaDescription.textContent = oa.titulo;
+
+                // Crear checkboxes para indicadores
+                let indicatorsHtml = '';
+                oa.indicadores.forEach((indicador, index) => {
+                    indicatorsHtml += `
+                        <div style="margin-bottom: 6px;">
+                            <label style="display: flex; align-items: flex-start; cursor: pointer;">
+                                <input type="checkbox" class="edit-oa-indicator" value="${index}" style="margin-right: 8px; margin-top: 2px;">
+                                <span>${indicador}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                oaIndicators.innerHTML = indicatorsHtml;
+                oaPreview.style.display = 'block';
+            } else {
+                oaPreview.style.display = 'none';
+            }
+        }
+
+        async function saveEditedTask(taskId) {
+            const name = document.getElementById('editTaskName').value;
+            const date = document.getElementById('editTaskDate').value;
+            const oa = document.getElementById('editTaskOA').value;
+
+            if (!name) { alert('Ingresa un nombre'); return; }
+
+            // Obtener indicadores seleccionados
+            const selectedIndicators = [];
+            const indicatorCheckboxes = document.querySelectorAll('.edit-oa-indicator:checked');
+            indicatorCheckboxes.forEach(checkbox => {
+                selectedIndicators.push(parseInt(checkbox.value));
+            });
+
+            const tasks = await getAllData('tasks');
+            const task = tasks.find(t => t.id === taskId);
+            task.name = name;
+            task.date = date || '';
+            task.oa = oa || '';
+            task.indicators = selectedIndicators;
+
+            await updateData('tasks', task);
+            closeModal('editTaskModal');
+            loadPlanilla();
         }
     </script>
 </body>
