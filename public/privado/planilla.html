@@ -1416,7 +1416,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         oaInfo += '<br><small style="color: #888; font-size: 9px;">' + selectedIndicators + '</small>';
                     }
                 }
-                oaInfo += '<br><button class="btn-small" onclick="editTask(' + t.id + ')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px;">Editar</button>';
+                oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px;">Editar</button>';
                 headerHTML += '<th class="task-header">' + t.name + oaInfo + '<span class="task-subtitle">' + (t.date||'') + '</span></th>';
             });
             headerHTML += '<th class="col-puntos">PUNTOS</th><th class="col-nota">NOTA</th><th class="col-acciones">ACCIONES</th>';
@@ -1440,14 +1440,14 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     const existing = evalMap.get(t.id + ':' + st.id);
                     const checked = existing ? !!existing.value : false;
                     if (checked && !isRetirado) puntos++;
-                    bodyHTML += '<td><input type="checkbox" ' + (checked?'checked':'') + ' onchange="upsertEvaluation(' + t.id + ', ' + st.id + ', this.checked)" ' + (isRetirado?'disabled':'') + '></td>';
+                    bodyHTML += '<td><input type="checkbox" ' + (checked?'checked':'') + ' onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.checked)" ' + (isRetirado?'disabled':'') + '></td>';
                 });
 
                 const max = courseTasks.length || 1;
                 const nota = max > 0 ? (1 + (puntos/max)*6).toFixed(1) : '1.0';
                 bodyHTML += '<td class="col-puntos">' + puntos + '</td>';
                 bodyHTML += '<td class="col-nota">' + nota + '</td>';
-                bodyHTML += '<td class="col-acciones"><button class="btn-small" onclick="editStudent(' + st.id + ')">Editar</button></td>';
+                bodyHTML += '<td class="col-acciones"><button class="btn-small" onclick="editStudent(\'' + st.id + '\')">Editar</button></td>';
                 bodyHTML += '</tr>';
             });
 
@@ -1858,7 +1858,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         if (existing && existing.value) completedTasks++;
                     });
                     const percentage = courseTasks.length > 0 ? ((completedTasks/courseTasks.length)*100).toFixed(0) : '0';
-                    html += '<button class="card-btn" onclick="showStudentDetail(' + st.id + ')" style="text-align: left; padding: 15px;">';
+                    html += '<button class="card-btn" onclick="showStudentDetail(\'' + st.id + '\')" style="text-align: left; padding: 15px;">';
                     html += '<div style="font-weight: bold;">' + st.firstNames + ' ' + st.lastNames + '</div>';
                     html += '<div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">Completado: ' + completedTasks + '/' + courseTasks.length + ' (' + percentage + '%)</div>';
                     html += '</button>';
@@ -1990,8 +1990,8 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
 
             html += '<div class="action-buttons">';
-            html += '<button class="btn-ai" onclick="generateAIReport(\'individual\', ' + studentId + ')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
-            html += '<button class="btn-pdf" onclick="downloadPDF(\'individual\', ' + studentId + ')"><i class="fas fa-download"></i> Descargar PDF</button>';
+            html += '<button class="btn-ai" onclick="generateAIReport(\'individual\', \'' + studentId + '\')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
+            html += '<button class="btn-pdf" onclick="downloadPDF(\'individual\', \'' + studentId + '\')"><i class="fas fa-download"></i> Descargar PDF</button>';
             html += '</div>';
 
             html += '</div>';
