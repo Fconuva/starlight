@@ -302,13 +302,14 @@
                 </div>
                 <div class="form-group">
                     <label>Objetivo de Aprendizaje (OA):</label>
-                    <select id="taskOA" required>
+                    <select id="taskOA" required onchange="showOADescription()">
                         <option value="">Seleccionar OA</option>
-                        <option value="OA3">OA3: Analizar narraciones</option>
-                        <option value="OA5">OA5: Analizar textos dramáticos</option>
-                        <option value="OA6">OA6: Siglo de Oro</option>
-                        <option value="OA11">OA11: Textos no literarios</option>
+                        <option value="OA3">OA3: Analizar las narraciones leídas</option>
+                        <option value="OA5">OA5: Analizar los textos dramáticos</option>
+                        <option value="OA6">OA6: Comprender obras del Siglo de Oro</option>
+                        <option value="OA11">OA11: Leer y comprender textos no literarios</option>
                     </select>
+                    <div id="oaDescription" style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px; font-size: 13px; display: none;"></div>
                 </div>
                 <div class="form-group">
                     <label>Indicadores (separados por comas):</label>
@@ -336,46 +337,40 @@
         let docenteActual = null;
         let cursoActual = null;
 
-        // OAs de Unidad 4: Poder y Ambición (con indicadores de prueba)
+        // OAs de Unidad 4: Poder y Ambición (datos reales del programa)
         const OAS_UNIT4 = {
             OA3: {
-                nombre: 'Analizar narraciones',
+                nombre: 'Analizar las narraciones leídas',
+                descripcion: 'Analizar las narraciones leídas para enriquecer su comprensión',
                 indicadores: [
-                    'Identifica conflictos en la historia',
-                    'Analiza personajes y sus motivaciones',
-                    'Reconoce el punto de vista del narrador',
-                    'Identifica símbolos y tópicos literarios',
-                    'Evalúa creencias y prejuicios en el relato'
+                    'Analizan el planteamiento de los personajes de las narraciones leídas, considerando sus características, relaciones entre ellos, sus diálogos, mundo personal y social, y sus conflictos y motivaciones',
+                    'Relacionan las creencias, prejuicios y estereotipos presentes en las narraciones leídas con la visión de mundo de su contexto de producción, el contexto actual y sus experiencias de lectura',
+                    'Interpretan el sentido de los recursos narrativos y las relaciones de intertextualidad dadas en las narraciones leídas'
                 ]
             },
             OA5: {
-                nombre: 'Analizar textos dramáticos',
+                nombre: 'Analizar los textos dramáticos',
+                descripcion: 'Analizar los textos dramáticos leídos o vistos, para enriquecer su comprensión',
                 indicadores: [
-                    'Comprende el conflicto central',
-                    'Analiza evolución de personajes',
-                    'Identifica atmósfera y recursos de puesta en escena',
-                    'Reconoce simbolismo en acciones',
-                    'Conecta con tema universal'
+                    'Analizan el planteamiento y el desarrollo del conflicto dramático a lo largo de las acciones que componen las obras dramáticas',
+                    'Infieren las características de los personajes de las obras dramáticas a partir de sus relaciones, motivaciones, conflictos, diálogos, y mundo personal y social',
+                    'Interpretan el sentido de los elementos de la estructura externa, de la puesta en escena y de las relaciones intertextuales establecidas en las obras dramáticas leídas o vistas'
                 ]
             },
             OA6: {
                 nombre: 'Comprender obras del Siglo de Oro',
+                descripcion: 'Comprender la relevancia de las obras del Siglo de Oro, considerando sus características y el contexto en el que se enmarcan',
                 indicadores: [
-                    'Sitúa obras en contexto histórico',
-                    'Identifica características del período',
-                    'Analiza influencia del período',
-                    'Reconoce elementos renacentistas',
-                    'Comprende relevancia actual'
+                    'Interpretan obras del Siglo de Oro, considerando sus tópicos, características, y contexto de producción y recepción',
+                    'Reflexionan críticamente en torno a la relevancia de las obras del Siglo de Oro, a partir del contexto de producción y la relación con su contexto de recepción y el mundo actual'
                 ]
             },
             OA11: {
-                nombre: 'Leer textos no literarios',
+                nombre: 'Leer y comprender textos no literarios',
+                descripcion: 'Leer y comprender textos no literarios para contextualizar y complementar las lecturas literarias realizadas en clases',
                 indicadores: [
-                    'Extrae información principal',
-                    'Analiza propósito del texto',
-                    'Conecta con literatura leída',
-                    'Evalúa fuentes',
-                    'Sintetiza información'
+                    'Relacionan información de los textos leídos con las obras literarias revisadas',
+                    'Fundamentan una opinión sobre las obras literarias leídas, a partir de las ideas de los textos no literarios'
                 ]
             }
         };
@@ -686,12 +681,17 @@
                 showMessage('❌ Selecciona un curso', 'danger');
                 return;
             }
+            const selectedOA = document.getElementById('taskOA').value;
+            const oaData = OAS_UNIT4[selectedOA];
             const task = {
                 courseId: parseInt(taskCourseSelect),
                 name: document.getElementById('taskName').value,
                 date: document.getElementById('taskDate').value,
-                oa: document.getElementById('taskOA').value,
-                indicators: document.getElementById('taskIndicators').value.split(',').map(i => i.trim()),
+                oa: selectedOA,
+                oaName: oaData.nombre,
+                oaDescription: oaData.descripcion,
+                indicators: oaData.indicadores,
+                customIndicators: document.getElementById('taskIndicators').value.split(',').map(i => i.trim()).filter(i => i.length > 0),
                 gradeType: document.getElementById('taskGradeType').value,
                 createdAt: new Date().toISOString()
             };
@@ -699,6 +699,23 @@
             closeModal('taskModal');
             loadTasksForCourse();
             showMessage('✓ Tarea creada', 'success');
+        }
+
+        function showOADescription() {
+            const selectedOA = document.getElementById('taskOA').value;
+            const descDiv = document.getElementById('oaDescription');
+            if (!selectedOA || !OAS_UNIT4[selectedOA]) {
+                descDiv.style.display = 'none';
+                return;
+            }
+            const oa = OAS_UNIT4[selectedOA];
+            let html = `<strong>${oa.nombre}</strong><br><em>${oa.descripcion}</em><br><strong style="margin-top: 8px; display: block;">Indicadores:</strong><ul style="margin: 5px 0 0 20px;">`;
+            for (const ind of oa.indicadores) {
+                html += `<li style="font-size: 12px; margin: 3px 0;">${ind}</li>`;
+            }
+            html += '</ul>';
+            descDiv.innerHTML = html;
+            descDiv.style.display = 'block';
         }
 
         async function deleteTask(id) {
@@ -789,14 +806,63 @@
             }
         }
 
+        async function loadCourseReports() {
+            await generateCourseReport();
+        }
+
+        async function loadStudentReports() {
+            await generateStudentReport();
+        }
+
         async function generateCourseReport() {
             const courseId = parseInt(document.getElementById('reportCourseSelect').value);
             if (!courseId) return;
             const courses = await getAllData('courses');
             const course = courses.find(c => c.id === courseId);
-            let html = `<h3>${course.name} - Reporte Curso</h3><pre>`;
-            html += `Datos de evaluación por estudiante (a desarrollar)`;
-            html += `</pre>`;
+            const students = await getAllData('students');
+            const courseStudents = students.filter(s => s.courseId === courseId).sort((a, b) => (a.number || 0) - (b.number || 0));
+            const tasks = await getAllData('tasks');
+            const courseTasks = tasks.filter(t => t.courseId === courseId);
+            
+            let html = `<h3>📊 Reporte del Curso: ${course.name} (${course.letter}-${course.type})</h3>`;
+            html += `<div class="card" style="margin-bottom: 20px;">`;
+            html += `<strong>Información General:</strong><br>`;
+            html += `Período: 2025 - Segundo Semestre<br>`;
+            html += `Estudiantes: ${courseStudents.length}<br>`;
+            html += `Tareas creadas: ${courseTasks.length}<br>`;
+            
+            const oasUsed = new Set();
+            courseTasks.forEach(t => oasUsed.add(t.oa));
+            html += `OAs trabajados: ${Array.from(oasUsed).join(', ') || 'Ninguno aún'}<br>`;
+            html += `</div>`;
+            
+            if (courseTasks.length > 0) {
+                html += `<h4>📖 Tareas por OA:</h4>`;
+                const oaGroups = {};
+                courseTasks.forEach(task => {
+                    if (!oaGroups[task.oa]) oaGroups[task.oa] = [];
+                    oaGroups[task.oa].push(task);
+                });
+                for (const [oa, oaTasks] of Object.entries(oaGroups)) {
+                    const oaData = OAs.find(o => o.id === oa);
+                    if (oaData) {
+                        html += `<div class="card"><strong>${oa}: ${oaData.name}</strong><br>`;
+                        html += `<em style="font-size: 12px; color: #666;">Descripción: ${oaData.desc}</em><br>`;
+                        html += `<strong>Tareas:</strong><ul style="margin: 5px 0 0 20px; font-size: 13px;">`;
+                        for (const task of oaTasks) {
+                            html += `<li>${task.name} (${task.date}) - Tipo: ${task.gradeType}</li>`;
+                        }
+                        html += `</ul></div>`;
+                    }
+                }
+            }
+            
+            html += `<h4>👥 Estudiantes (${courseStudents.length}):</h4><ul style="font-size: 13px;">`;
+            for (const student of courseStudents) {
+                html += `<li>${String(student.number).padStart(2, '0')}. ${student.firstNames} ${student.lastNames}</li>`;
+            }
+            html += `</ul>`;
+            
             document.getElementById('reportsContent').innerHTML = html;
         }
 
@@ -805,10 +871,48 @@
             if (!studentId) return;
             const students = await getAllData('students');
             const student = students.find(s => s.id === studentId);
-            let html = `<h3>Reporte: ${student.firstNames} ${student.lastNames}</h3><pre>`;
-            html += `Estudiante ${student.number} - Datos de desempeño (a desarrollar)\n`;
-            html += `OAs alcanzados, indicadores logrados, promedio general (a desarrollar)`;
-            html += `</pre>`;
+            const tasks = await getAllData('tasks');
+            const studentTasks = tasks.filter(t => t.courseId === student.courseId);
+            const courses = await getAllData('courses');
+            const course = courses.find(c => c.id === student.courseId);
+            
+            let html = `<h3>📋 Reporte Individual: ${student.firstNames} ${student.lastNames}</h3>`;
+            html += `<div class="card" style="margin-bottom: 20px;">`;
+            html += `<strong>Información del Estudiante:</strong><br>`;
+            html += `Número de lista: ${String(student.number).padStart(2, '0')}<br>`;
+            html += `Curso: ${course.name} (${course.letter}-${course.type})<br>`;
+            html += `Período: 2025 - Segundo Semestre<br>`;
+            html += `</div>`;
+            
+            if (studentTasks.length > 0) {
+                html += `<h4>📚 OAs en el Curso (${studentTasks.length} tareas):</h4>`;
+                const oaGroups = {};
+                studentTasks.forEach(task => {
+                    if (!oaGroups[task.oa]) oaGroups[task.oa] = [];
+                    oaGroups[task.oa].push(task);
+                });
+                
+                for (const [oa, oaTasks] of Object.entries(oaGroups)) {
+                    const oaData = OAs.find(o => o.id === oa);
+                    if (oaData) {
+                        html += `<div class="card">`;
+                        html += `<strong>${oa}: ${oaData.name}</strong><br>`;
+                        html += `<em style="font-size: 12px; color: #666;">${oaData.desc}</em><br>`;
+                        html += `<strong>Indicadores esperados:</strong><ul style="margin: 5px 0 0 20px; font-size: 13px;">`;
+                        for (const ind of oaData.indicators) {
+                            html += `<li>${ind}</li>`;
+                        }
+                        html += `</ul><strong style="margin-top: 10px; display: block;">Tareas asignadas:</strong><ul style="margin: 5px 0 0 20px; font-size: 13px;">`;
+                        for (const task of oaTasks) {
+                            html += `<li>${task.name} (${task.date})</li>`;
+                        }
+                        html += `</ul></div>`;
+                    }
+                }
+            } else {
+                html += `<div class="alert alert-info">No hay tareas aún en este curso.</div>`;
+            }
+            
             document.getElementById('reportsContent').innerHTML = html;
         }
 
