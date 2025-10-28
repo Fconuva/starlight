@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Evaluación - Lenguaje y Literatura</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+                <nav>
+                    <a onclick="showSection('gradebook')" class="nav-link active" data-section="gradebook"><i class="fas fa-table"></i> Planilla</a>
+                    <a onclick="showSection('dashboard')" class="nav-link" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; }
         .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
         header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -16,12 +17,28 @@
         .btn-primary { background: #3498db; color: white; }
         .btn-primary:hover { background: #2980b9; }
         .btn-success { background: #27ae60; color: white; }
+                <!-- PLANILLA -->
+                <div id="gradebook" class="section active">
+                    <h2><i class="fas fa-table"></i> Planilla de Tareas</h2>
+                    <div class="gradebook-controls">
+                        <div class="form-group" style="margin: 0;">
+                            <label>Seleccionar Curso:</label>
+                            <select id="gradebookCourseSelect" onchange="renderGradebook()">
+                                <option value="">-- Seleccionar curso --</option>
+                            </select>
+                        </div>
+                        <span id="gradebookMeta" style="font-size: 12px; color: #555;"></span>
+                    </div>
+                    <div class="gradebook-wrapper">
+                        <table class="gradebook-table" id="gradebookTable"></table>
+                    </div>
+                </div>
         .btn-success:hover { background: #229954; }
         .btn-danger { background: #e74c3c; color: white; }
-        .btn-danger:hover { background: #c0392b; }
+                <div id="dashboard" class="section">
         .btn-secondary { background: #95a5a6; color: white; }
         .btn-secondary:hover { background: #7f8c8d; }
-        .content { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
+    .content { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
         .sidebar { background: white; padding: 20px; border-radius: 8px; height: fit-content; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .sidebar nav a { display: block; padding: 12px 15px; margin: 5px 0; background: #ecf0f1; color: #2c3e50; text-decoration: none; border-radius: 5px; transition: all 0.3s; cursor: pointer; }
         .sidebar nav a:hover, .sidebar nav a.active { background: #667eea; color: white; padding-left: 20px; }
@@ -63,7 +80,20 @@
         .rating-options { display: flex; gap: 10px; flex-wrap: wrap; }
         .rating-btn { padding: 8px 15px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; transition: all 0.3s; }
         .rating-btn.active { background: #667eea; color: white; border-color: #667eea; }
-        .rating-btn:hover { border-color: #667eea; }
+    .rating-btn:hover { border-color: #667eea; }
+
+    /* Gradebook (planilla tipo Excel) */
+    .gradebook-controls { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+    .gradebook-table { width: 100%; border-collapse: collapse; }
+    .gradebook-table th, .gradebook-table td { border: 1px solid #e5e7eb; padding: 10px; text-align: center; font-size: 13px; }
+    .gradebook-table thead th { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; position: sticky; top: 0; z-index: 2; }
+    .gradebook-student { text-align: left; white-space: nowrap; }
+    .gradebook-fixed-col { position: sticky; left: 0; background: #fff; z-index: 1; }
+    .gradebook-fixed-col-2 { position: sticky; left: 60px; background: #fff; z-index: 1; }
+    .gradebook-fixed-col-3 { position: sticky; left: 220px; background: #fff; z-index: 1; }
+    .gradebook-fixed-col-4 { position: sticky; left: 430px; background: #fff; z-index: 1; }
+    .gradebook-wrapper { overflow: auto; max-width: 100%; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .task-subtitle { display: block; font-size: 11px; opacity: 0.9; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -388,7 +418,10 @@
                 }
                 document.getElementById('docenteLabel').textContent = `Docente ${docenteActual}`;
                 await initDB();
-                updateDashboard();
+                // Cargar opciones iniciales para la planilla (vista por defecto)
+                await loadCourses();
+                await loadGradebookCourses();
+                showSection('gradebook');
                 console.log(`✓ Sistema listo para Docente ${docenteActual}`);
             } catch (error) {
                 showMessage('❌ Error al inicializar', 'danger');
@@ -456,6 +489,27 @@
             });
         }
 
+        // ============ EVALUACIONES (HELPERS) ============
+        async function getEvaluationsMap() {
+            const evals = await getAllData('evaluations');
+            const map = new Map();
+            for (const ev of evals) {
+                map.set(`${ev.taskId}:${ev.studentId}`, ev);
+            }
+            return map;
+        }
+
+        async function upsertEvaluation(taskId, studentId, value) {
+            const evals = await getAllData('evaluations');
+            const existing = evals.find(e => e.taskId === taskId && e.studentId === studentId);
+            if (existing) {
+                existing.value = value;
+                await updateData('evaluations', existing);
+            } else {
+                await addData('evaluations', { taskId, studentId, value });
+            }
+        }
+
         // ============ UI ============
         function showSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -469,6 +523,7 @@
             else if (id === 'tasks') loadTaskCourses();
             else if (id === 'evaluation') loadEvaluationTasks();
             else if (id === 'reports') loadReportOptions();
+            else if (id === 'gradebook') { loadGradebookCourses(); renderGradebook(); }
         }
 
         function showMessage(message, type = 'info') {
@@ -780,6 +835,102 @@
 
         async function saveEvaluation(taskId) {
             showMessage('✓ Evaluaciones guardadas', 'success');
+        }
+
+        // ============ PLANILLA (GRADEBOOK) ============
+        async function loadGradebookCourses() {
+            const courses = await getAllData('courses');
+            const select = document.getElementById('gradebookCourseSelect');
+            if (!select) return;
+            const current = select.value;
+            select.innerHTML = '<option value="">-- Seleccionar curso --</option>';
+            for (const course of courses) {
+                const opt = document.createElement('option');
+                opt.value = course.id;
+                opt.textContent = `${course.name} (${course.letter}-${course.type})`;
+                select.appendChild(opt);
+            }
+            if (current) select.value = current;
+        }
+
+        async function renderGradebook() {
+            const table = document.getElementById('gradebookTable');
+            const meta = document.getElementById('gradebookMeta');
+            if (!table) return;
+            const courseId = parseInt(document.getElementById('gradebookCourseSelect').value);
+            if (!courseId) { table.innerHTML = '<thead><tr><th>Seleccione un curso</th></tr></thead>'; return; }
+
+            const [courses, students, tasks, evalMap] = await Promise.all([
+                getAllData('courses'),
+                getAllData('students'),
+                getAllData('tasks'),
+                getEvaluationsMap()
+            ]);
+            const course = courses.find(c => c.id === courseId);
+            const courseStudents = students.filter(s => s.courseId === courseId).sort((a,b) => (a.number||0)-(b.number||0));
+            const courseTasks = tasks.filter(t => t.courseId === courseId);
+            // Header
+            let thead = '<thead><tr>'+
+                '<th class="gradebook-fixed-col">N°</th>'+
+                '<th class="gradebook-fixed-col-2">Apellido Paterno</th>'+
+                '<th class="gradebook-fixed-col-3">Apellido Materno</th>'+
+                '<th class="gradebook-fixed-col-4">Nombre</th>';
+            for (const t of courseTasks) {
+                thead += `<th>${t.name}<span class="task-subtitle">${t.date || ''} ${t.oa ? '('+t.oa+')':''}</span></th>`;
+            }
+            thead += '<th>PUNTOS</th><th>NOTA</th><th>Acciones</th></tr></thead>';
+
+            // Body
+            let tbody = '<tbody>';
+            for (const st of courseStudents) {
+                const apellidos = (st.lastNames||'').trim().split(/\s+/);
+                const paterno = apellidos[0] || '';
+                const materno = apellidos.slice(1).join(' ') || '';
+                let puntos = 0, total = 0;
+                tbody += `<tr>`+
+                    `<td class="gradebook-fixed-col">${st.number || ''}</td>`+
+                    `<td class="gradebook-fixed-col-2">${paterno}</td>`+
+                    `<td class="gradebook-fixed-col-3">${materno}</td>`+
+                    `<td class="gradebook-fixed-col-4 gradebook-student">${st.firstNames}</td>`;
+
+                for (const t of courseTasks) {
+                    let cell = '';
+                    if (t.gradeType === 'direct') {
+                        const existing = evalMap.get(`${t.id}:${st.id}`);
+                        const val = existing ? (existing.value ?? '') : '';
+                        total += 1;
+                        puntos += (val && !isNaN(val)) ? Number(val) : 0; // para promedio si fuese necesario
+                        cell = `<input type="number" min="1" max="7" step="0.1" value="${val}" onchange="upsertEvaluation(${t.id}, ${st.id}, this.value)">`;
+                    } else if (t.gradeType === 'level') {
+                        const existing = evalMap.get(`${t.id}:${st.id}`);
+                        const val = existing ? (existing.value || '') : '';
+                        total += 1;
+                        cell = `<select onchange="upsertEvaluation(${t.id}, ${st.id}, this.value)">`+
+                            `<option value="" ${val===''?'selected':''}>-</option>`+
+                            `<option value="L" ${val==='L'?'selected':''}>L</option>`+
+                            `<option value="ML" ${val==='ML'?'selected':''}>ML</option>`+
+                            `<option value="PL" ${val==='PL'?'selected':''}>PL</option>`+
+                            `</select>`;
+                    } else { // binary por defecto
+                        const existing = evalMap.get(`${t.id}:${st.id}`);
+                        const checked = existing ? !!existing.value : false;
+                        total += 1;
+                        if (checked) puntos += 1;
+                        cell = `<input type="checkbox" ${checked?'checked':''} onchange="upsertEvaluation(${t.id}, ${st.id}, this.checked)">`;
+                    }
+                    tbody += `<td>${cell}</td>`;
+                }
+                // Nota estimada para binario: escala 1-7
+                const max = courseTasks.length || 1;
+                const nota = (max>0) ? (1 + (puntos/max)*6) : 1;
+                tbody += `<td>${puntos}</td><td>${nota.toFixed(1)}</td>`+
+                         `<td><button class="btn btn-secondary btn-small" onclick="/* futuro: acciones */void(0)"><i class="fas fa-edit"></i></button></td>`+
+                         `</tr>`;
+            }
+            tbody += '</tbody>';
+
+            table.innerHTML = thead + tbody;
+            meta.textContent = `${course?.name || ''} ${course?.letter ? '('+course.letter+')':''} — ${courseStudents.length} estudiantes, ${courseTasks.length} tareas`;
         }
 
         // ============ REPORTES ============
