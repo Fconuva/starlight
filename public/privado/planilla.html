@@ -952,6 +952,17 @@ ASCENCIO ROZAS MAXIMO MARIANO
         </div>
     </div>
 
+    <!-- MODAL: EDITAR ESTUDIANTE -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('editStudentModal')">&times;</button>
+            <div class="modal-header">Editar Estudiante</div>
+            <div id="editStudentContent">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // Firebase Configuration Loader
         let firebaseApp = null;
@@ -1663,7 +1674,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     </div>
                 </div>
                 <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-primary" onclick="saveStudentEdit(${studentId})">Guardar Cambios</button>
+                    <button class="modal-btn modal-btn-primary" onclick="saveStudentEdit('${studentId}')">Guardar Cambios</button>
                     <button class="modal-btn modal-btn-cancel" onclick="closeModal('editStudentModal')">Cancelar</button>
                 </div>
             `;
@@ -2021,6 +2032,14 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 const course = courses.find(c => c.id === courseActual);
                 const courseStudents = students.filter(s => s.courseId === courseActual && !s.retirado);
                 const courseTasks = tasks.filter(t => t.courseId === courseActual);
+
+                // Validar que haya tareas
+                if (courseTasks.length === 0) {
+                    alert('⚠️ No hay tareas creadas aún. Debes agregar al menos una tarea para generar reportes con IA.');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    return;
+                }
 
                 let prompt = '';
 
