@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Evaluación</title>
+</head>
+<body>
+    <script>
+        // Lee el docente seleccionado del sessionStorage
+        const docenteActual = sessionStorage.getItem('docenteActual');
+        
+        if (!docenteActual) {
+            // Si no hay docente seleccionado, redirige al home
+            window.location.href = 'index.html';
+        } else {
+            // Guarda el docente en localStorage también para persistencia
+            localStorage.setItem('docenteActual', docenteActual);
+            // Redirige al app.html con el docente como parámetro
+            window.location.href = `app.html?docente=${docenteActual}`;
+        }
+    </script>
+</body>
+</html>

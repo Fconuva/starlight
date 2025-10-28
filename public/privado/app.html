@@ -317,8 +317,15 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-graduation-cap"></i> Sistema de Evaluación</h1>
-            <p>Gestión de cursos, estudiantes y calificaciones</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1><i class="fas fa-graduation-cap"></i> Sistema de Evaluación <span id="docenteLabel" style="font-size: 16px; opacity: 0.8;"></span></h1>
+                    <p>Gestión de cursos, estudiantes y calificaciones</p>
+                </div>
+                <button class="btn btn-danger" onclick="logout()" style="margin: 0;">
+                    <i class="fas fa-sign-out-alt"></i> Cambiar Docente
+                </button>
+            </div>
         </header>
 
         <div class="content">
@@ -559,16 +566,27 @@
         let currentCourseId = null;
         let currentStudentId = null;
         let currentTaskId = null;
+        let docenteActual = null;
+
+        // Función para obtener el prefijo de docente en tiendas de datos
+        function getStorePrefix() {
+            return `docente${docenteActual}_`;
+        }
+
+        // Función para obtener el nombre de la tienda con prefijo de docente
+        function getStoreName(storeName) {
+            return getStorePrefix() + storeName;
+        }
 
         // ============ INICIALIZAR BASE DE DATOS ============
         function initDB() {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                const request = indexedDB.open(DB_NAME, DB_VERSION + docenteActual);
 
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => {
                     db = request.result;
-                    console.log('✓ Base de datos inicializada');
+                    console.log(`✓ Base de datos inicializada para Docente ${docenteActual}`);
                     resolve(db);
                 };
 
@@ -576,26 +594,30 @@
                     db = e.target.result;
 
                     // Crear tabla de cursos
-                    if (!db.objectStoreNames.contains('courses')) {
-                        db.createObjectStore('courses', { keyPath: 'id', autoIncrement: true });
+                    const coursesStoreName = getStoreName('courses');
+                    if (!db.objectStoreNames.contains(coursesStoreName)) {
+                        db.createObjectStore(coursesStoreName, { keyPath: 'id', autoIncrement: true });
                     }
 
                     // Crear tabla de estudiantes
-                    if (!db.objectStoreNames.contains('students')) {
-                        db.createObjectStore('students', { keyPath: 'id', autoIncrement: true });
+                    const studentsStoreName = getStoreName('students');
+                    if (!db.objectStoreNames.contains(studentsStoreName)) {
+                        db.createObjectStore(studentsStoreName, { keyPath: 'id', autoIncrement: true });
                     }
 
                     // Crear tabla de tareas
-                    if (!db.objectStoreNames.contains('tasks')) {
-                        db.createObjectStore('tasks', { keyPath: 'id', autoIncrement: true });
+                    const tasksStoreName = getStoreName('tasks');
+                    if (!db.objectStoreNames.contains(tasksStoreName)) {
+                        db.createObjectStore(tasksStoreName, { keyPath: 'id', autoIncrement: true });
                     }
 
                     // Crear tabla de calificaciones
-                    if (!db.objectStoreNames.contains('grades')) {
-                        db.createObjectStore('grades', { keyPath: 'id', autoIncrement: true });
+                    const gradesStoreName = getStoreName('grades');
+                    if (!db.objectStoreNames.contains(gradesStoreName)) {
+                        db.createObjectStore(gradesStoreName, { keyPath: 'id', autoIncrement: true });
                     }
 
-                    console.log('✓ Tablas de BD creadas');
+                    console.log(`✓ Tablas de BD creadas para Docente ${docenteActual}`);
                 };
             });
         }
@@ -603,13 +625,14 @@
         // ============ FUNCIONES DE BASE DE DATOS ============
         async function addData(storeName, data) {
             return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readwrite');
-                const store = transaction.objectStore(storeName);
+                const fullStoreName = getStoreName(storeName);
+                const transaction = db.transaction(fullStoreName, 'readwrite');
+                const store = transaction.objectStore(fullStoreName);
                 const request = store.add(data);
 
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => {
-                    console.log(`✓ Dato agregado a ${storeName}:`, data);
+                    console.log(`✓ Dato agregado a ${fullStoreName}:`, data);
                     resolve(request.result);
                 };
             });
@@ -617,8 +640,9 @@
 
         async function getAllData(storeName) {
             return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readonly');
-                const store = transaction.objectStore(storeName);
+                const fullStoreName = getStoreName(storeName);
+                const transaction = db.transaction(fullStoreName, 'readonly');
+                const store = transaction.objectStore(fullStoreName);
                 const request = store.getAll();
 
                 request.onerror = () => reject(request.error);
@@ -628,8 +652,9 @@
 
         async function deleteData(storeName, id) {
             return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readwrite');
-                const store = transaction.objectStore(storeName);
+                const fullStoreName = getStoreName(storeName);
+                const transaction = db.transaction(fullStoreName, 'readwrite');
+                const store = transaction.objectStore(fullStoreName);
                 const request = store.delete(id);
 
                 request.onerror = () => reject(request.error);
@@ -639,8 +664,9 @@
 
         async function updateData(storeName, data) {
             return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readwrite');
-                const store = transaction.objectStore(storeName);
+                const fullStoreName = getStoreName(storeName);
+                const transaction = db.transaction(fullStoreName, 'readwrite');
+                const store = transaction.objectStore(fullStoreName);
                 const request = store.put(data);
 
                 request.onerror = () => reject(request.error);
@@ -1047,11 +1073,33 @@ ESTUDIANTES Y CALIFICACIONES
             setTimeout(() => messageEl.remove(), 3000);
         }
 
+        function logout() {
+            sessionStorage.removeItem('docenteActual');
+            localStorage.removeItem('docenteActual');
+            window.location.href = 'index.html';
+        }
+
+        function getDocenteFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('docente') || localStorage.getItem('docenteActual');
+        }
+
         // ============ INICIALIZACIÓN ============
         window.addEventListener('load', async () => {
             try {
+                // Leer docente del URL o del localStorage
+                docenteActual = getDocenteFromURL();
+                
+                if (!docenteActual || !['1', '2', '3', '4'].includes(docenteActual)) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Actualizar label de docente
+                document.getElementById('docenteLabel').textContent = `- Docente ${docenteActual}`;
+
                 await initDB();
-                console.log('✓ Sistema listo');
+                console.log(`✓ Sistema listo para Docente ${docenteActual}`);
                 updateDashboard();
             } catch (error) {
                 console.error('✗ Error:', error);
