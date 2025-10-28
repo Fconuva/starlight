@@ -1,0 +1,15 @@
+{
+  "name": "sistema-evaluacion",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de Evaluación y Registro de Notas",
+  "scripts": {
+    "dev": "echo 'Sistema estático listo'",
+    "start": "echo 'Sistema estático listo'",
+    "build": "echo 'Sistema estático listo'",
+    "preview": "echo 'Sistema estático listo'"
+  },
+  "dependencies": {}
+}
+
