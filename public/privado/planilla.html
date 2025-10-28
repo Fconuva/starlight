@@ -810,25 +810,28 @@
     <div id="courseModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('courseModal')">&times;</button>
-            <div class="modal-header">Agregar Curso</div>
+            <div class="modal-header">Agregar Curso - Lengua y Literatura Segundo Medio</div>
             <div class="form-group">
-                <label>Nombre del Curso:</label>
-                <input type="text" id="courseName" placeholder="Ej: Lenguaje y Comunicación">
-            </div>
-            <div class="form-group">
-                <label>Letra:</label>
-                <input type="text" id="courseLetter" placeholder="Ej: A" maxlength="1">
-            </div>
-            <div class="form-group">
-                <label>Tipo:</label>
-                <select id="courseType">
+                <label>Letra del Curso:</label>
+                <select id="courseLetter">
                     <option value="">-- Seleccionar --</option>
-                    <option value="Basica">Básica</option>
-                    <option value="Media">Media</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Modalidad:</label>
+                <select id="courseModality">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="HC">HC - Científico Humanista</option>
+                    <option value="TP">TP - Técnico Profesional</option>
                 </select>
             </div>
             <div class="modal-buttons">
-                <button class="modal-btn modal-btn-primary" onclick="saveCourse()">Guardar</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveCourse()">Guardar Curso</button>
                 <button class="modal-btn modal-btn-cancel" onclick="closeModal('courseModal')">Cancelar</button>
             </div>
         </div>
@@ -1277,24 +1280,39 @@
         }
 
         async function saveCourse() {
-            const name = document.getElementById('courseName').value.trim();
             const letter = document.getElementById('courseLetter').value.trim().toUpperCase();
-            const type = document.getElementById('courseType').value;
+            const modality = document.getElementById('courseModality').value;
 
-            if (!name || !letter || !type) {
-                alert('Completa todos los campos');
+            if (!letter || !modality) {
+                alert('Debes seleccionar la letra y la modalidad del curso');
                 return;
             }
 
-            await addData('courses', { name, letter, type });
+            // Valores por defecto
+            const courseName = `Lengua y Literatura 2° ${modality} ${letter}`;
+            const courseData = {
+                name: courseName,
+                letter: letter,
+                type: 'Media',
+                modality: modality,
+                subject: 'Lengua y Literatura',
+                grade: '2° Medio'
+            };
+
+            const newCourseId = await addData('courses', courseData);
             
             closeModal('courseModal');
-            document.getElementById('courseName').value = '';
             document.getElementById('courseLetter').value = '';
-            document.getElementById('courseType').value = '';
+            document.getElementById('courseModality').value = '';
             
             await loadCourses();
-            alert('Curso agregado correctamente');
+            
+            // Seleccionar automáticamente el curso recién creado
+            document.getElementById('courseSelect').value = newCourseId;
+            courseActual = newCourseId;
+            await loadPlanilla();
+            
+            alert(`Curso "${courseName}" creado y seleccionado. Ya puedes agregar estudiantes.`);
         }
 
         async function loadPlanilla() {
