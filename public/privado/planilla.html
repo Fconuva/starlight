@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilla de Evaluación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; }
+        .btn { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; background: #fff; color: #667eea; transition: all 0.3s; }
+        .btn:hover { background: #f0f0f0; }
+        .controls { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .controls label { font-weight: 600; }
+        .controls select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .table-wrapper { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: auto; max-height: 75vh; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #d0d0d0; padding: 10px; text-align: center; font-size: 13px; }
+        th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold; position: sticky; top: 0; z-index: 10; white-space: nowrap; }
+        tbody tr:nth-child(even) { background: #fafafa; }
+        tbody tr:hover { background: #e8f4fd; }
+        .col-num { width: 50px; font-weight: bold; position: sticky; left: 0; background: #fff; z-index: 5; border-right: 2px solid #999; }
+        .col-apellido-p { width: 140px; text-align: left; position: sticky; left: 50px; background: #fff; z-index: 5; }
+        .col-apellido-m { width: 140px; text-align: left; position: sticky; left: 190px; background: #fff; z-index: 5; }
+        .col-nombre { width: 160px; text-align: left; position: sticky; left: 330px; background: #fff; z-index: 5; border-right: 2px solid #999; }
+        thead th.col-num, thead th.col-apellido-p, thead th.col-apellido-m, thead th.col-nombre { z-index: 15; }
+        .task-header { min-width: 100px; }
+        .task-subtitle { display: block; font-size: 10px; opacity: 0.9; margin-top: 3px; font-weight: normal; }
+        input[type="checkbox"] { transform: scale(1.4); cursor: pointer; }
+        .col-puntos, .col-nota { font-weight: bold; background: #f9f9f9; }
+        .col-acciones { width: 80px; }
+        .empty-state { padding: 40px; text-align: center; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1><i class="fas fa-table"></i> Planilla de Evaluación</h1>
+            <div id="docenteLabel" style="font-size: 14px; opacity: 0.9; margin-top: 5px;"></div>
+        </div>
+        <div>
+            <button class="btn" onclick="window.location.href='app.html'"><i class="fas fa-cog"></i> Ir a Sistema Completo</button>
+            <button class="btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cambiar Docente</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <label>Curso:</label>
+        <select id="courseSelect" onchange="loadPlanilla()">
+            <option value="">-- Seleccionar curso --</option>
+        </select>
+        <span id="meta" style="margin-left: auto; font-size: 12px; color: #666;"></span>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="planillaTable">
+            <thead>
+                <tr>
+                    <th class="col-num">N°</th>
+                    <th class="col-apellido-p">APELLIDO PATERNO</th>
+                    <th class="col-apellido-m">APELLIDO MATERNO</th>
+                    <th class="col-nombre">NOMBRE</th>
+                    <th class="col-puntos">PUNTOS</th>
+                    <th class="col-nota">NOTA</th>
+                    <th class="col-acciones">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody id="planillaBody">
+                <tr><td colspan="7" class="empty-state">Seleccione un curso para ver la planilla</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const DB_NAME = 'EvaluacionDB';
+        let db;
+        let docenteActual = null;
+
+        window.addEventListener('load', async () => {
+            docenteActual = localStorage.getItem('docenteActual') || sessionStorage.getItem('docenteActual');
+            if (!docenteActual || !['1', '2', '3', '4'].includes(docenteActual)) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.getElementById('docenteLabel').textContent = `Docente ${docenteActual}`;
+            await initDB();
+            await loadCourses();
+        });
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME + docenteActual, 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => { db = request.result; resolve(db); };
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    ['courses', 'students', 'tasks', 'evaluations'].forEach(store => {
+                        if (!db.objectStoreNames.contains(store)) {
+                            db.createObjectStore(store, { keyPath: 'id', autoIncrement: true });
+                        }
+                    });
+                };
+            });
+        }
+
+        async function getAllData(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.getAll();
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        async function getEvaluationsMap() {
+            const evals = await getAllData('evaluations');
+            const map = new Map();
+            for (const ev of evals) {
+                map.set(`${ev.taskId}:${ev.studentId}`, ev);
+            }
+            return map;
+        }
+
+        async function upsertEvaluation(taskId, studentId, value) {
+            const evals = await getAllData('evaluations');
+            const existing = evals.find(e => e.taskId === taskId && e.studentId === studentId);
+            if (existing) {
+                existing.value = value;
+                const transaction = db.transaction('evaluations', 'readwrite');
+                const store = transaction.objectStore('evaluations');
+                await new Promise((resolve, reject) => {
+                    const request = store.put(existing);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve();
+                });
+            } else {
+                const transaction = db.transaction('evaluations', 'readwrite');
+                const store = transaction.objectStore('evaluations');
+                await new Promise((resolve, reject) => {
+                    const request = store.add({ taskId, studentId, value });
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve();
+                });
+            }
+            loadPlanilla(); // Recargar para actualizar puntos/nota
+        }
+
+        async function loadCourses() {
+            const courses = await getAllData('courses');
+            const select = document.getElementById('courseSelect');
+            select.innerHTML = '<option value="">-- Seleccionar curso --</option>';
+            for (const course of courses) {
+                const opt = document.createElement('option');
+                opt.value = course.id;
+                opt.textContent = `${course.name} (${course.letter}-${course.type})`;
+                select.appendChild(opt);
+            }
+        }
+
+        async function loadPlanilla() {
+            const courseId = parseInt(document.getElementById('courseSelect').value);
+            const tbody = document.getElementById('planillaBody');
+            const meta = document.getElementById('meta');
+            const tableHead = document.querySelector('#planillaTable thead tr');
+            
+            if (!courseId) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Seleccione un curso para ver la planilla</td></tr>';
+                meta.textContent = '';
+                // Reset header
+                tableHead.innerHTML = `<th class="col-num">N°</th>
+                    <th class="col-apellido-p">APELLIDO PATERNO</th>
+                    <th class="col-apellido-m">APELLIDO MATERNO</th>
+                    <th class="col-nombre">NOMBRE</th>
+                    <th class="col-puntos">PUNTOS</th>
+                    <th class="col-nota">NOTA</th>
+                    <th class="col-acciones">ACCIONES</th>`;
+                return;
+            }
+
+            const [courses, students, tasks, evalMap] = await Promise.all([
+                getAllData('courses'),
+                getAllData('students'),
+                getAllData('tasks'),
+                getEvaluationsMap()
+            ]);
+
+            const course = courses.find(c => c.id === courseId);
+            const courseStudents = students.filter(s => s.courseId === courseId).sort((a,b) => (a.number||0)-(b.number||0));
+            const courseTasks = tasks.filter(t => t.courseId === courseId);
+
+            // Build header
+            let headerHTML = `<th class="col-num">N°</th>
+                <th class="col-apellido-p">APELLIDO PATERNO</th>
+                <th class="col-apellido-m">APELLIDO MATERNO</th>
+                <th class="col-nombre">NOMBRE</th>`;
+            
+            for (const t of courseTasks) {
+                headerHTML += `<th class="task-header">${t.name}<span class="task-subtitle">${t.date || ''}<br>${t.oa ? t.oa : ''}</span></th>`;
+            }
+            
+            headerHTML += `<th class="col-puntos">PUNTOS</th>
+                <th class="col-nota">NOTA</th>
+                <th class="col-acciones">ACCIONES</th>`;
+            tableHead.innerHTML = headerHTML;
+
+            // Build body
+            let bodyHTML = '';
+            for (const st of courseStudents) {
+                const apellidos = (st.lastNames||'').trim().split(/\s+/);
+                const paterno = apellidos[0] || '';
+                const materno = apellidos.slice(1).join(' ') || '';
+                let puntos = 0;
+
+                bodyHTML += `<tr>
+                    <td class="col-num">${st.number || ''}</td>
+                    <td class="col-apellido-p">${paterno}</td>
+                    <td class="col-apellido-m">${materno}</td>
+                    <td class="col-nombre">${st.firstNames}</td>`;
+
+                for (const t of courseTasks) {
+                    const existing = evalMap.get(`${t.id}:${st.id}`);
+                    const checked = existing ? !!existing.value : false;
+                    if (checked) puntos++;
+                    bodyHTML += `<td><input type="checkbox" ${checked?'checked':''} onchange="upsertEvaluation(${t.id}, ${st.id}, this.checked)"></td>`;
+                }
+
+                const max = courseTasks.length || 1;
+                const nota = (max>0) ? (1 + (puntos/max)*6) : 1;
+                bodyHTML += `<td class="col-puntos">${puntos}</td>
+                    <td class="col-nota">${nota.toFixed(1)}</td>
+                    <td class="col-acciones"><i class="fas fa-edit" style="color: #667eea; cursor: pointer;"></i></td>
+                </tr>`;
+            }
+
+            tbody.innerHTML = bodyHTML;
+            meta.textContent = `${course?.name || ''} ${course?.letter ? '('+course.letter+')':''} — ${courseStudents.length} estudiantes, ${courseTasks.length} tareas`;
+        }
+
+        function logout() {
+            sessionStorage.removeItem('docenteActual');
+            localStorage.removeItem('docenteActual');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

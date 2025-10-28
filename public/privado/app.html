@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Evaluación - Lenguaje y Literatura</title>
+    <title>Sistema de Evaluaci├│n - Lenguaje y Literatura</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-                <nav>
-                    <a onclick="showSection('gradebook')" class="nav-link active" data-section="gradebook"><i class="fas fa-table"></i> Planilla</a>
-                    <a onclick="showSection('dashboard')" class="nav-link" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; }
         .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
         header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -17,28 +16,12 @@
         .btn-primary { background: #3498db; color: white; }
         .btn-primary:hover { background: #2980b9; }
         .btn-success { background: #27ae60; color: white; }
-                <!-- PLANILLA -->
-                <div id="gradebook" class="section active">
-                    <h2><i class="fas fa-table"></i> Planilla de Tareas</h2>
-                    <div class="gradebook-controls">
-                        <div class="form-group" style="margin: 0;">
-                            <label>Seleccionar Curso:</label>
-                            <select id="gradebookCourseSelect" onchange="renderGradebook()">
-                                <option value="">-- Seleccionar curso --</option>
-                            </select>
-                        </div>
-                        <span id="gradebookMeta" style="font-size: 12px; color: #555;"></span>
-                    </div>
-                    <div class="gradebook-wrapper">
-                        <table class="gradebook-table" id="gradebookTable"></table>
-                    </div>
-                </div>
         .btn-success:hover { background: #229954; }
         .btn-danger { background: #e74c3c; color: white; }
-                <div id="dashboard" class="section">
+        .btn-danger:hover { background: #c0392b; }
         .btn-secondary { background: #95a5a6; color: white; }
         .btn-secondary:hover { background: #7f8c8d; }
-    .content { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
+        .content { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
         .sidebar { background: white; padding: 20px; border-radius: 8px; height: fit-content; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .sidebar nav a { display: block; padding: 12px 15px; margin: 5px 0; background: #ecf0f1; color: #2c3e50; text-decoration: none; border-radius: 5px; transition: all 0.3s; cursor: pointer; }
         .sidebar nav a:hover, .sidebar nav a.active { background: #667eea; color: white; padding-left: 20px; }
@@ -80,27 +63,14 @@
         .rating-options { display: flex; gap: 10px; flex-wrap: wrap; }
         .rating-btn { padding: 8px 15px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; transition: all 0.3s; }
         .rating-btn.active { background: #667eea; color: white; border-color: #667eea; }
-    .rating-btn:hover { border-color: #667eea; }
-
-    /* Gradebook (planilla tipo Excel) */
-    .gradebook-controls { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
-    .gradebook-table { width: 100%; border-collapse: collapse; }
-    .gradebook-table th, .gradebook-table td { border: 1px solid #e5e7eb; padding: 10px; text-align: center; font-size: 13px; }
-    .gradebook-table thead th { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; position: sticky; top: 0; z-index: 2; }
-    .gradebook-student { text-align: left; white-space: nowrap; }
-    .gradebook-fixed-col { position: sticky; left: 0; background: #fff; z-index: 1; }
-    .gradebook-fixed-col-2 { position: sticky; left: 60px; background: #fff; z-index: 1; }
-    .gradebook-fixed-col-3 { position: sticky; left: 220px; background: #fff; z-index: 1; }
-    .gradebook-fixed-col-4 { position: sticky; left: 430px; background: #fff; z-index: 1; }
-    .gradebook-wrapper { overflow: auto; max-width: 100%; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .task-subtitle { display: block; font-size: 11px; opacity: 0.9; margin-top: 4px; }
+        .rating-btn:hover { border-color: #667eea; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div>
-                <h1><i class="fas fa-book"></i> Lenguaje y Literatura - 2° Medio</h1>
+                <h1><i class="fas fa-book"></i> Lenguaje y Literatura - 2┬░ Medio</h1>
                 <div class="header-actions">
                     <span id="docenteLabel"></span>
                     <span id="cursoLabel"></span>
@@ -116,7 +86,7 @@
                     <a onclick="showSection('courses')" class="nav-link" data-section="courses"><i class="fas fa-book"></i> Cursos</a>
                     <a onclick="showSection('students')" class="nav-link" data-section="students"><i class="fas fa-users"></i> Estudiantes</a>
                     <a onclick="showSection('tasks')" class="nav-link" data-section="tasks"><i class="fas fa-tasks"></i> Tareas</a>
-                    <a onclick="showSection('evaluation')" class="nav-link" data-section="evaluation"><i class="fas fa-chart-bar"></i> Evaluación</a>
+                    <a onclick="showSection('evaluation')" class="nav-link" data-section="evaluation"><i class="fas fa-chart-bar"></i> Evaluaci├│n</a>
                     <a onclick="showSection('reports')" class="nav-link" data-section="reports"><i class="fas fa-file-pdf"></i> Reportes</a>
                 </nav>
             </div>
@@ -148,7 +118,7 @@
 
                 <!-- CURSOS -->
                 <div id="courses" class="section">
-                    <h2><i class="fas fa-book"></i> Gestión de Cursos</h2>
+                    <h2><i class="fas fa-book"></i> Gesti├│n de Cursos</h2>
                     <button class="btn btn-primary" onclick="openCourseModal()"><i class="fas fa-plus"></i> Crear Curso</button>
                     <table id="coursesTable">
                         <thead>
@@ -156,7 +126,7 @@
                                 <th>Curso</th>
                                 <th>Letra</th>
                                 <th>Tipo</th>
-                                <th>Período</th>
+                                <th>Per├¡odo</th>
                                 <th>Estudiantes</th>
                                 <th>Acciones</th>
                             </tr>
@@ -167,7 +137,7 @@
 
                 <!-- ESTUDIANTES -->
                 <div id="students" class="section">
-                    <h2><i class="fas fa-users"></i> Gestión de Estudiantes</h2>
+                    <h2><i class="fas fa-users"></i> Gesti├│n de Estudiantes</h2>
                     <div class="form-group">
                         <label>Seleccionar Curso:</label>
                         <select id="studentCourseSelect" onchange="loadStudentsForCourse()">
@@ -176,15 +146,15 @@
                     </div>
                     <button class="btn btn-primary" onclick="openStudentModal()"><i class="fas fa-plus"></i> Agregar Estudiante</button>
                     <div class="batch-import">
-                        <h4><i class="fas fa-upload"></i> Importación Masiva</h4>
-                        <p style="font-size: 13px; margin-bottom: 10px;">Pega los nombres de estudiantes (uno por línea):</p>
+                        <h4><i class="fas fa-upload"></i> Importaci├│n Masiva</h4>
+                        <p style="font-size: 13px; margin-bottom: 10px;">Pega los nombres de estudiantes (uno por l├¡nea):</p>
                         <textarea id="batchStudentsText" placeholder="APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2&#10;APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2" style="height: 150px; font-family: monospace;"></textarea>
                         <button class="btn btn-success" onclick="batchImportStudents()"><i class="fas fa-check"></i> Importar</button>
                     </div>
                     <table id="studentsTable">
                         <thead>
                             <tr>
-                                <th>Nº</th>
+                                <th>N┬║</th>
                                 <th>Nombres</th>
                                 <th>Apellidos</th>
                                 <th>Acciones</th>
@@ -196,7 +166,7 @@
 
                 <!-- TAREAS -->
                 <div id="tasks" class="section">
-                    <h2><i class="fas fa-tasks"></i> Gestión de Tareas</h2>
+                    <h2><i class="fas fa-tasks"></i> Gesti├│n de Tareas</h2>
                     <div class="form-group">
                         <label>Seleccionar Curso:</label>
                         <select id="taskCourseSelect" onchange="loadTasksForCourse()">
@@ -210,7 +180,7 @@
                                 <th>Nombre</th>
                                 <th>Fecha</th>
                                 <th>OA</th>
-                                <th>Tipo Calificación</th>
+                                <th>Tipo Calificaci├│n</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -218,9 +188,9 @@
                     </table>
                 </div>
 
-                <!-- EVALUACIÓN -->
+                <!-- EVALUACI├ôN -->
                 <div id="evaluation" class="section">
-                    <h2><i class="fas fa-chart-bar"></i> Registro de Evaluación</h2>
+                    <h2><i class="fas fa-chart-bar"></i> Registro de Evaluaci├│n</h2>
                     <div class="form-group">
                         <label>Seleccionar Tarea:</label>
                         <select id="evaluationTaskSelect" onchange="loadEvaluationForm()">
@@ -283,8 +253,8 @@
                         <label>Tipo:</label>
                         <select id="courseType" required>
                             <option value="">Seleccionar</option>
-                            <option value="HC">HC (Humanista Científico)</option>
-                            <option value="TP">TP (Técnico Profesional)</option>
+                            <option value="HC">HC (Humanista Cient├¡fico)</option>
+                            <option value="TP">TP (T├®cnico Profesional)</option>
                         </select>
                     </div>
                 </div>
@@ -334,8 +304,8 @@
                     <label>Objetivo de Aprendizaje (OA):</label>
                     <select id="taskOA" required onchange="showOADescription()">
                         <option value="">Seleccionar OA</option>
-                        <option value="OA3">OA3: Analizar las narraciones leídas</option>
-                        <option value="OA5">OA5: Analizar los textos dramáticos</option>
+                        <option value="OA3">OA3: Analizar las narraciones le├¡das</option>
+                        <option value="OA5">OA5: Analizar los textos dram├íticos</option>
                         <option value="OA6">OA6: Comprender obras del Siglo de Oro</option>
                         <option value="OA11">OA11: Leer y comprender textos no literarios</option>
                     </select>
@@ -346,7 +316,7 @@
                     <textarea id="taskIndicators" placeholder="Indicador 1, Indicador 2, Indicador 3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Tipo de Calificación:</label>
+                    <label>Tipo de Calificaci├│n:</label>
                     <select id="taskGradeType" required>
                         <option value="">Seleccionar</option>
                         <option value="binary">Sistema Binario (Ticket/X)</option>
@@ -360,47 +330,47 @@
     </div>
 
     <script>
-        // ============ CONFIGURACIÓN GLOBAL ============
+        // ============ CONFIGURACI├ôN GLOBAL ============
         const DB_NAME = 'EvaluacionDB';
         const DB_VERSION = 1;
         let db;
         let docenteActual = null;
         let cursoActual = null;
 
-        // OAs de Unidad 4: Poder y Ambición (datos reales del programa)
+        // OAs de Unidad 4: Poder y Ambici├│n (datos reales del programa)
         const OAS_UNIT4 = {
             OA3: {
-                nombre: 'Analizar las narraciones leídas',
-                descripcion: 'Analizar las narraciones leídas para enriquecer su comprensión',
+                nombre: 'Analizar las narraciones le├¡das',
+                descripcion: 'Analizar las narraciones le├¡das para enriquecer su comprensi├│n',
                 indicadores: [
-                    'Analizan el planteamiento de los personajes de las narraciones leídas, considerando sus características, relaciones entre ellos, sus diálogos, mundo personal y social, y sus conflictos y motivaciones',
-                    'Relacionan las creencias, prejuicios y estereotipos presentes en las narraciones leídas con la visión de mundo de su contexto de producción, el contexto actual y sus experiencias de lectura',
-                    'Interpretan el sentido de los recursos narrativos y las relaciones de intertextualidad dadas en las narraciones leídas'
+                    'Analizan el planteamiento de los personajes de las narraciones le├¡das, considerando sus caracter├¡sticas, relaciones entre ellos, sus di├ílogos, mundo personal y social, y sus conflictos y motivaciones',
+                    'Relacionan las creencias, prejuicios y estereotipos presentes en las narraciones le├¡das con la visi├│n de mundo de su contexto de producci├│n, el contexto actual y sus experiencias de lectura',
+                    'Interpretan el sentido de los recursos narrativos y las relaciones de intertextualidad dadas en las narraciones le├¡das'
                 ]
             },
             OA5: {
-                nombre: 'Analizar los textos dramáticos',
-                descripcion: 'Analizar los textos dramáticos leídos o vistos, para enriquecer su comprensión',
+                nombre: 'Analizar los textos dram├íticos',
+                descripcion: 'Analizar los textos dram├íticos le├¡dos o vistos, para enriquecer su comprensi├│n',
                 indicadores: [
-                    'Analizan el planteamiento y el desarrollo del conflicto dramático a lo largo de las acciones que componen las obras dramáticas',
-                    'Infieren las características de los personajes de las obras dramáticas a partir de sus relaciones, motivaciones, conflictos, diálogos, y mundo personal y social',
-                    'Interpretan el sentido de los elementos de la estructura externa, de la puesta en escena y de las relaciones intertextuales establecidas en las obras dramáticas leídas o vistas'
+                    'Analizan el planteamiento y el desarrollo del conflicto dram├ítico a lo largo de las acciones que componen las obras dram├íticas',
+                    'Infieren las caracter├¡sticas de los personajes de las obras dram├íticas a partir de sus relaciones, motivaciones, conflictos, di├ílogos, y mundo personal y social',
+                    'Interpretan el sentido de los elementos de la estructura externa, de la puesta en escena y de las relaciones intertextuales establecidas en las obras dram├íticas le├¡das o vistas'
                 ]
             },
             OA6: {
                 nombre: 'Comprender obras del Siglo de Oro',
-                descripcion: 'Comprender la relevancia de las obras del Siglo de Oro, considerando sus características y el contexto en el que se enmarcan',
+                descripcion: 'Comprender la relevancia de las obras del Siglo de Oro, considerando sus caracter├¡sticas y el contexto en el que se enmarcan',
                 indicadores: [
-                    'Interpretan obras del Siglo de Oro, considerando sus tópicos, características, y contexto de producción y recepción',
-                    'Reflexionan críticamente en torno a la relevancia de las obras del Siglo de Oro, a partir del contexto de producción y la relación con su contexto de recepción y el mundo actual'
+                    'Interpretan obras del Siglo de Oro, considerando sus t├│picos, caracter├¡sticas, y contexto de producci├│n y recepci├│n',
+                    'Reflexionan cr├¡ticamente en torno a la relevancia de las obras del Siglo de Oro, a partir del contexto de producci├│n y la relaci├│n con su contexto de recepci├│n y el mundo actual'
                 ]
             },
             OA11: {
                 nombre: 'Leer y comprender textos no literarios',
                 descripcion: 'Leer y comprender textos no literarios para contextualizar y complementar las lecturas literarias realizadas en clases',
                 indicadores: [
-                    'Relacionan información de los textos leídos con las obras literarias revisadas',
-                    'Fundamentan una opinión sobre las obras literarias leídas, a partir de las ideas de los textos no literarios'
+                    'Relacionan informaci├│n de los textos le├¡dos con las obras literarias revisadas',
+                    'Fundamentan una opini├│n sobre las obras literarias le├¡das, a partir de las ideas de los textos no literarios'
                 ]
             }
         };
@@ -408,7 +378,7 @@
         function getStorePrefix() { return `docente${docenteActual}_`; }
         function getStoreName(store) { return getStorePrefix() + store; }
 
-        // ============ INICIALIZACIÓN ============
+        // ============ INICIALIZACI├ôN ============
         window.addEventListener('load', async () => {
             try {
                 docenteActual = localStorage.getItem('docenteActual') || sessionStorage.getItem('docenteActual');
@@ -418,13 +388,10 @@
                 }
                 document.getElementById('docenteLabel').textContent = `Docente ${docenteActual}`;
                 await initDB();
-                // Cargar opciones iniciales para la planilla (vista por defecto)
-                await loadCourses();
-                await loadGradebookCourses();
-                showSection('gradebook');
-                console.log(`✓ Sistema listo para Docente ${docenteActual}`);
+                updateDashboard();
+                console.log(`Ô£ô Sistema listo para Docente ${docenteActual}`);
             } catch (error) {
-                showMessage('❌ Error al inicializar', 'danger');
+                showMessage('ÔØî Error al inicializar', 'danger');
                 console.error(error);
             }
         });
@@ -489,27 +456,6 @@
             });
         }
 
-        // ============ EVALUACIONES (HELPERS) ============
-        async function getEvaluationsMap() {
-            const evals = await getAllData('evaluations');
-            const map = new Map();
-            for (const ev of evals) {
-                map.set(`${ev.taskId}:${ev.studentId}`, ev);
-            }
-            return map;
-        }
-
-        async function upsertEvaluation(taskId, studentId, value) {
-            const evals = await getAllData('evaluations');
-            const existing = evals.find(e => e.taskId === taskId && e.studentId === studentId);
-            if (existing) {
-                existing.value = value;
-                await updateData('evaluations', existing);
-            } else {
-                await addData('evaluations', { taskId, studentId, value });
-            }
-        }
-
         // ============ UI ============
         function showSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -523,7 +469,6 @@
             else if (id === 'tasks') loadTaskCourses();
             else if (id === 'evaluation') loadEvaluationTasks();
             else if (id === 'reports') loadReportOptions();
-            else if (id === 'gradebook') { loadGradebookCourses(); renderGradebook(); }
         }
 
         function showMessage(message, type = 'info') {
@@ -565,7 +510,7 @@
             closeModal('courseModal');
             document.getElementById('courseForm').reset();
             loadCourses();
-            showMessage('✓ Curso creado', 'success');
+            showMessage('Ô£ô Curso creado', 'success');
         }
 
         async function loadCourses() {
@@ -579,7 +524,7 @@
                     <td><strong>${course.name}</strong></td>
                     <td><span class="badge badge-primary">${course.letter}</span></td>
                     <td>${course.type}</td>
-                    <td>2°-S2-2025</td>
+                    <td>2┬░-S2-2025</td>
                     <td>${count}</td>
                     <td><button class="btn btn-danger btn-small" onclick="deleteCourse(${course.id})"><i class="fas fa-trash"></i></button></td>
                 </tr>`;
@@ -601,10 +546,10 @@
         }
 
         async function deleteCourse(id) {
-            if (confirm('¿Eliminar este curso?')) {
+            if (confirm('┬┐Eliminar este curso?')) {
                 await deleteData('courses', id);
                 loadCourses();
-                showMessage('✓ Curso eliminado', 'success');
+                showMessage('Ô£ô Curso eliminado', 'success');
             }
         }
 
@@ -642,7 +587,7 @@
         async function saveStudent(e) {
             e.preventDefault();
             if (!cursoActual) {
-                showMessage('❌ Selecciona un curso', 'danger');
+                showMessage('ÔØî Selecciona un curso', 'danger');
                 return;
             }
             const students = await getAllData('students');
@@ -659,12 +604,12 @@
             closeModal('studentModal');
             document.getElementById('studentForm').reset();
             loadStudentsForCourse();
-            showMessage('✓ Estudiante agregado', 'success');
+            showMessage('Ô£ô Estudiante agregado', 'success');
         }
 
         async function batchImportStudents() {
             if (!cursoActual) {
-                showMessage('❌ Selecciona un curso', 'danger');
+                showMessage('ÔØî Selecciona un curso', 'danger');
                 return;
             }
             const text = document.getElementById('batchStudentsText').value;
@@ -687,14 +632,14 @@
             }
             document.getElementById('batchStudentsText').value = '';
             loadStudentsForCourse();
-            showMessage(`✓ ${lines.length} estudiantes importados`, 'success');
+            showMessage(`Ô£ô ${lines.length} estudiantes importados`, 'success');
         }
 
         async function deleteStudent(id) {
-            if (confirm('¿Eliminar?')) {
+            if (confirm('┬┐Eliminar?')) {
                 await deleteData('students', id);
                 loadStudentsForCourse();
-                showMessage('✓ Eliminado', 'success');
+                showMessage('Ô£ô Eliminado', 'success');
             }
         }
 
@@ -733,7 +678,7 @@
             e.preventDefault();
             const taskCourseSelect = document.getElementById('taskCourseSelect').value;
             if (!taskCourseSelect) {
-                showMessage('❌ Selecciona un curso', 'danger');
+                showMessage('ÔØî Selecciona un curso', 'danger');
                 return;
             }
             const selectedOA = document.getElementById('taskOA').value;
@@ -753,7 +698,7 @@
             await addData('tasks', task);
             closeModal('taskModal');
             loadTasksForCourse();
-            showMessage('✓ Tarea creada', 'success');
+            showMessage('Ô£ô Tarea creada', 'success');
         }
 
         function showOADescription() {
@@ -774,14 +719,14 @@
         }
 
         async function deleteTask(id) {
-            if (confirm('¿Eliminar?')) {
+            if (confirm('┬┐Eliminar?')) {
                 await deleteData('tasks', id);
                 loadTasksForCourse();
-                showMessage('✓ Eliminado', 'success');
+                showMessage('Ô£ô Eliminado', 'success');
             }
         }
 
-        // ============ EVALUACIÓN ============
+        // ============ EVALUACI├ôN ============
         async function loadEvaluationTasks() {
             const tasks = await getAllData('tasks');
             const select = document.getElementById('evaluationTaskSelect');
@@ -834,103 +779,7 @@
         }
 
         async function saveEvaluation(taskId) {
-            showMessage('✓ Evaluaciones guardadas', 'success');
-        }
-
-        // ============ PLANILLA (GRADEBOOK) ============
-        async function loadGradebookCourses() {
-            const courses = await getAllData('courses');
-            const select = document.getElementById('gradebookCourseSelect');
-            if (!select) return;
-            const current = select.value;
-            select.innerHTML = '<option value="">-- Seleccionar curso --</option>';
-            for (const course of courses) {
-                const opt = document.createElement('option');
-                opt.value = course.id;
-                opt.textContent = `${course.name} (${course.letter}-${course.type})`;
-                select.appendChild(opt);
-            }
-            if (current) select.value = current;
-        }
-
-        async function renderGradebook() {
-            const table = document.getElementById('gradebookTable');
-            const meta = document.getElementById('gradebookMeta');
-            if (!table) return;
-            const courseId = parseInt(document.getElementById('gradebookCourseSelect').value);
-            if (!courseId) { table.innerHTML = '<thead><tr><th>Seleccione un curso</th></tr></thead>'; return; }
-
-            const [courses, students, tasks, evalMap] = await Promise.all([
-                getAllData('courses'),
-                getAllData('students'),
-                getAllData('tasks'),
-                getEvaluationsMap()
-            ]);
-            const course = courses.find(c => c.id === courseId);
-            const courseStudents = students.filter(s => s.courseId === courseId).sort((a,b) => (a.number||0)-(b.number||0));
-            const courseTasks = tasks.filter(t => t.courseId === courseId);
-            // Header
-            let thead = '<thead><tr>'+
-                '<th class="gradebook-fixed-col">N°</th>'+
-                '<th class="gradebook-fixed-col-2">Apellido Paterno</th>'+
-                '<th class="gradebook-fixed-col-3">Apellido Materno</th>'+
-                '<th class="gradebook-fixed-col-4">Nombre</th>';
-            for (const t of courseTasks) {
-                thead += `<th>${t.name}<span class="task-subtitle">${t.date || ''} ${t.oa ? '('+t.oa+')':''}</span></th>`;
-            }
-            thead += '<th>PUNTOS</th><th>NOTA</th><th>Acciones</th></tr></thead>';
-
-            // Body
-            let tbody = '<tbody>';
-            for (const st of courseStudents) {
-                const apellidos = (st.lastNames||'').trim().split(/\s+/);
-                const paterno = apellidos[0] || '';
-                const materno = apellidos.slice(1).join(' ') || '';
-                let puntos = 0, total = 0;
-                tbody += `<tr>`+
-                    `<td class="gradebook-fixed-col">${st.number || ''}</td>`+
-                    `<td class="gradebook-fixed-col-2">${paterno}</td>`+
-                    `<td class="gradebook-fixed-col-3">${materno}</td>`+
-                    `<td class="gradebook-fixed-col-4 gradebook-student">${st.firstNames}</td>`;
-
-                for (const t of courseTasks) {
-                    let cell = '';
-                    if (t.gradeType === 'direct') {
-                        const existing = evalMap.get(`${t.id}:${st.id}`);
-                        const val = existing ? (existing.value ?? '') : '';
-                        total += 1;
-                        puntos += (val && !isNaN(val)) ? Number(val) : 0; // para promedio si fuese necesario
-                        cell = `<input type="number" min="1" max="7" step="0.1" value="${val}" onchange="upsertEvaluation(${t.id}, ${st.id}, this.value)">`;
-                    } else if (t.gradeType === 'level') {
-                        const existing = evalMap.get(`${t.id}:${st.id}`);
-                        const val = existing ? (existing.value || '') : '';
-                        total += 1;
-                        cell = `<select onchange="upsertEvaluation(${t.id}, ${st.id}, this.value)">`+
-                            `<option value="" ${val===''?'selected':''}>-</option>`+
-                            `<option value="L" ${val==='L'?'selected':''}>L</option>`+
-                            `<option value="ML" ${val==='ML'?'selected':''}>ML</option>`+
-                            `<option value="PL" ${val==='PL'?'selected':''}>PL</option>`+
-                            `</select>`;
-                    } else { // binary por defecto
-                        const existing = evalMap.get(`${t.id}:${st.id}`);
-                        const checked = existing ? !!existing.value : false;
-                        total += 1;
-                        if (checked) puntos += 1;
-                        cell = `<input type="checkbox" ${checked?'checked':''} onchange="upsertEvaluation(${t.id}, ${st.id}, this.checked)">`;
-                    }
-                    tbody += `<td>${cell}</td>`;
-                }
-                // Nota estimada para binario: escala 1-7
-                const max = courseTasks.length || 1;
-                const nota = (max>0) ? (1 + (puntos/max)*6) : 1;
-                tbody += `<td>${puntos}</td><td>${nota.toFixed(1)}</td>`+
-                         `<td><button class="btn btn-secondary btn-small" onclick="/* futuro: acciones */void(0)"><i class="fas fa-edit"></i></button></td>`+
-                         `</tr>`;
-            }
-            tbody += '</tbody>';
-
-            table.innerHTML = thead + tbody;
-            meta.textContent = `${course?.name || ''} ${course?.letter ? '('+course.letter+')':''} — ${courseStudents.length} estudiantes, ${courseTasks.length} tareas`;
+            showMessage('Ô£ô Evaluaciones guardadas', 'success');
         }
 
         // ============ REPORTES ============
@@ -975,20 +824,20 @@
             const tasks = await getAllData('tasks');
             const courseTasks = tasks.filter(t => t.courseId === courseId);
             
-            let html = `<h3>📊 Reporte del Curso: ${course.name} (${course.letter}-${course.type})</h3>`;
+            let html = `<h3>­ƒôè Reporte del Curso: ${course.name} (${course.letter}-${course.type})</h3>`;
             html += `<div class="card" style="margin-bottom: 20px;">`;
-            html += `<strong>Información General:</strong><br>`;
-            html += `Período: 2025 - Segundo Semestre<br>`;
+            html += `<strong>Informaci├│n General:</strong><br>`;
+            html += `Per├¡odo: 2025 - Segundo Semestre<br>`;
             html += `Estudiantes: ${courseStudents.length}<br>`;
             html += `Tareas creadas: ${courseTasks.length}<br>`;
             
             const oasUsed = new Set();
             courseTasks.forEach(t => oasUsed.add(t.oa));
-            html += `OAs trabajados: ${Array.from(oasUsed).join(', ') || 'Ninguno aún'}<br>`;
+            html += `OAs trabajados: ${Array.from(oasUsed).join(', ') || 'Ninguno a├║n'}<br>`;
             html += `</div>`;
             
             if (courseTasks.length > 0) {
-                html += `<h4>📖 Tareas por OA:</h4>`;
+                html += `<h4>­ƒôû Tareas por OA:</h4>`;
                 const oaGroups = {};
                 courseTasks.forEach(task => {
                     if (!oaGroups[task.oa]) oaGroups[task.oa] = [];
@@ -998,7 +847,7 @@
                     const oaData = OAs.find(o => o.id === oa);
                     if (oaData) {
                         html += `<div class="card"><strong>${oa}: ${oaData.name}</strong><br>`;
-                        html += `<em style="font-size: 12px; color: #666;">Descripción: ${oaData.desc}</em><br>`;
+                        html += `<em style="font-size: 12px; color: #666;">Descripci├│n: ${oaData.desc}</em><br>`;
                         html += `<strong>Tareas:</strong><ul style="margin: 5px 0 0 20px; font-size: 13px;">`;
                         for (const task of oaTasks) {
                             html += `<li>${task.name} (${task.date}) - Tipo: ${task.gradeType}</li>`;
@@ -1008,7 +857,7 @@
                 }
             }
             
-            html += `<h4>👥 Estudiantes (${courseStudents.length}):</h4><ul style="font-size: 13px;">`;
+            html += `<h4>­ƒæÑ Estudiantes (${courseStudents.length}):</h4><ul style="font-size: 13px;">`;
             for (const student of courseStudents) {
                 html += `<li>${String(student.number).padStart(2, '0')}. ${student.firstNames} ${student.lastNames}</li>`;
             }
@@ -1027,16 +876,16 @@
             const courses = await getAllData('courses');
             const course = courses.find(c => c.id === student.courseId);
             
-            let html = `<h3>📋 Reporte Individual: ${student.firstNames} ${student.lastNames}</h3>`;
+            let html = `<h3>­ƒôï Reporte Individual: ${student.firstNames} ${student.lastNames}</h3>`;
             html += `<div class="card" style="margin-bottom: 20px;">`;
-            html += `<strong>Información del Estudiante:</strong><br>`;
-            html += `Número de lista: ${String(student.number).padStart(2, '0')}<br>`;
+            html += `<strong>Informaci├│n del Estudiante:</strong><br>`;
+            html += `N├║mero de lista: ${String(student.number).padStart(2, '0')}<br>`;
             html += `Curso: ${course.name} (${course.letter}-${course.type})<br>`;
-            html += `Período: 2025 - Segundo Semestre<br>`;
+            html += `Per├¡odo: 2025 - Segundo Semestre<br>`;
             html += `</div>`;
             
             if (studentTasks.length > 0) {
-                html += `<h4>📚 OAs en el Curso (${studentTasks.length} tareas):</h4>`;
+                html += `<h4>­ƒôÜ OAs en el Curso (${studentTasks.length} tareas):</h4>`;
                 const oaGroups = {};
                 studentTasks.forEach(task => {
                     if (!oaGroups[task.oa]) oaGroups[task.oa] = [];
@@ -1061,7 +910,7 @@
                     }
                 }
             } else {
-                html += `<div class="alert alert-info">No hay tareas aún en este curso.</div>`;
+                html += `<div class="alert alert-info">No hay tareas a├║n en este curso.</div>`;
             }
             
             document.getElementById('reportsContent').innerHTML = html;
