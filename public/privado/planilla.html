@@ -771,6 +771,7 @@
                 <h3>Gestor</h3>
                 <button class="card-btn" onclick="openAddCourseModal()"><i class="fas fa-graduation-cap"></i> Agregar Curso</button>
                 <button class="card-btn" onclick="openAddStudentModal()"><i class="fas fa-user-plus"></i> Agregar Estudiante</button>
+                <button class="card-btn" onclick="openBulkStudentModal()"><i class="fas fa-users"></i> Carga Masiva</button>
                 <button class="card-btn" onclick="openAddTaskModal()"><i class="fas fa-tasks"></i> Agregar Tarea</button>
             </div>
         </div>
@@ -857,6 +858,37 @@
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-primary" onclick="saveStudent()">Guardar</button>
                 <button class="modal-btn modal-btn-cancel" onclick="closeModal('studentModal')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CARGA MASIVA DE ESTUDIANTES -->
+    <div id="bulkStudentModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <button class="close-btn" onclick="closeModal('bulkStudentModal')">&times;</button>
+            <div class="modal-header">Carga Masiva de Estudiantes</div>
+            <div class="form-group">
+                <label>Pega la lista de estudiantes (un estudiante por línea):</label>
+                <textarea id="bulkStudentList" rows="15" style="width: 100%; padding: 12px; border: 2px solid #e1e5e9; border-radius: 8px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="ALVEAR RODRIGUEZ JUAN IGNACIO
+ARAYA VELIS VICENTE ANIBAL
+ASCENCIO ROZAS MAXIMO MARIANO
+..."></textarea>
+                <small style="color: #666; display: block; margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i> Formato: APELLIDO_PATERNO APELLIDO_MATERNO NOMBRES
+                </small>
+            </div>
+            <div id="bulkPreview" style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none;">
+                <strong>Vista previa (primeros 5 estudiantes):</strong>
+                <div id="bulkPreviewContent" style="font-size: 12px; margin-top: 10px;"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="previewBulkStudents()" style="background: #667eea; color: white;">
+                    <i class="fas fa-eye"></i> Vista Previa
+                </button>
+                <button class="modal-btn modal-btn-primary" onclick="saveBulkStudents()">
+                    <i class="fas fa-users"></i> Importar Estudiantes
+                </button>
+                <button class="modal-btn modal-btn-cancel" onclick="closeModal('bulkStudentModal')">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1464,6 +1496,143 @@
             document.getElementById('studentLastName2').value = '';
             document.getElementById('studentFirstNames').value = '';
             loadPlanilla();
+        }
+
+        // Bulk student import functions
+        function openBulkStudentModal() {
+            console.log('📋 Intentando abrir modal de carga masiva. courseActual:', courseActual);
+            if (!courseActual) { 
+                alert('Seleccione un curso primero'); 
+                return; 
+            }
+            document.getElementById('bulkStudentList').value = '';
+            document.getElementById('bulkPreview').style.display = 'none';
+            document.getElementById('bulkStudentModal').classList.add('active');
+        }
+
+        function parseBulkStudents(text) {
+            const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            const students = [];
+
+            lines.forEach((line, index) => {
+                // Separar por espacios
+                const parts = line.split(/\s+/);
+                
+                if (parts.length < 3) {
+                    console.warn(`Línea ${index + 1} ignorada (formato incorrecto): ${line}`);
+                    return;
+                }
+
+                // Los primeros 2 elementos son apellidos, el resto son nombres
+                const apellidoPaterno = parts[0];
+                const apellidoMaterno = parts[1];
+                const nombres = parts.slice(2).join(' ');
+
+                students.push({
+                    lastNames: `${apellidoPaterno} ${apellidoMaterno}`,
+                    firstNames: nombres,
+                    original: line
+                });
+            });
+
+            return students;
+        }
+
+        function previewBulkStudents() {
+            const text = document.getElementById('bulkStudentList').value;
+            if (!text.trim()) {
+                alert('Pega la lista de estudiantes primero');
+                return;
+            }
+
+            const students = parseBulkStudents(text);
+            
+            if (students.length === 0) {
+                alert('No se encontraron estudiantes válidos. Verifica el formato.');
+                return;
+            }
+
+            const preview = document.getElementById('bulkPreview');
+            const previewContent = document.getElementById('bulkPreviewContent');
+            
+            let html = `<strong style="color: #667eea;">Total: ${students.length} estudiantes</strong><br><br>`;
+            
+            // Mostrar los primeros 5 como ejemplo
+            const samplesToShow = Math.min(5, students.length);
+            for (let i = 0; i < samplesToShow; i++) {
+                const st = students[i];
+                html += `<div style="padding: 8px; background: white; margin-bottom: 8px; border-radius: 6px; border-left: 3px solid #667eea;">
+                    <strong>${i + 1}.</strong> 
+                    <span style="color: #667eea;">${st.lastNames}</span> - 
+                    <span style="color: #666;">${st.firstNames}</span>
+                </div>`;
+            }
+            
+            if (students.length > 5) {
+                html += `<div style="padding: 8px; color: #999; font-style: italic;">... y ${students.length - 5} estudiantes más</div>`;
+            }
+            
+            previewContent.innerHTML = html;
+            preview.style.display = 'block';
+        }
+
+        async function saveBulkStudents() {
+            const text = document.getElementById('bulkStudentList').value;
+            if (!text.trim()) {
+                alert('Pega la lista de estudiantes primero');
+                return;
+            }
+
+            const students = parseBulkStudents(text);
+            
+            if (students.length === 0) {
+                alert('No se encontraron estudiantes válidos. Verifica el formato.');
+                return;
+            }
+
+            if (!confirm(`¿Importar ${students.length} estudiantes al curso actual?`)) {
+                return;
+            }
+
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="ai-loading"></span>Importando...';
+            button.disabled = true;
+
+            try {
+                // Obtener estudiantes actuales para determinar numeración
+                const allStudents = await getAllData('students');
+                const courseStudents = allStudents.filter(s => s.courseId === courseActual);
+                let nextNumber = courseStudents.length + 1;
+
+                console.log(`📥 Importando ${students.length} estudiantes...`);
+
+                // Importar uno por uno
+                for (const student of students) {
+                    await addData('students', {
+                        courseId: courseActual,
+                        number: nextNumber,
+                        lastNames: student.lastNames,
+                        firstNames: student.firstNames
+                    });
+                    nextNumber++;
+                    console.log(`✅ Importado: ${student.lastNames}, ${student.firstNames}`);
+                }
+
+                closeModal('bulkStudentModal');
+                document.getElementById('bulkStudentList').value = '';
+                document.getElementById('bulkPreview').style.display = 'none';
+                
+                await loadPlanilla();
+                
+                alert(`✅ Se importaron exitosamente ${students.length} estudiantes al curso.`);
+            } catch (error) {
+                console.error('❌ Error en importación masiva:', error);
+                alert(`Error al importar estudiantes: ${error.message}`);
+            } finally {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
         }
 
         async function deleteStudent(id) {
