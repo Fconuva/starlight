@@ -1288,6 +1288,7 @@
 
         async function loadCourses() {
             const courses = await getAllData('courses');
+            console.log('📖 Cursos cargados:', courses);
             const select = document.getElementById('courseSelect');
             select.innerHTML = '<option value="">-- Seleccionar --</option>';
             courses.forEach(c => {
@@ -1296,6 +1297,7 @@
                 opt.textContent = c.name + ' (' + c.letter + '-' + c.type + ')';
                 select.appendChild(opt);
             });
+            console.log('✅ Dropdown de cursos actualizado con', courses.length, 'cursos');
         }
 
         // Course functions
@@ -1337,7 +1339,7 @@
                 
                 // Seleccionar automáticamente el curso recién creado
                 document.getElementById('courseSelect').value = newCourseId;
-                courseActual = newCourseId;
+                courseActual = newCourseId; // Guardar como string, no como número
                 await loadPlanilla();
                 
                 alert(`Curso "${courseName}" creado y seleccionado. Ya puedes agregar estudiantes.`);
@@ -1348,7 +1350,8 @@
         }
 
         async function loadPlanilla() {
-            courseActual = parseInt(document.getElementById('courseSelect').value);
+            courseActual = document.getElementById('courseSelect').value; // Mantener como string
+            console.log('📚 Curso seleccionado:', courseActual);
             const tbody = document.getElementById('planillaBody');
             const meta = document.getElementById('meta');
             const tableHead = document.querySelector('#planillaTable thead tr');
@@ -1432,7 +1435,11 @@
         }
 
         function openAddStudentModal() {
-            if (!courseActual) { alert('Seleccione un curso primero'); return; }
+            console.log('🎓 Intentando abrir modal de estudiante. courseActual:', courseActual);
+            if (!courseActual) { 
+                alert('Seleccione un curso primero'); 
+                return; 
+            }
             document.getElementById('studentModal').classList.add('active');
         }
 
