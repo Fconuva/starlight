@@ -2288,8 +2288,8 @@ INSTRUCCIONES PARA EL ANÁLISIS PEDAGÓGICO:
 El análisis debe fundamentarse en datos objetivos y orientarse a la toma de decisiones pedagógicas efectivas.`;
                 }
 
-                // Llamar a Google Gemini API
-                const response = await fetch('/.netlify/functions/gemini-report', {
+                // Llamar a Multi-Provider AI API (Gemini -> OpenAI -> HuggingFace)
+                const response = await fetch('/.netlify/functions/ai-report', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2308,7 +2308,9 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     
-                    if (response.status === 429) {
+                    if (response.status === 503) {
+                        throw new Error('Todos los proveedores de IA están temporalmente no disponibles. Intenta más tarde.');
+                    } else if (response.status === 429) {
                         throw new Error('LÍMITE_ALCANZADO');
                     } else if (response.status === 403) {
                         throw new Error('API_KEY_INVÁLIDA');
@@ -2318,11 +2320,13 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                 }
 
                 const data = await response.json();
-                const aiReport = data.candidates[0].content.parts[0].text;
+                const aiReport = data.text;
+                const usedProvider = data.provider || 'Desconocido';
+                console.log(`✅ Informe generado con: ${usedProvider}`);
 
                 // Mostrar el informe generado
                 let reportHtml = '<div class="feedback-section">';
-                reportHtml += '<h3><i class="fas fa-robot"></i> Informe Generado por IA</h3>';
+                reportHtml += `<h3><i class="fas fa-robot"></i> Informe IA - Generado con ${usedProvider}</h3>`;
                 reportHtml += '<div style="line-height: 1.6; white-space: pre-wrap; background: white; padding: 20px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #333;">' + aiReport + '</div>';
                 reportHtml += '</div>';
 
