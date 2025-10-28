@@ -1,32 +1,65 @@
-// Firebase configuration
-import { initializeApp } from 'firebase/app';
+// Firebase configuration loader
+import { initializeApp, getApps } from 'firebase/app';
 import { getDatabase, ref, set, get, push, update, remove } from 'firebase/database';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDl3Gp320sAbpEeOPf217ryya-4E0QT984",
-  authDomain: "profejavi-f48e1.firebaseapp.com",
-  databaseURL: "https://profejavi-f48e1-default-rtdb.firebaseio.com",
-  projectId: "profejavi-f48e1",
-  storageBucket: "profejavi-f48e1.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
+let appInstance = null;
+let databaseInstance = null;
+let configPromise = null;
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+async function fetchFirebaseConfig() {
+  if (!configPromise) {
+    configPromise = fetch('/.netlify/functions/firebase-config')
+      .then(async (response) => {
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(`No se pudo cargar la configuración de Firebase: ${error.error || response.statusText}`);
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        configPromise = null;
+        throw error;
+      });
+  }
+  return configPromise;
+}
+
+async function getDatabaseInstance() {
+  if (databaseInstance) {
+    return databaseInstance;
+  }
+
+  const config = await fetchFirebaseConfig();
+
+  if (!getApps().length) {
+    appInstance = initializeApp(config);
+  } else if (!appInstance) {
+    appInstance = getApps()[0];
+  }
+
+  databaseInstance = getDatabase(appInstance);
+  return databaseInstance;
+}
 
 // Database operations
 export class FirebaseDB {
   constructor(docenteId) {
     this.docenteId = docenteId;
-    this.db = database;
+    this.db = null;
+  }
+
+  async resolveDb() {
+    if (!this.db) {
+      this.db = await getDatabaseInstance();
+    }
+    return this.db;
   }
 
   // Generic CRUD operations
   async getAll(storeName) {
     try {
-      const snapshot = await get(ref(this.db, `courses/${this.docenteId}/${storeName}`));
+      const db = await this.resolveDb();
+      const snapshot = await get(ref(db, `courses/${this.docenteId}/${storeName}`));
       if (snapshot.exists()) {
         const data = snapshot.val();
         return Object.keys(data).map(key => ({ id: key, ...data[key] }));
@@ -40,7 +73,8 @@ export class FirebaseDB {
 
   async add(storeName, data) {
     try {
-      const newRef = push(ref(this.db, `courses/${this.docenteId}/${storeName}`));
+      const db = await this.resolveDb();
+      const newRef = push(ref(db, `courses/${this.docenteId}/${storeName}`));
       await set(newRef, data);
       return newRef.key;
     } catch (error) {
@@ -51,7 +85,8 @@ export class FirebaseDB {
 
   async update(storeName, id, data) {
     try {
-      await update(ref(this.db, `courses/${this.docenteId}/${storeName}/${id}`), data);
+      const db = await this.resolveDb();
+      await update(ref(db, `courses/${this.docenteId}/${storeName}/${id}`), data);
     } catch (error) {
       console.error(`Error updating ${storeName}:`, error);
       throw error;
@@ -60,7 +95,8 @@ export class FirebaseDB {
 
   async delete(storeName, id) {
     try {
-      await remove(ref(this.db, `courses/${this.docenteId}/${storeName}/${id}`));
+      const db = await this.resolveDb();
+      await remove(ref(db, `courses/${this.docenteId}/${storeName}/${id}`));
     } catch (error) {
       console.error(`Error deleting from ${storeName}:`, error);
       throw error;
@@ -70,7 +106,8 @@ export class FirebaseDB {
   // Specific methods for evaluations (many-to-many relationship)
   async getEvaluations() {
     try {
-      const snapshot = await get(ref(this.db, `courses/${this.docenteId}/evaluations`));
+      const db = await this.resolveDb();
+      const snapshot = await get(ref(db, `courses/${this.docenteId}/evaluations`));
       if (snapshot.exists()) {
         const data = snapshot.val();
         return Object.keys(data).map(key => ({ id: key, ...data[key] }));
@@ -146,5 +183,6 @@ export class FirebaseDB {
     }
   }
 }
-
-export { database };
+export async function ensureFirebaseReady() {
+  await getDatabaseInstance();
+}

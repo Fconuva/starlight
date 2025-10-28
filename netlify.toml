@@ -1,0 +1,35 @@
+[build]
+  publish = "public"
+  command = "npm run build"
+
+[build.environment]
+  # Deshabilitar escaneo inteligente de secretos para evitar bloqueo por API key de Firebase
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
+  # Configuración de Node.js
+  NODE_VERSION = "18"
+
+# Configuración adicional para desarrollo
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Headers específicos para archivos JavaScript
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Headers específicos para archivos CSS
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"

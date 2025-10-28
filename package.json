@@ -1,5 +1,19 @@
 {
+  "name": "sistema-evaluacion",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de Evaluación y Registro de Notas con Firebase",
+  "scripts": {
+    "dev": "echo 'Sistema estático listo para desarrollo'",
+    "build": "echo 'Build completado - sitio estático listo para deploy'",
+    "preview": "echo 'Sistema estático listo'",
+    "start": "echo 'Sistema estático listo'"
+  },
   "dependencies": {
     "firebase": "^12.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
