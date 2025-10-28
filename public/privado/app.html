@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Evaluación - Registro de Notas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            height: fit-content;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar nav a {
+            display: block;
+            padding: 12px 15px;
+            margin: 5px 0;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background-color: #3498db;
+            color: white;
+            padding-left: 20px;
+        }
+
+        .main {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #229954;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-graduation-cap"></i> Sistema de Evaluación</h1>
+            <p>Gestión de cursos, estudiantes y calificaciones</p>
+        </header>
+
+        <div class="content">
+            <div class="sidebar">
+                <nav>
+                    <a onclick="showSection('dashboard')" class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                    <a onclick="showSection('courses')" class="nav-link" data-section="courses">
+                        <i class="fas fa-book"></i> Cursos
+                    </a>
+                    <a onclick="showSection('students')" class="nav-link" data-section="students">
+                        <i class="fas fa-users"></i> Estudiantes
+                    </a>
+                    <a onclick="showSection('tasks')" class="nav-link" data-section="tasks">
+                        <i class="fas fa-tasks"></i> Tareas
+                    </a>
+                    <a onclick="showSection('grades')" class="nav-link" data-section="grades">
+                        <i class="fas fa-chart-bar"></i> Calificaciones
+                    </a>
+                    <a onclick="showSection('reports')" class="nav-link" data-section="reports">
+                        <i class="fas fa-file-pdf"></i> Reportes
+                    </a>
+                </nav>
+            </div>
+
+            <div class="main">
+                <!-- DASHBOARD -->
+                <div id="dashboard" class="section active">
+                    <h2>Dashboard</h2>
+                    <div id="messages"></div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Cursos Activos</h3>
+                            <div class="number" id="coursesCount">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Estudiantes Totales</h3>
+                            <div class="number" id="studentsCount">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Tareas Pendientes</h3>
+                            <div class="number" id="tasksCount">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CURSOS -->
+                <div id="courses" class="section">
+                    <h2>Gestión de Cursos</h2>
+                    <button class="btn btn-primary" onclick="openCourseModal()">
+                        <i class="fas fa-plus"></i> Nuevo Curso
+                    </button>
+                    <table id="coursesTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre del Curso</th>
+                                <th>Asignatura</th>
+                                <th>Período</th>
+                                <th>Estudiantes</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coursesBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- ESTUDIANTES -->
+                <div id="students" class="section">
+                    <h2>Gestión de Estudiantes</h2>
+                    <div class="form-group">
+                        <label>Seleccionar Curso:</label>
+                        <select id="studentCourseSelect" onchange="loadStudentsForCourse()">
+                            <option value="">-- Seleccionar --</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="openStudentModal()">
+                        <i class="fas fa-plus"></i> Nuevo Estudiante
+                    </button>
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Email</th>
+                                <th>Promedio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- TAREAS -->
+                <div id="tasks" class="section">
+                    <h2>Gestión de Tareas</h2>
+                    <div class="form-group">
+                        <label>Seleccionar Curso:</label>
+                        <select id="taskCourseSelect" onchange="loadTasksForCourse()">
+                            <option value="">-- Seleccionar --</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="openTaskModal()">
+                        <i class="fas fa-plus"></i> Nueva Tarea
+                    </button>
+                    <table id="tasksTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Fecha</th>
+                                <th>Tipo de Evaluación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasksBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- CALIFICACIONES -->
+                <div id="grades" class="section">
+                    <h2>Registro de Calificaciones</h2>
+                    <div class="form-group">
+                        <label>Seleccionar Curso:</label>
+                        <select id="gradeCourseSelect" onchange="loadGradesForCourse()">
+                            <option value="">-- Seleccionar --</option>
+                        </select>
+                    </div>
+                    <div id="gradesContainer"></div>
+                </div>
+
+                <!-- REPORTES -->
+                <div id="reports" class="section">
+                    <h2>Reportes</h2>
+                    <div class="form-group">
+                        <label>Seleccionar Curso:</label>
+                        <select id="reportCourseSelect">
+                            <option value="">-- Seleccionar --</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="generateCourseReport()">
+                        <i class="fas fa-file-pdf"></i> Reporte de Curso
+                    </button>
+                    <button class="btn btn-success" onclick="generateIndividualReports()">
+                        <i class="fas fa-file-excel"></i> Reportes Individuales
+                    </button>
+                    <div id="reportsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALES -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Curso</h2>
+                <button class="close-btn" onclick="closeCourseModal()">&times;</button>
+            </div>
+            <form onsubmit="saveCourse(event)">
+                <div class="form-group">
+                    <label>Nombre del Curso:</label>
+                    <input type="text" id="courseName" required>
+                </div>
+                <div class="form-group">
+                    <label>Asignatura:</label>
+                    <input type="text" id="courseSubject" required>
+                </div>
+                <div class="form-group">
+                    <label>Período:</label>
+                    <input type="text" id="coursePeriod" placeholder="ej: 2025-1" required>
+                </div>
+                <button type="submit" class="btn btn-success">Guardar Curso</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Estudiante</h2>
+                <button class="close-btn" onclick="closeStudentModal()">&times;</button>
+            </div>
+            <form onsubmit="saveStudent(event)">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="studentName" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellido:</label>
+                    <input type="text" id="studentLastName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="studentEmail" required>
+                </div>
+                <button type="submit" class="btn btn-success">Guardar Estudiante</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva Tarea</h2>
+                <button class="close-btn" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <form onsubmit="saveTask(event)">
+                <div class="form-group">
+                    <label>Nombre de la Tarea:</label>
+                    <input type="text" id="taskName" required>
+                </div>
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" id="taskDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Evaluación:</label>
+                    <select id="taskType" required>
+                        <option value="formativa">Formativa</option>
+                        <option value="sumativa">Sumativa</option>
+                        <option value="diagnostica">Diagnóstica</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Calificación Máxima:</label>
+                    <input type="number" id="taskMaxGrade" value="7" required>
+                </div>
+                <button type="submit" class="btn btn-success">Guardar Tarea</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============ CONFIGURACIÓN INICIAL ============
+        const DB_NAME = 'EvaluacionDB';
+        const DB_VERSION = 1;
+        let db;
+        let currentCourseId = null;
+        let currentStudentId = null;
+        let currentTaskId = null;
+
+        // ============ INICIALIZAR BASE DE DATOS ============
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    console.log('✓ Base de datos inicializada');
+                    resolve(db);
+                };
+
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+
+                    // Crear tabla de cursos
+                    if (!db.objectStoreNames.contains('courses')) {
+                        db.createObjectStore('courses', { keyPath: 'id', autoIncrement: true });
+                    }
+
+                    // Crear tabla de estudiantes
+                    if (!db.objectStoreNames.contains('students')) {
+                        db.createObjectStore('students', { keyPath: 'id', autoIncrement: true });
+                    }
+
+                    // Crear tabla de tareas
+                    if (!db.objectStoreNames.contains('tasks')) {
+                        db.createObjectStore('tasks', { keyPath: 'id', autoIncrement: true });
+                    }
+
+                    // Crear tabla de calificaciones
+                    if (!db.objectStoreNames.contains('grades')) {
+                        db.createObjectStore('grades', { keyPath: 'id', autoIncrement: true });
+                    }
+
+                    console.log('✓ Tablas de BD creadas');
+                };
+            });
+        }
+
+        // ============ FUNCIONES DE BASE DE DATOS ============
+        async function addData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.add(data);
+
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    console.log(`✓ Dato agregado a ${storeName}:`, data);
+                    resolve(request.result);
+                };
+            });
+        }
+
+        async function getAllData(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.getAll();
+
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        async function deleteData(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.delete(id);
+
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve();
+            });
+        }
+
+        async function updateData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.put(data);
+
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        // ============ NAVEGACIÓN ============
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+
+            if (sectionId === 'dashboard') {
+                updateDashboard();
+            } else if (sectionId === 'courses') {
+                loadCourses();
+            } else if (sectionId === 'students') {
+                loadStudentCourses();
+            } else if (sectionId === 'tasks') {
+                loadTaskCourses();
+            } else if (sectionId === 'grades') {
+                loadGradeCourses();
+            } else if (sectionId === 'reports') {
+                loadReportCourses();
+            }
+        }
+
+        // ============ DASHBOARD ============
+        async function updateDashboard() {
+            const courses = await getAllData('courses');
+            const students = await getAllData('students');
+            const tasks = await getAllData('tasks');
+
+            document.getElementById('coursesCount').textContent = courses.length;
+            document.getElementById('studentsCount').textContent = students.length;
+            document.getElementById('tasksCount').textContent = tasks.length;
+        }
+
+        // ============ CURSOS ============
+        async function openCourseModal() {
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').classList.remove('active');
+            document.getElementById('courseName').value = '';
+            document.getElementById('courseSubject').value = '';
+            document.getElementById('coursePeriod').value = '';
+        }
+
+        async function saveCourse(e) {
+            e.preventDefault();
+            
+            const course = {
+                name: document.getElementById('courseName').value,
+                subject: document.getElementById('courseSubject').value,
+                period: document.getElementById('coursePeriod').value,
+                createdAt: new Date().toISOString()
+            };
+
+            await addData('courses', course);
+            showMessage('✓ Curso creado correctamente', 'success');
+            closeCourseModal();
+            loadCourses();
+        }
+
+        async function loadCourses() {
+            const courses = await getAllData('courses');
+            const tbody = document.getElementById('coursesBody');
+            tbody.innerHTML = '';
+
+            courses.forEach(course => {
+                const row = `
+                    <tr>
+                        <td>${course.name}</td>
+                        <td>${course.subject}</td>
+                        <td>${course.period}</td>
+                        <td>0</td>
+                        <td>
+                            <button class="btn btn-small btn-danger" onclick="deleteCourse(${course.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            loadCourseSelects();
+        }
+
+        async function deleteCourse(id) {
+            if (confirm('¿Estás seguro?')) {
+                await deleteData('courses', id);
+                showMessage('✓ Curso eliminado', 'success');
+                loadCourses();
+            }
+        }
+
+        async function loadCourseSelects() {
+            const courses = await getAllData('courses');
+            const selects = ['studentCourseSelect', 'taskCourseSelect', 'gradeCourseSelect', 'reportCourseSelect'];
+
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">-- Seleccionar --</option>';
+                
+                courses.forEach(course => {
+                    select.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+                });
+
+                select.value = currentValue;
+            });
+        }
+
+        // ============ ESTUDIANTES ============
+        async function openStudentModal() {
+            const courseSelect = document.getElementById('studentCourseSelect');
+            if (!courseSelect.value) {
+                showMessage('⚠ Selecciona un curso primero', 'danger');
+                return;
+            }
+            document.getElementById('studentModal').classList.add('active');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').classList.remove('active');
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentLastName').value = '';
+            document.getElementById('studentEmail').value = '';
+        }
+
+        async function saveStudent(e) {
+            e.preventDefault();
+            
+            const courseId = parseInt(document.getElementById('studentCourseSelect').value);
+            const student = {
+                courseId: courseId,
+                name: document.getElementById('studentName').value,
+                lastName: document.getElementById('studentLastName').value,
+                email: document.getElementById('studentEmail').value,
+                createdAt: new Date().toISOString()
+            };
+
+            await addData('students', student);
+            showMessage('✓ Estudiante agregado correctamente', 'success');
+            closeStudentModal();
+            loadStudentsForCourse();
+        }
+
+        async function loadStudentCourses() {
+            await loadCourseSelects();
+        }
+
+        async function loadStudentsForCourse() {
+            const courseId = parseInt(document.getElementById('studentCourseSelect').value);
+            if (!courseId) return;
+
+            const students = await getAllData('students');
+            const filtered = students.filter(s => s.courseId === courseId);
+            
+            const tbody = document.getElementById('studentsBody');
+            tbody.innerHTML = '';
+
+            filtered.forEach(student => {
+                const row = `
+                    <tr>
+                        <td>${student.name}</td>
+                        <td>${student.lastName}</td>
+                        <td>${student.email}</td>
+                        <td>-</td>
+                        <td>
+                            <button class="btn btn-small btn-danger" onclick="deleteStudent(${student.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function deleteStudent(id) {
+            if (confirm('¿Estás seguro?')) {
+                await deleteData('students', id);
+                showMessage('✓ Estudiante eliminado', 'success');
+                loadStudentsForCourse();
+            }
+        }
+
+        // ============ TAREAS ============
+        async function openTaskModal() {
+            const courseSelect = document.getElementById('taskCourseSelect');
+            if (!courseSelect.value) {
+                showMessage('⚠ Selecciona un curso primero', 'danger');
+                return;
+            }
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.remove('active');
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskDate').value = '';
+            document.getElementById('taskType').value = 'formativa';
+            document.getElementById('taskMaxGrade').value = '7';
+        }
+
+        async function saveTask(e) {
+            e.preventDefault();
+            
+            const courseId = parseInt(document.getElementById('taskCourseSelect').value);
+            const task = {
+                courseId: courseId,
+                name: document.getElementById('taskName').value,
+                date: document.getElementById('taskDate').value,
+                type: document.getElementById('taskType').value,
+                maxGrade: parseFloat(document.getElementById('taskMaxGrade').value),
+                createdAt: new Date().toISOString()
+            };
+
+            await addData('tasks', task);
+            showMessage('✓ Tarea creada correctamente', 'success');
+            closeTaskModal();
+            loadTasksForCourse();
+        }
+
+        async function loadTaskCourses() {
+            await loadCourseSelects();
+        }
+
+        async function loadTasksForCourse() {
+            const courseId = parseInt(document.getElementById('taskCourseSelect').value);
+            if (!courseId) return;
+
+            const tasks = await getAllData('tasks');
+            const filtered = tasks.filter(t => t.courseId === courseId);
+            
+            const tbody = document.getElementById('tasksBody');
+            tbody.innerHTML = '';
+
+            filtered.forEach(task => {
+                const row = `
+                    <tr>
+                        <td>${task.name}</td>
+                        <td>${new Date(task.date).toLocaleDateString('es-CL')}</td>
+                        <td>${task.type}</td>
+                        <td>
+                            <button class="btn btn-small btn-danger" onclick="deleteTask(${task.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function deleteTask(id) {
+            if (confirm('¿Estás seguro?')) {
+                await deleteData('tasks', id);
+                showMessage('✓ Tarea eliminada', 'success');
+                loadTasksForCourse();
+            }
+        }
+
+        // ============ CALIFICACIONES ============
+        async function loadGradeCourses() {
+            await loadCourseSelects();
+        }
+
+        async function loadGradesForCourse() {
+            const courseId = parseInt(document.getElementById('gradeCourseSelect').value);
+            if (!courseId) return;
+
+            const students = await getAllData('students');
+            const tasks = await getAllData('tasks');
+            const grades = await getAllData('grades');
+
+            const courseStudents = students.filter(s => s.courseId === courseId);
+            const courseTasks = tasks.filter(t => t.courseId === courseId);
+
+            let html = '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<thead><tr><th>Estudiante</th>';
+            
+            courseTasks.forEach(task => {
+                html += `<th>${task.name}</th>`;
+            });
+            
+            html += '</tr></thead><tbody>';
+
+            courseStudents.forEach(student => {
+                html += `<tr><td>${student.name} ${student.lastName}</td>`;
+                
+                courseTasks.forEach(task => {
+                    const grade = grades.find(g => g.studentId === student.id && g.taskId === task.id);
+                    const gradeValue = grade ? grade.grade : '-';
+                    html += `<td><input type="number" value="${gradeValue}" min="0" max="${task.maxGrade}" placeholder="Cal." onchange="saveGrade(${student.id}, ${task.id}, this.value, ${task.maxGrade})"></td>`;
+                });
+                
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('gradesContainer').innerHTML = html;
+        }
+
+        async function saveGrade(studentId, taskId, grade, maxGrade) {
+            if (!grade) return;
+
+            const gradeValue = parseFloat(grade);
+            if (gradeValue < 0 || gradeValue > maxGrade) {
+                showMessage('⚠ Calificación fuera de rango', 'danger');
+                return;
+            }
+
+            const grades = await getAllData('grades');
+            const existing = grades.find(g => g.studentId === studentId && g.taskId === taskId);
+
+            if (existing) {
+                existing.grade = gradeValue;
+                await updateData('grades', existing);
+            } else {
+                await addData('grades', {
+                    studentId: studentId,
+                    taskId: taskId,
+                    grade: gradeValue,
+                    createdAt: new Date().toISOString()
+                });
+            }
+
+            showMessage('✓ Calificación guardada', 'success');
+        }
+
+        // ============ REPORTES ============
+        async function loadReportCourses() {
+            await loadCourseSelects();
+        }
+
+        async function generateCourseReport() {
+            const courseId = parseInt(document.getElementById('reportCourseSelect').value);
+            if (!courseId) {
+                showMessage('⚠ Selecciona un curso', 'danger');
+                return;
+            }
+
+            const courses = await getAllData('courses');
+            const students = await getAllData('students');
+            const tasks = await getAllData('tasks');
+            const grades = await getAllData('grades');
+
+            const course = courses.find(c => c.id === courseId);
+            const courseStudents = students.filter(s => s.courseId === courseId);
+            const courseTasks = tasks.filter(t => t.courseId === courseId);
+
+            let report = `
+REPORTE DE CURSO
+================
+Curso: ${course.name}
+Asignatura: ${course.subject}
+Período: ${course.period}
+Fecha: ${new Date().toLocaleDateString('es-CL')}
+
+ESTUDIANTES Y CALIFICACIONES
+-----------------------------
+`;
+
+            courseStudents.forEach(student => {
+                let total = 0;
+                let count = 0;
+
+                courseTasks.forEach(task => {
+                    const grade = grades.find(g => g.studentId === student.id && g.taskId === task.id);
+                    if (grade) {
+                        total += grade.grade;
+                        count++;
+                    }
+                });
+
+                const average = count > 0 ? (total / count).toFixed(2) : '-';
+                report += `\n${student.name} ${student.lastName}: ${average}`;
+            });
+
+            document.getElementById('reportsContent').innerHTML = `<pre>${report}</pre>`;
+            showMessage('✓ Reporte generado', 'success');
+        }
+
+        async function generateIndividualReports() {
+            showMessage('✓ Función en desarrollo', 'info');
+        }
+
+        // ============ UTILIDADES ============
+        function showMessage(message, type = 'info') {
+            const messagesDiv = document.getElementById('messages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message alert alert-${type}`;
+            messageEl.textContent = message;
+            messagesDiv.appendChild(messageEl);
+
+            setTimeout(() => messageEl.remove(), 3000);
+        }
+
+        // ============ INICIALIZACIÓN ============
+        window.addEventListener('load', async () => {
+            try {
+                await initDB();
+                console.log('✓ Sistema listo');
+                updateDashboard();
+            } catch (error) {
+                console.error('✗ Error:', error);
+                showMessage('❌ Error al inicializar', 'danger');
+            }
+        });
+
+        // Cerrar modales al hacer clic fuera
+        window.onclick = (event) => {
+            const courseModal = document.getElementById('courseModal');
+            const studentModal = document.getElementById('studentModal');
+            const taskModal = document.getElementById('taskModal');
+
+            if (event.target === courseModal) closeCourseModal();
+            if (event.target === studentModal) closeStudentModal();
+            if (event.target === taskModal) closeTaskModal();
+        };
+    </script>
+</body>
+</html>
