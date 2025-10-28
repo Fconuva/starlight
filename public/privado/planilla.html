@@ -715,9 +715,11 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { FirebaseDB } from './firebase-config.js';
+
         const DB_NAME = 'EvaluacionDB';
-        let db, docenteActual = null, courseActual = null;
+        let db, docenteActual = null, courseActual = null, firebaseDB = null;
 
         let oaData = {};
 
@@ -730,7 +732,16 @@
             }
             document.getElementById('docenteLabel').textContent = 'Docente ' + docenteActual;
             await loadOAData();
-            await initDB();
+
+            // Initialize Firebase
+            firebaseDB = new FirebaseDB(docenteActual);
+
+            // Check if migration is needed
+            const needsMigration = await checkMigrationNeeded();
+            if (needsMigration) {
+                await migrateToFirebase();
+            }
+
             await loadCourses();
         });
 
@@ -747,6 +758,123 @@
                     "OA6": { "titulo": "Reflexión sobre el lenguaje", "indicadores": ["Indicador 1", "Indicador 2"] },
                     "OA11": { "titulo": "Aprendizaje autónomo", "indicadores": ["Indicador 1", "Indicador 2"] }
                 };
+            }
+        }
+
+        // Migration functions
+        async function checkMigrationNeeded() {
+            try {
+                // Check if IndexedDB has data
+                const indexedDBData = await getIndexedDBData();
+                if (indexedDBData.totalRecords > 0) {
+                    // Check if Firebase has data
+                    const firebaseCourses = await firebaseDB.getAll('courses');
+                    const firebaseStudents = await firebaseDB.getAll('students');
+                    const firebaseTasks = await firebaseDB.getAll('tasks');
+                    const firebaseEvaluations = await firebaseDB.getEvaluations();
+
+                    const firebaseTotal = firebaseCourses.length + firebaseStudents.length +
+                                        firebaseTasks.length + firebaseEvaluations.length;
+
+                    return firebaseTotal === 0; // Migrate if Firebase is empty but IndexedDB has data
+                }
+                return false;
+            } catch (error) {
+                console.error('Error checking migration need:', error);
+                return false;
+            }
+        }
+
+        async function getIndexedDBData() {
+            return new Promise((resolve) => {
+                const request = indexedDB.open(DB_NAME + docenteActual, 1);
+                request.onerror = () => resolve({ totalRecords: 0 });
+                request.onsuccess = async (e) => {
+                    db = e.target.result;
+                    try {
+                        const courses = await getAllData('courses');
+                        const students = await getAllData('students');
+                        const tasks = await getAllData('tasks');
+                        const evaluations = await getAllData('evaluations');
+                        resolve({
+                            totalRecords: courses.length + students.length + tasks.length + evaluations.length,
+                            courses, students, tasks, evaluations
+                        });
+                    } catch (error) {
+                        resolve({ totalRecords: 0 });
+                    }
+                };
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    ['courses', 'students', 'tasks', 'evaluations'].forEach(store => {
+                        if (!db.objectStoreNames.contains(store)) db.createObjectStore(store, { keyPath: 'id', autoIncrement: true });
+                    });
+                };
+            });
+        }
+
+        async function migrateToFirebase() {
+            try {
+                const migrationModal = document.createElement('div');
+                migrationModal.id = 'migrationModal';
+                migrationModal.className = 'modal active';
+                migrationModal.innerHTML = `
+                    <div class="modal-content" style="max-width: 500px;">
+                        <div class="modal-header">Migrando datos a Firebase</div>
+                        <div style="padding: 20px; text-align: center;">
+                            <div style="margin-bottom: 20px;">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #667eea;"></i>
+                            </div>
+                            <p>Estamos migrando tus datos locales a la nube de Firebase para un mejor acceso y respaldo.</p>
+                            <p style="font-size: 14px; color: #666; margin-top: 10px;">Esto puede tomar unos momentos...</p>
+                            <div style="margin-top: 20px;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="migrationProgress" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(migrationModal);
+
+                const progressBar = document.getElementById('migrationProgress');
+                const indexedDBData = await getIndexedDBData();
+
+                // Migrate courses
+                progressBar.style.width = '25%';
+                for (const course of indexedDBData.courses) {
+                    await firebaseDB.add('courses', course);
+                }
+
+                // Migrate students
+                progressBar.style.width = '50%';
+                for (const student of indexedDBData.students) {
+                    await firebaseDB.add('students', student);
+                }
+
+                // Migrate tasks
+                progressBar.style.width = '75%';
+                for (const task of indexedDBData.tasks) {
+                    await firebaseDB.add('tasks', task);
+                }
+
+                // Migrate evaluations
+                progressBar.style.width = '90%';
+                for (const evaluation of indexedDBData.evaluations) {
+                    await firebaseDB.add('evaluations', evaluation);
+                }
+
+                progressBar.style.width = '100%';
+
+                // Wait a moment then remove modal
+                setTimeout(() => {
+                    document.body.removeChild(migrationModal);
+                    alert('¡Migración completada! Tus datos ahora están en la nube.');
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error during migration:', error);
+                alert('Error durante la migración. Por favor, contacta al soporte.');
             }
         }
 
@@ -783,76 +911,29 @@
             }
         }
 
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME + docenteActual, 1);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => { db = request.result; resolve(db); };
-                request.onupgradeneeded = (e) => {
-                    db = e.target.result;
-                    ['courses', 'students', 'tasks', 'evaluations'].forEach(store => {
-                        if (!db.objectStoreNames.contains(store)) db.createObjectStore(store, { keyPath: 'id', autoIncrement: true });
-                    });
-                };
-            });
-        }
-
+        // Database functions (now using Firebase)
         async function getAllData(storeName) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readonly');
-                const store = transaction.objectStore(storeName);
-                const request = store.getAll();
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-            });
+            return await firebaseDB.getAll(storeName);
         }
 
         async function addData(storeName, data) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readwrite');
-                const store = transaction.objectStore(storeName);
-                const request = store.add(data);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-            });
+            return await firebaseDB.add(storeName, data);
         }
 
         async function deleteData(storeName, id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readwrite');
-                const store = transaction.objectStore(storeName);
-                const request = store.delete(id);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve();
-            });
+            await firebaseDB.delete(storeName, id);
         }
 
         async function updateData(storeName, data) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(storeName, 'readwrite');
-                const store = transaction.objectStore(storeName);
-                const request = store.put(data);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve();
-            });
+            await firebaseDB.update(storeName, data.id, data);
         }
 
         async function getEvaluationsMap() {
-            const evals = await getAllData('evaluations');
-            const map = new Map();
-            evals.forEach(ev => map.set(ev.taskId + ':' + ev.studentId, ev));
-            return map;
+            return await firebaseDB.getEvaluationsMap();
         }
 
         async function upsertEvaluation(taskId, studentId, value) {
-            const evals = await getAllData('evaluations');
-            const existing = evals.find(e => e.taskId === taskId && e.studentId === studentId);
-            if (existing) {
-                existing.value = value;
-                await updateData('evaluations', existing);
-            } else {
-                await addData('evaluations', { taskId, studentId, value });
-            }
+            await firebaseDB.upsertEvaluation(taskId, studentId, value);
             loadPlanilla();
         }
 

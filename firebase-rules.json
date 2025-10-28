@@ -1,0 +1,28 @@
+{
+  "rules": {
+    "courses": {
+      "$username": {
+        "courses": {
+          ".read": true,
+          ".write": true,
+          ".indexOn": ["id", "courseName", "period", "letter", "type"]
+        },
+        "students": {
+          ".read": true,
+          ".write": true,
+          ".indexOn": ["id", "courseId", "number", "firstNames", "lastNames", "retirado"]
+        },
+        "tasks": {
+          ".read": true,
+          ".write": true,
+          ".indexOn": ["id", "courseId", "name", "oa", "date"]
+        },
+        "evaluations": {
+          ".read": true,
+          ".write": true,
+          ".indexOn": ["taskId", "studentId", "value"]
+        }
+      }
+    }
+  }
+}
