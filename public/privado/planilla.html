@@ -12,6 +12,23 @@
     <!-- Firebase CDN -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <!-- Custom Modules -->
+    <script type="module">
+        import firebaseService from './firebase-service.js';
+        import { UIHelpers, uiHelpers } from './ui-helpers.js';
+        import { DataMigration } from './data-migration.js';
+        import { ReportGenerator } from './report-generator.js';
+        import { BackupRestore } from './backup-restore.js';
+
+        // Make modules available globally for backward compatibility
+        window.firebaseService = firebaseService;
+        window.UIHelpers = UIHelpers;
+        window.uiHelpers = uiHelpers;
+        window.DataMigration = DataMigration;
+        window.ReportGenerator = ReportGenerator;
+        window.BackupRestore = BackupRestore;
+    </script>
     
     <style>
         * { 
@@ -755,6 +772,7 @@
             <div id="docenteLabel" style="font-size: 13px; opacity: 0.8; font-weight: 500;"></div>
         </div>
         <div class="top-bar-right">
+            <button class="btn-top" onclick="openBackupModal()"><i class="fas fa-save"></i> Backup</button>
             <button class="btn-top" onclick="window.logout()"><i class="fas fa-exchange-alt"></i> Cambiar Docente</button>
         </div>
     </div>
@@ -962,6 +980,59 @@ ASCENCIO ROZAS MAXIMO MARIANO
             <div class="modal-header">Editar Estudiante</div>
             <div id="editStudentContent">
                 <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: BACKUP Y RESTORE -->
+    <div id="backupModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="close-btn" onclick="closeModal('backupModal')">&times;</button>
+            <div class="modal-header">Backup y Restauración de Datos</div>
+            <div style="padding: 20px;">
+                <div class="backup-section">
+                    <!-- Crear Backup -->
+                    <div class="backup-card">
+                        <i class="fas fa-download backup-icon download"></i>
+                        <h3 class="backup-title">Crear Backup</h3>
+                        <p class="backup-description">Descarga todos tus datos en formato JSON para respaldo seguro</p>
+                        <button class="modal-btn modal-btn-primary" onclick="createBackup()" style="width: 100%;">
+                            <i class="fas fa-download"></i> Descargar Backup
+                        </button>
+                    </div>
+
+                    <!-- Restaurar Backup -->
+                    <div class="backup-card restore">
+                        <i class="fas fa-upload backup-icon upload"></i>
+                        <h3 class="backup-title">Restaurar Backup</h3>
+                        <p class="backup-description">Carga un archivo de backup para restaurar tus datos</p>
+                        <input type="file" id="backupFileInput" accept=".json" style="display: none;" onchange="restoreBackup()">
+                        <button class="modal-btn" onclick="document.getElementById('backupFileInput').click()" style="width: 100%; background: #28a745; color: white;">
+                            <i class="fas fa-upload"></i> Seleccionar Archivo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Exportar a CSV -->
+                <div class="backup-card export" style="grid-column: 1 / -1; margin-bottom: 20px;">
+                    <i class="fas fa-file-csv backup-icon csv"></i>
+                    <h3 class="backup-title">Exportar a CSV</h3>
+                    <p class="backup-description">Exporta la planilla actual en formato CSV para Excel u otras herramientas</p>
+                    <button class="modal-btn" onclick="exportToCSV()" style="width: 100%; background: #ffc107; color: black;">
+                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    </button>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="backup-info">
+                    <strong><i class="fas fa-info-circle"></i> Información importante:</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px;">
+                        <li>Los backups incluyen todos los cursos, estudiantes, tareas y evaluaciones</li>
+                        <li>La restauración reemplaza completamente los datos actuales</li>
+                        <li>Se recomienda hacer backup antes de restaurar</li>
+                        <li>Los archivos CSV contienen solo la planilla actual del curso seleccionado</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -2730,6 +2801,272 @@ SOLUCIÓN:
             await updateData('tasks', task);
             closeModal('editTaskModal');
             loadPlanilla();
+        }
+
+        // Backup and Restore functions
+        function openBackupModal() {
+            document.getElementById('backupModal').classList.add('active');
+        }
+
+        async function createBackup() {
+            try {
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span class="ai-loading"></span>Creando...';
+                button.disabled = true;
+
+                // Obtener todos los datos
+                const [courses, students, tasks, evaluations] = await Promise.all([
+                    getAllData('courses'),
+                    getAllData('students'),
+                    getAllData('tasks'),
+                    firebaseDB.getEvaluations()
+                ]);
+
+                const backupData = {
+                    version: '1.0',
+                    timestamp: new Date().toISOString(),
+                    docenteId: docenteActual,
+                    data: {
+                        courses,
+                        students,
+                        tasks,
+                        evaluations
+                    },
+                    metadata: {
+                        totalCourses: courses.length,
+                        totalStudents: students.length,
+                        totalTasks: tasks.length,
+                        totalEvaluations: evaluations.length
+                    }
+                };
+
+                // Crear archivo JSON
+                const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+
+                // Crear enlace de descarga
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `backup_docente_${docenteActual}_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert('✅ Backup creado exitosamente\n\nArchivo descargado: ' + a.download);
+            } catch (error) {
+                console.error('Error creando backup:', error);
+                alert('❌ Error al crear el backup: ' + error.message);
+            } finally {
+                const button = event.target;
+                button.innerHTML = '<i class="fas fa-download"></i> Descargar Backup';
+                button.disabled = false;
+            }
+        }
+
+        async function restoreBackup() {
+            const fileInput = document.getElementById('backupFileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Selecciona un archivo de backup primero');
+                return;
+            }
+
+            if (!confirm('⚠️ ADVERTENCIA: Esta acción reemplazará TODOS los datos actuales.\n\n¿Estás seguro de continuar? Se recomienda hacer un backup primero.')) {
+                return;
+            }
+
+            try {
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span class="ai-loading"></span>Restaurando...';
+                button.disabled = true;
+
+                // Leer archivo
+                const text = await file.text();
+                const backupData = JSON.parse(text);
+
+                // Validar estructura del backup
+                if (!backupData.version || !backupData.data) {
+                    throw new Error('Archivo de backup inválido o corrupto');
+                }
+
+                console.log('📦 Restaurando backup:', backupData.metadata);
+
+                // Mostrar progreso
+                const progressModal = document.createElement('div');
+                progressModal.id = 'progressModal';
+                progressModal.className = 'modal active';
+                progressModal.innerHTML = `
+                    <div class="modal-content" style="max-width: 400px;">
+                        <div class="modal-header">Restaurando Datos</div>
+                        <div style="padding: 20px; text-align: center;">
+                            <div style="margin-bottom: 20px;">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #28a745;"></i>
+                            </div>
+                            <p>Restaurando datos desde el backup...</p>
+                            <div style="margin-top: 20px;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="restoreProgress" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div id="restoreStatus" style="margin-top: 15px; font-size: 12px; color: #666;"></div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(progressModal);
+
+                const progressBar = document.getElementById('restoreProgress');
+                const statusDiv = document.getElementById('restoreStatus');
+
+                // Limpiar datos existentes (opcional - por ahora no limpiamos para evitar pérdida accidental)
+                // await clearAllData();
+
+                // Restaurar cursos
+                statusDiv.textContent = 'Restaurando cursos...';
+                progressBar.style.width = '25%';
+                for (const course of backupData.data.courses) {
+                    await firebaseDB.add('courses', course);
+                }
+
+                // Restaurar estudiantes
+                statusDiv.textContent = 'Restaurando estudiantes...';
+                progressBar.style.width = '50%';
+                for (const student of backupData.data.students) {
+                    await firebaseDB.add('students', student);
+                }
+
+                // Restaurar tareas
+                statusDiv.textContent = 'Restaurando tareas...';
+                progressBar.style.width = '75%';
+                for (const task of backupData.data.tasks) {
+                    await firebaseDB.add('tasks', task);
+                }
+
+                // Restaurar evaluaciones
+                statusDiv.textContent = 'Restaurando evaluaciones...';
+                progressBar.style.width = '90%';
+                for (const evaluation of backupData.data.evaluations) {
+                    await firebaseDB.add('evaluations', evaluation);
+                }
+
+                progressBar.style.width = '100%';
+                statusDiv.textContent = '¡Restauración completada!';
+
+                // Esperar un momento y recargar
+                setTimeout(() => {
+                    document.body.removeChild(progressModal);
+                    closeModal('backupModal');
+                    fileInput.value = '';
+                    
+                    // Recargar datos
+                    loadCourses();
+                    if (courseActual) {
+                        loadPlanilla();
+                    }
+                    
+                    alert('✅ Restauración completada exitosamente\n\nSe restauraron:\n' + 
+                          `• ${backupData.data.courses.length} cursos\n` +
+                          `• ${backupData.data.students.length} estudiantes\n` +
+                          `• ${backupData.data.tasks.length} tareas\n` +
+                          `• ${backupData.data.evaluations.length} evaluaciones`);
+                }, 1500);
+
+            } catch (error) {
+                console.error('Error restaurando backup:', error);
+                alert('❌ Error al restaurar el backup: ' + error.message);
+                
+                // Remover modal de progreso si existe
+                const progressModal = document.getElementById('progressModal');
+                if (progressModal) {
+                    document.body.removeChild(progressModal);
+                }
+            } finally {
+                const button = event.target;
+                button.innerHTML = '<i class="fas fa-upload"></i> Seleccionar Archivo';
+                button.disabled = false;
+            }
+        }
+
+        async function exportToCSV() {
+            if (!courseActual) {
+                alert('Selecciona un curso primero');
+                return;
+            }
+
+            try {
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span class="ai-loading"></span>Exportando...';
+                button.disabled = true;
+
+                const [courses, students, tasks, evalMap] = await Promise.all([
+                    getAllData('courses'),
+                    getAllData('students'),
+                    getAllData('tasks'),
+                    getEvaluationsMap()
+                ]);
+
+                const course = courses.find(c => c.id === courseActual);
+                const courseStudents = students.filter(s => s.courseId === courseActual).sort((a,b) => (a.number||0)-(b.number||0));
+                const courseTasks = tasks.filter(t => t.courseId === courseActual);
+
+                // Crear encabezados CSV
+                let csvContent = 'N°,Apellido Paterno,Apellido Materno,Nombres';
+                
+                courseTasks.forEach(task => {
+                    csvContent += ',' + task.name.replace(/,/g, ';'); // Escapar comas
+                });
+                
+                csvContent += ',Puntos Totales,Nota Final\n';
+
+                // Agregar datos de estudiantes
+                courseStudents.forEach(student => {
+                    const apellidos = (student.lastNames || '').trim().split(/\s+/);
+                    const paterno = apellidos[0] || '';
+                    const materno = apellidos.slice(1).join(' ') || '';
+                    
+                    let row = `${student.number || ''},"${paterno}","${materno}","${student.firstNames || ''}"`;
+                    
+                    let puntos = 0;
+                    courseTasks.forEach(task => {
+                        const existing = evalMap.get(task.id + ':' + student.id);
+                        const completado = existing && existing.value ? '1' : '0';
+                        if (completado === '1' && !student.retirado) puntos++;
+                        row += ',' + completado;
+                    });
+                    
+                    const max = courseTasks.length || 1;
+                    const nota = max > 0 ? (1 + (puntos/max)*6).toFixed(1) : '1.0';
+                    
+                    row += `,${puntos},${nota}\n`;
+                    csvContent += row;
+                });
+
+                // Crear archivo CSV
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+
+                // Descargar archivo
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `planilla_${(course?.name || 'curso').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert('✅ Planilla exportada exitosamente\n\nArchivo descargado: ' + a.download);
+            } catch (error) {
+                console.error('Error exportando CSV:', error);
+                alert('❌ Error al exportar la planilla: ' + error.message);
+            } finally {
+                const button = event.target;
+                button.innerHTML = '<i class="fas fa-file-csv"></i> Exportar CSV';
+                button.disabled = false;
+            }
         }
     </script>
 </body>
