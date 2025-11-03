@@ -964,20 +964,40 @@ ASCENCIO ROZAS MAXIMO MARIANO
             </div>
             
             <div class="form-group">
-                <label>OA (Objetivo de Aprendizaje):</label>
-                <select id="taskOA" onchange="updateOAPreview()">
-                    <option value="">Sin OA</option>
-                    <option value="OA3">OA3 - Comprensión y producción textual</option>
-                    <option value="OA5">OA5 - Sistema de la lengua española</option>
-                    <option value="OA6">OA6 - Reflexión sobre el lenguaje</option>
-                    <option value="OA11">OA11 - Aprendizaje autónomo</option>
-                </select>
+                <label><i class="fas fa-bullseye"></i> OA (Objetivos de Aprendizaje):</label>
+                <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd;">
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
+                            <input type="checkbox" class="task-oa-checkbox" value="OA3" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                            <span style="font-weight: 500;">OA3 - Comprensión y producción textual</span>
+                        </label>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
+                            <input type="checkbox" class="task-oa-checkbox" value="OA5" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                            <span style="font-weight: 500;">OA5 - Sistema de la lengua española</span>
+                        </label>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
+                            <input type="checkbox" class="task-oa-checkbox" value="OA6" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                            <span style="font-weight: 500;">OA6 - Reflexión sobre el lenguaje</span>
+                        </label>
+                    </div>
+                    <div style="margin-bottom: 0;">
+                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
+                            <input type="checkbox" class="task-oa-checkbox" value="OA11" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                            <span style="font-weight: 500;">OA11 - Aprendizaje autónomo</span>
+                        </label>
+                    </div>
+                </div>
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    <i class="fas fa-info-circle"></i> Puedes seleccionar múltiples OA si la tarea aborda varios objetivos
+                </small>
             </div>
             
             <div id="oaPreview" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #667eea;">
-                <div style="font-weight: bold; margin-bottom: 8px; color: #667eea;" id="oaTitle"></div>
-                <div style="font-size: 12px; color: #666; margin-bottom: 10px;" id="oaDescription"></div>
-                <div style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">Indicadores (selecciona los relevantes):</div>
+                <div style="font-weight: bold; margin-bottom: 12px; color: #667eea; font-size: 14px;">Objetivos y sus indicadores:</div>
                 <div id="oaIndicators" style="font-size: 12px;"></div>
             </div>
 
@@ -1385,31 +1405,44 @@ ASCENCIO ROZAS MAXIMO MARIANO
         }
 
         function updateOAPreview() {
-            const oaSelect = document.getElementById('taskOA');
+            const oaCheckboxes = document.querySelectorAll('.task-oa-checkbox:checked');
             const oaPreview = document.getElementById('oaPreview');
-            const oaTitle = document.getElementById('oaTitle');
-            const oaDescription = document.getElementById('oaDescription');
             const oaIndicators = document.getElementById('oaIndicators');
 
-            const selectedOA = oaSelect.value;
-
-            if (selectedOA && oaData[selectedOA]) {
-                const oa = oaData[selectedOA];
-                oaTitle.textContent = selectedOA + ': ' + oa.titulo;
-                oaDescription.textContent = oa.titulo;
-
-                // Crear checkboxes para indicadores
+            if (oaCheckboxes.length > 0) {
                 let indicatorsHtml = '';
-                oa.indicadores.forEach((indicador, index) => {
-                    indicatorsHtml += `
-                        <div style="margin-bottom: 6px;">
-                            <label style="display: flex; align-items: flex-start; cursor: pointer;">
-                                <input type="checkbox" class="oa-indicator" value="${index}" style="margin-right: 8px; margin-top: 2px;">
-                                <span>${indicador}</span>
-                            </label>
-                        </div>
-                    `;
+                
+                oaCheckboxes.forEach(checkbox => {
+                    const selectedOA = checkbox.value;
+                    if (oaData[selectedOA]) {
+                        const oa = oaData[selectedOA];
+                        
+                        indicatorsHtml += `
+                            <div style="margin-bottom: 16px; padding: 12px; background: white; border-radius: 6px; border: 2px solid #667eea;">
+                                <div style="font-weight: bold; color: #667eea; margin-bottom: 8px; font-size: 13px;">
+                                    ${selectedOA}: ${oa.titulo}
+                                </div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 8px; font-style: italic;">
+                                    Selecciona los indicadores relevantes para esta tarea:
+                                </div>
+                        `;
+                        
+                        // Crear checkboxes para indicadores
+                        oa.indicadores.forEach((indicador, index) => {
+                            indicatorsHtml += `
+                                <div style="margin-bottom: 6px;">
+                                    <label style="display: flex; align-items: flex-start; cursor: pointer;">
+                                        <input type="checkbox" class="oa-indicator" data-oa="${selectedOA}" value="${index}" style="margin-right: 8px; margin-top: 2px;">
+                                        <span style="font-size: 12px;">${indicador}</span>
+                                    </label>
+                                </div>
+                            `;
+                        });
+                        
+                        indicatorsHtml += '</div>';
+                    }
                 });
+                
                 oaIndicators.innerHTML = indicatorsHtml;
                 oaPreview.style.display = 'block';
             } else {
@@ -1596,54 +1629,71 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             let headerHTML = '<th class="col-num">N</th><th class="col-apellido-p">APELLIDO PATERNO</th><th class="col-apellido-m">APELLIDO MATERNO</th><th class="col-nombre">NOMBRE</th>';
             courseTasks.forEach(t => {
-                // Iconos y etiquetas por tipo de evaluación
+                // Iconos y etiquetas por tipo de evaluación con colores más contrastantes
                 let typeIcon = '✓';
                 let typeLabel = 'Sí/No';
-                let typeBg = '#28a745';
+                let typeBg = '#2563eb'; // Azul más oscuro
                 
                 switch(t.gradeType) {
                     case 'levels':
                         typeIcon = '📊';
                         typeLabel = 'Niveles';
-                        typeBg = '#17a2b8';
+                        typeBg = '#0891b2'; // Cyan oscuro
                         break;
                     case 'checklist':
                         typeIcon = '📋';
                         typeLabel = 'Cotejo';
-                        typeBg = '#ffc107';
+                        typeBg = '#ea580c'; // Naranja oscuro
                         break;
                     case 'rubric':
                         typeIcon = '📝';
                         typeLabel = 'Rúbrica';
-                        typeBg = '#6f42c1';
+                        typeBg = '#7c3aed'; // Púrpura oscuro
                         break;
                     default:
                         typeIcon = '✓';
                         typeLabel = 'Sí/No';
-                        typeBg = '#28a745';
+                        typeBg = '#2563eb'; // Azul oscuro
                 }
 
-                // Mostrar porcentaje si existe
+                // Mostrar porcentaje si existe con colores más contrastantes
                 let percentageInfo = '';
                 const percentage = parseFloat(t.percentage || 0);
                 if (percentage > 0) {
-                    percentageInfo = '<br><span style="background: #667eea; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold;">' + percentage + '%</span>';
+                    percentageInfo = '<br><span style="background: #059669; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">' + percentage + '%</span>';
                 } else {
-                    percentageInfo = '<br><span style="background: #6c757d; color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px;">Formativa</span>';
+                    percentageInfo = '<br><span style="background: #475569; color: white; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 600;">Formativa</span>';
                 }
 
                 let oaInfo = '';
-                if (t.oa && oaData[t.oa]) {
-                    oaInfo = '<br><small style="color: #666;">' + t.oa + '</small>';
-                    if (t.indicators && t.indicators.length > 0) {
-                        oaInfo += '<br><small style="color: #888; font-size: 9px;">' + t.indicators.length + ' indicador(es)</small>';
+                // Soportar tanto el formato antiguo (t.oa) como el nuevo (t.oas array)
+                if (t.oas && t.oas.length > 0) {
+                    // Nuevo formato: múltiples OAs
+                    oaInfo = '<br><small style="color: #374151; font-weight: 500;">' + t.oas.join(', ') + '</small>';
+                    
+                    // Contar indicadores totales
+                    let totalIndicators = 0;
+                    if (t.indicators && typeof t.indicators === 'object') {
+                        Object.values(t.indicators).forEach(indArray => {
+                            totalIndicators += indArray.length;
+                        });
+                    }
+                    if (totalIndicators > 0) {
+                        oaInfo += '<br><small style="color: #6b7280; font-size: 9px;">' + totalIndicators + ' indicador(es)</small>';
+                    }
+                } else if (t.oa && oaData[t.oa]) {
+                    // Formato antiguo: un solo OA (para compatibilidad)
+                    oaInfo = '<br><small style="color: #374151; font-weight: 500;">' + t.oa + '</small>';
+                    if (t.indicators && Array.isArray(t.indicators) && t.indicators.length > 0) {
+                        oaInfo += '<br><small style="color: #6b7280; font-size: 9px;">' + t.indicators.length + ' indicador(es)</small>';
                     }
                 }
                 
                 // Badge del tipo de evaluación
-                const typeBadge = '<span style="background: ' + typeBg + '; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; display: inline-block; margin-top: 4px;">' + typeIcon + ' ' + typeLabel + '</span>';
+                const typeBadge = '<span style="background: ' + typeBg + '; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; display: inline-block; margin-top: 4px; font-weight: 600;">' + typeIcon + ' ' + typeLabel + '</span>';
                 
-                oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px;">Editar</button>';
+                oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; margin-right: 3px;">✏️ Editar</button>';
+                oaInfo += '<button class="btn-small" onclick="deleteTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #dc2626; border-color: #dc2626;">🗑️ Eliminar</button>';
                 headerHTML += '<th class="task-header">' + t.name + '<span class="task-subtitle">' + (t.date||'') + '</span>' + typeBadge + percentageInfo + oaInfo + '</th>';
             });
             headerHTML += '<th class="col-puntos">PUNTOS</th><th class="col-nota">NOTA</th><th class="col-acciones">ACCIONES</th>';
@@ -2078,7 +2128,6 @@ ASCENCIO ROZAS MAXIMO MARIANO
         async function saveTask() {
             const name = document.getElementById('taskName').value;
             const date = document.getElementById('taskDate').value;
-            const oa = document.getElementById('taskOA').value;
             const taskType = document.getElementById('taskType').value;
             const percentage = parseFloat(document.getElementById('taskPercentage').value || 0);
             const fileInput = document.getElementById('taskFile');
@@ -2087,6 +2136,13 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 alert('⚠️ Ingresa un nombre para la evaluación'); 
                 return; 
             }
+
+            // Obtener OAs seleccionados (múltiples)
+            const selectedOAs = [];
+            const oaCheckboxes = document.querySelectorAll('.task-oa-checkbox:checked');
+            oaCheckboxes.forEach(checkbox => {
+                selectedOAs.push(checkbox.value);
+            });
 
             // Validar porcentaje
             const tasks = await getAllData('tasks');
@@ -2102,22 +2158,28 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 }
             }
 
-            // Obtener indicadores seleccionados
-            const selectedIndicators = [];
+            // Obtener indicadores seleccionados con su OA correspondiente
+            const selectedIndicators = {};
             const indicatorCheckboxes = document.querySelectorAll('.oa-indicator:checked');
             indicatorCheckboxes.forEach(checkbox => {
-                selectedIndicators.push(parseInt(checkbox.value));
+                const oaKey = checkbox.getAttribute('data-oa');
+                const indicatorIndex = parseInt(checkbox.value);
+                
+                if (!selectedIndicators[oaKey]) {
+                    selectedIndicators[oaKey] = [];
+                }
+                selectedIndicators[oaKey].push(indicatorIndex);
             });
 
             // Manejar archivo adjunto
             let fileName = '';
             if (fileInput && fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                fileName = `${Date.now()}_${file.name}`;
+                fileName = file.name;
                 
-                // Aquí podrías implementar la subida a Firebase Storage o guardar la referencia
-                console.log('Archivo a guardar:', fileName);
-                alert(`📎 Archivo "${file.name}" será guardado en RUBRICAS Y PAUTAS/\n\nNota: La funcionalidad de subida de archivos se implementará en la próxima actualización.`);
+                // Mostrar confirmación
+                console.log('📎 Archivo seleccionado:', fileName);
+                // Nota: La subida real del archivo se puede implementar con Firebase Storage después
             }
 
             // Guardar tarea con todos los datos
@@ -2125,8 +2187,8 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 courseId: courseActual,
                 name,
                 date: date || '',
-                oa: oa || '',
-                indicators: selectedIndicators,
+                oas: selectedOAs, // Array de OAs
+                indicators: selectedIndicators, // Objeto con indicadores por OA
                 gradeType: taskType, // binary, levels, checklist, rubric
                 percentage: percentage,
                 fileName: fileName,
@@ -2572,9 +2634,17 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         const percentage = parseFloat(t.percentage || 0);
                         const isFormative = percentage === 0;
                         
+                        // Soportar tanto formato antiguo (t.oa) como nuevo (t.oas)
+                        let oaDisplay = 'Sin OA';
+                        if (t.oas && t.oas.length > 0) {
+                            oaDisplay = t.oas.join(', ');
+                        } else if (t.oa) {
+                            oaDisplay = t.oa;
+                        }
+                        
                         stats.taskCompletion.push({
                             name: t.name,
-                            oa: t.oa,
+                            oa: oaDisplay,
                             completed: completed,
                             total: courseStudents.length,
                             percentage: ((completed/courseStudents.length)*100).toFixed(0),
@@ -2666,9 +2736,20 @@ El informe debe ser profesional, específico y orientado a la mejora pedagógica
                             }
                         }
                         
+                        // Soportar tanto formato antiguo (t.oa) como nuevo (t.oas)
+                        let oaDisplay = 'Sin OA';
+                        let oaList = [];
+                        if (t.oas && t.oas.length > 0) {
+                            oaDisplay = t.oas.join(', ');
+                            oaList = t.oas;
+                        } else if (t.oa) {
+                            oaDisplay = t.oa;
+                            oaList = [t.oa];
+                        }
+                        
                         studentTasks.push({
                             name: t.name,
-                            oa: t.oa,
+                            oa: oaDisplay,
                             date: t.date,
                             completed: completed,
                             gradeType: typeLabel,
@@ -2677,11 +2758,14 @@ El informe debe ser profesional, específico y orientado a la mejora pedagógica
                             isFormative: isFormative
                         });
 
-                        if (t.oa) {
-                            if (!oaProgress[t.oa]) oaProgress[t.oa] = { completed: 0, total: 0 };
-                            oaProgress[t.oa].total++;
-                            if (completed) oaProgress[t.oa].completed++;
-                        }
+                        // Actualizar progreso por OA (soporta múltiples OAs)
+                        oaList.forEach(oa => {
+                            if (oa) {
+                                if (!oaProgress[oa]) oaProgress[oa] = { completed: 0, total: 0 };
+                                oaProgress[oa].total++;
+                                if (completed) oaProgress[oa].completed++;
+                            }
+                        });
                     });
 
                     const completedCount = studentTasks.filter(t => t.completed).length;
@@ -3435,6 +3519,38 @@ SOLUCIÓN:
             await updateData('tasks', task);
             closeModal('editTaskModal');
             loadPlanilla();
+        }
+
+        async function deleteTask(taskId) {
+            const tasks = await getAllData('tasks');
+            const task = tasks.find(t => t.id === taskId);
+            
+            if (!confirm(`¿Estás seguro de eliminar la tarea "${task?.name}"?\n\nEsto también eliminará todas las evaluaciones asociadas a esta tarea.`)) {
+                return;
+            }
+
+            try {
+                console.log('🗑️ Eliminando tarea:', taskId);
+
+                // Eliminar evaluaciones asociadas a esta tarea
+                const evaluations = await firebaseDB.getEvaluations();
+                for (const evalId in evaluations) {
+                    const evaluation = evaluations[evalId];
+                    if (evaluation.taskId === taskId) {
+                        await deleteData('evaluations', evalId);
+                    }
+                }
+
+                // Eliminar la tarea
+                await deleteData('tasks', taskId);
+
+                console.log('✅ Tarea eliminada correctamente');
+                await loadPlanilla();
+                alert('Tarea eliminada correctamente');
+            } catch (error) {
+                console.error('❌ Error al eliminar tarea:', error);
+                alert(`Error al eliminar la tarea: ${error.message}`);
+            }
         }
 
         // Backup and Restore functions
