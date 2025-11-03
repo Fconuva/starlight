@@ -641,6 +641,21 @@
             margin-top: 20px;
         }
         
+        /* Estilos para plantillas de evaluación */
+        input[name="predefinedTemplate"]:checked + div {
+            background: #e7f3ff !important;
+        }
+        
+        label:has(input[name="predefinedTemplate"]) {
+            transition: all 0.2s ease;
+        }
+        
+        label:has(input[name="predefinedTemplate"]):hover {
+            border-color: #667eea !important;
+            background: #f8f9ff !important;
+            transform: translateX(3px);
+        }
+        
         /* Responsive Design */
         @media (max-width: 1024px) {
             .container {
@@ -942,12 +957,39 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             <!-- Opciones para archivo adjunto -->
             <div id="fileAttachmentSection" style="display: none;" class="form-group">
-                <label><i class="fas fa-paperclip"></i> Archivo de Evaluación:</label>
-                <input type="file" id="taskFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: block; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%;">
-                <small style="color: #666; display: block; margin-top: 5px;">
-                    📁 Los archivos se guardarán en: <strong>RUBRICAS Y PAUTAS/</strong><br>
-                    Formatos aceptados: PDF, DOC, DOCX, JPG, PNG
-                </small>
+                <label><i class="fas fa-paperclip"></i> Selecciona o Adjunta tu Evaluación:</label>
+                
+                <!-- Opciones predefinidas -->
+                <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px;">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">
+                        <i class="fas fa-file-alt"></i> Plantillas Predefinidas:
+                    </div>
+                    
+                    <div id="predefinedTemplates" style="margin-bottom: 10px;">
+                        <!-- Se llenarán dinámicamente según el tipo -->
+                    </div>
+                    
+                    <div style="text-align: center; margin: 12px 0; color: #666; font-weight: 500;">
+                        — O —
+                    </div>
+                    
+                    <div style="font-weight: bold; margin-bottom: 8px; color: #667eea;">
+                        <i class="fas fa-upload"></i> Adjuntar Archivo Personalizado:
+                    </div>
+                    <input type="file" id="taskFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: block; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%;">
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        📁 Formatos aceptados: PDF, DOC, DOCX, JPG, PNG
+                    </small>
+                </div>
+                
+                <!-- Preview de la plantilla seleccionada -->
+                <div id="templatePreview" style="display: none; background: white; padding: 12px; border-radius: 6px; border: 2px solid #667eea; margin-top: 10px;">
+                    <div style="font-weight: bold; color: #667eea; margin-bottom: 8px;">
+                        <i class="fas fa-eye"></i> Vista previa de la plantilla:
+                    </div>
+                    <div id="templatePreviewContent" style="font-size: 12px; color: #333; max-height: 200px; overflow-y: auto;">
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -1244,6 +1286,61 @@ ASCENCIO ROZAS MAXIMO MARIANO
         let db, docenteActual = null, courseActual = null, firebaseDB = null;
 
         let oaData = {};
+
+        // Plantillas predefinidas de evaluación
+        const evaluationTemplates = {
+            rubric: [
+                {
+                    id: 'rubrica_titeres',
+                    name: 'Rúbrica: Obra de Títeres',
+                    description: 'Evaluación formativa para obra de títeres (Unidad IV "Poder y ambición")',
+                    oas: ['OA5', 'OA6', 'OA11', 'OA14', 'OA15'],
+                    criteria: [
+                        { name: 'Guion dramático: coherencia y estructura', maxPoints: 4 },
+                        { name: 'Construcción de personajes', maxPoints: 4 },
+                        { name: 'Creatividad en la propuesta', maxPoints: 4 },
+                        { name: 'Confección de títeres', maxPoints: 4 },
+                        { name: 'Guion técnico y uso de elementos dramáticos', maxPoints: 4 },
+                        { name: 'Redacción y ortografía en el guion', maxPoints: 4 },
+                        { name: 'Trabajo colaborativo', maxPoints: 4 },
+                        { name: 'Responsabilidad y cumplimiento en clases', maxPoints: 4 }
+                    ],
+                    totalPoints: 32,
+                    levels: ['Destacado (4)', 'Logrado (3)', 'Medianamente logrado (2)', 'Por Mejorar (1)']
+                }
+            ],
+            checklist: [
+                {
+                    id: 'cotejo_dramatico',
+                    name: 'Lista de Cotejo: Texto Dramático',
+                    description: 'Análisis de comprensión lectora - Unidad IV "Poder y ambición"',
+                    oas: ['OA5', 'OA6', 'OA11', 'OA14', 'OA15'],
+                    items: [
+                        { section: 'Comprensión y análisis literario (OA 5)', items: [
+                            'Identifica el conflicto central de la obra dramática trabajada',
+                            'Describe la evolución de los personajes principales según sus acciones y motivaciones',
+                            'Reconoce símbolos literarios presentes en la obra dramática',
+                            'Explica cómo la atmósfera de la obra se construye a partir de diálogos y acotaciones',
+                            'Relaciona elementos de la puesta en escena con el sentido de la obra'
+                        ]},
+                        { section: 'Contexto cultural y literario (OA 6)', items: [
+                            'Describe características del teatro del Siglo de Oro',
+                            'Explica cómo el contexto histórico influye en las obras del Siglo de Oro'
+                        ]},
+                        { section: 'Producción escrita (OA 14 y OA 15)', items: [
+                            'Formula una postura personal frente a un tema de la obra',
+                            'Usa evidencias del Siglo de Oro para sustentar su postura',
+                            'Organiza sus ideas en introducción, desarrollo y conclusión con coherencia'
+                        ]},
+                        { section: 'OA Transversales', items: [
+                            'Participa respetuosamente en discusiones relacionadas con la temática',
+                            'Trabaja de manera colaborativa en equipo cumpliendo su rol asignado'
+                        ]}
+                    ],
+                    totalItems: 12
+                }
+            ]
+        };
 
         // Cargar datos de OA al iniciar
         window.addEventListener('load', async () => {
@@ -2073,13 +2170,101 @@ ASCENCIO ROZAS MAXIMO MARIANO
         function updateTaskTypeOptions() {
             const taskType = document.getElementById('taskType').value;
             const fileSection = document.getElementById('fileAttachmentSection');
+            const predefinedTemplates = document.getElementById('predefinedTemplates');
             
             // Mostrar sección de archivo solo para checklist y rubric
             if (taskType === 'checklist' || taskType === 'rubric') {
                 fileSection.style.display = 'block';
+                
+                // Cargar plantillas predefinidas según el tipo
+                const templates = evaluationTemplates[taskType] || [];
+                let templatesHtml = '';
+                
+                templates.forEach(template => {
+                    templatesHtml += `
+                        <div style="margin-bottom: 8px;">
+                            <label style="display: flex; align-items: flex-start; cursor: pointer; padding: 8px; background: white; border: 2px solid #ddd; border-radius: 6px; transition: all 0.2s;">
+                                <input type="radio" name="predefinedTemplate" value="${template.id}" onchange="showTemplatePreview('${taskType}', '${template.id}')" style="margin-right: 10px; margin-top: 4px; transform: scale(1.3);">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: bold; color: #667eea; margin-bottom: 4px;">${template.name}</div>
+                                    <div style="font-size: 11px; color: #666;">${template.description}</div>
+                                    <div style="font-size: 10px; color: #999; margin-top: 4px;">
+                                        <i class="fas fa-bullseye"></i> ${template.oas.join(', ')}
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    `;
+                });
+                
+                if (templatesHtml === '') {
+                    templatesHtml = '<div style="color: #999; font-style: italic; text-align: center;">No hay plantillas disponibles</div>';
+                }
+                
+                predefinedTemplates.innerHTML = templatesHtml;
             } else {
                 fileSection.style.display = 'none';
             }
+        }
+
+        function showTemplatePreview(type, templateId) {
+            const template = evaluationTemplates[type].find(t => t.id === templateId);
+            const preview = document.getElementById('templatePreview');
+            const content = document.getElementById('templatePreviewContent');
+            
+            if (!template) {
+                preview.style.display = 'none';
+                return;
+            }
+            
+            let previewHtml = '';
+            
+            if (type === 'rubric') {
+                previewHtml = `
+                    <div style="font-weight: bold; margin-bottom: 8px; color: #333;">
+                        📊 ${template.name} (${template.totalPoints} puntos)
+                    </div>
+                    <div style="margin-bottom: 8px; font-size: 11px; color: #666;">
+                        <strong>Niveles:</strong> ${template.levels.join(' | ')}
+                    </div>
+                    <div style="font-weight: bold; margin-bottom: 6px; font-size: 11px;">Criterios de Evaluación:</div>
+                `;
+                template.criteria.forEach((criterion, idx) => {
+                    previewHtml += `
+                        <div style="padding: 4px 0; border-bottom: 1px solid #eee; font-size: 11px;">
+                            ${idx + 1}. ${criterion.name} <span style="color: #667eea; font-weight: bold;">(${criterion.maxPoints} pts)</span>
+                        </div>
+                    `;
+                });
+            } else if (type === 'checklist') {
+                previewHtml = `
+                    <div style="font-weight: bold; margin-bottom: 8px; color: #333;">
+                        📋 ${template.name} (${template.totalItems} ítems)
+                    </div>
+                `;
+                template.items.forEach((section, idx) => {
+                    previewHtml += `
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-weight: bold; color: #667eea; font-size: 11px; margin-bottom: 4px;">
+                                ${section.section}
+                            </div>
+                    `;
+                    section.items.forEach((item, itemIdx) => {
+                        previewHtml += `
+                            <div style="padding: 3px 0 3px 15px; font-size: 10px; color: #555;">
+                                ☐ ${item}
+                            </div>
+                        `;
+                    });
+                    previewHtml += '</div>';
+                });
+            }
+            
+            content.innerHTML = previewHtml;
+            preview.style.display = 'block';
+            
+            // Limpiar el input file cuando se selecciona una plantilla
+            document.getElementById('taskFile').value = '';
         }
 
         async function calculateTotalPercentage() {
@@ -2171,14 +2356,36 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 selectedIndicators[oaKey].push(indicatorIndex);
             });
 
-            // Manejar archivo adjunto
+            // Manejar plantilla predefinida o archivo adjunto
             let fileName = '';
-            if (fileInput && fileInput.files.length > 0) {
+            let templateId = null;
+            let templateData = null;
+            
+            // Verificar si se seleccionó una plantilla predefinida
+            const selectedTemplate = document.querySelector('input[name="predefinedTemplate"]:checked');
+            if (selectedTemplate) {
+                templateId = selectedTemplate.value;
+                const template = evaluationTemplates[taskType].find(t => t.id === templateId);
+                if (template) {
+                    templateData = {
+                        id: template.id,
+                        name: template.name,
+                        type: taskType,
+                        data: template
+                    };
+                    fileName = `[Plantilla] ${template.name}`;
+                    
+                    // Si es una plantilla, autocompletar los OAs si no hay ninguno seleccionado
+                    if (selectedOAs.length === 0 && template.oas) {
+                        template.oas.forEach(oa => selectedOAs.push(oa));
+                    }
+                }
+            } 
+            // Si no hay plantilla, verificar archivo personalizado
+            else if (fileInput && fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 fileName = file.name;
-                
-                // Mostrar confirmación
-                console.log('📎 Archivo seleccionado:', fileName);
+                console.log('📎 Archivo personalizado seleccionado:', fileName);
                 // Nota: La subida real del archivo se puede implementar con Firebase Storage después
             }
 
@@ -2192,6 +2399,8 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 gradeType: taskType, // binary, levels, checklist, rubric
                 percentage: percentage,
                 fileName: fileName,
+                templateId: templateId, // ID de plantilla predefinida (si aplica)
+                templateData: templateData, // Datos completos de la plantilla (si aplica)
                 createdAt: new Date().toISOString()
             });
 
