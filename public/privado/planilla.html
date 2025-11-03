@@ -805,7 +805,8 @@
                 <button class="card-btn" onclick="openAddCourseModal()"><i class="fas fa-graduation-cap"></i> Agregar Curso</button>
                 <button class="card-btn" onclick="openAddStudentModal()"><i class="fas fa-user-plus"></i> Agregar Estudiante</button>
                 <button class="card-btn" onclick="openBulkStudentModal()"><i class="fas fa-users"></i> Carga Masiva</button>
-                <button class="card-btn" onclick="openAddTaskModal()"><i class="fas fa-tasks"></i> Agregar Tarea</button>
+                <button class="card-btn" onclick="openAddTaskModal('simple')"><i class="fas fa-tasks"></i> Agregar Tarea</button>
+                <button class="card-btn" onclick="openAddTaskModal('evaluation')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><i class="fas fa-clipboard-check"></i> Agregar Evaluación</button>
             </div>
         </div>
 
@@ -933,7 +934,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
     <div id="taskModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
             <button class="close-btn" onclick="closeModal('taskModal')">&times;</button>
-            <div class="modal-header">Agregar Tarea/Evaluación</div>
+            <div class="modal-header">Agregar Tarea</div>
             
             <div class="form-group">
                 <label>Nombre:</label>
@@ -948,10 +949,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             <div class="form-group">
                 <label><i class="fas fa-clipboard-check"></i> Tipo de Evaluación:</label>
                 <select id="taskType" onchange="updateTaskTypeOptions()" style="font-size: 14px;">
-                    <option value="binary">✓ Sí o No (Logrado/No Logrado)</option>
-                    <option value="levels">📊 Niveles de Logro (Insuficiente, Elemental, Adecuado, Destacado)</option>
-                    <option value="checklist">📋 Lista de Cotejo (Archivo adjunto)</option>
-                    <option value="rubric">📝 Rúbrica (Archivo adjunto)</option>
+                    <!-- Las opciones se cargarán dinámicamente según el modo -->
                 </select>
             </div>
 
@@ -1373,27 +1371,27 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     id: 'cotejo_dramatico',
                     name: 'Lista de Cotejo: Texto Dramático',
                     description: 'Análisis de comprensión lectora - Unidad IV "Poder y ambición"',
-                    oas: ['OA5', 'OA6', 'OA11', 'OA14', 'OA15'],
+                    oas: ['OA5', 'OA6', 'OA14', 'OA15'],
                     items: [
                         { section: 'Comprensión y análisis literario (OA 5)', items: [
-                            'Identifica el conflicto central de la obra dramática trabajada',
-                            'Describe la evolución de los personajes principales según sus acciones y motivaciones',
-                            'Reconoce símbolos literarios presentes en la obra dramática',
-                            'Explica cómo la atmósfera de la obra se construye a partir de diálogos y acotaciones',
-                            'Relaciona elementos de la puesta en escena con el sentido de la obra'
+                            'Identifica el conflicto central de la obra dramática trabajada.',
+                            'Describe la evolución de los personajes principales según sus acciones y motivaciones.',
+                            'Reconoce símbolos literarios presentes en la obra dramática.',
+                            'Explica cómo la atmósfera de la obra se construye a partir de diálogos y acotaciones.',
+                            'Relaciona elementos de la puesta en escena (iluminación, vestuario o escenografía) con el sentido de la obra.'
                         ]},
                         { section: 'Contexto cultural y literario (OA 6)', items: [
-                            'Describe características del teatro del Siglo de Oro',
-                            'Explica cómo el contexto histórico influye en las obras del Siglo de Oro'
+                            'Describe características del teatro del Siglo de Oro (estructura, temas o estilo).',
+                            'Explica cómo el contexto histórico influye en la construcción de las obras del Siglo de Oro.'
                         ]},
                         { section: 'Producción escrita (OA 14 y OA 15)', items: [
-                            'Formula una postura personal frente a un tema de la obra',
-                            'Usa evidencias del Siglo de Oro para sustentar su postura',
-                            'Organiza sus ideas en introducción, desarrollo y conclusión con coherencia'
+                            'Formula una postura personal frente a un tema de la obra.',
+                            'Usa evidencias provenientes del siglo de oro para sustentar su postura personal.',
+                            'Organiza sus ideas en introducción, desarrollo y conclusión con coherencia.'
                         ]},
                         { section: 'OA Transversales', items: [
-                            'Participa respetuosamente en discusiones relacionadas con la temática',
-                            'Trabaja de manera colaborativa en equipo cumpliendo su rol asignado'
+                            'Participa respetuosamente en discusiones relacionada con la temática del siglo de oro.',
+                            'Trabaja de manera colaborativa en equipo cumpliendo su rol asignado.'
                         ]}
                     ],
                     totalItems: 12
@@ -2275,9 +2273,34 @@ ASCENCIO ROZAS MAXIMO MARIANO
             loadPlanilla();
         }
 
-        function openAddTaskModal() {
+        function openAddTaskModal(mode = 'simple') {
             if (!courseActual) { alert('Seleccione un curso primero'); return; }
             document.getElementById('oaPreview').style.display = 'none';
+            
+            // Actualizar el título del modal
+            const modalHeader = document.querySelector('#taskModal .modal-header');
+            if (mode === 'evaluation') {
+                modalHeader.textContent = 'Agregar Evaluación (Rúbrica/Pauta)';
+            } else {
+                modalHeader.textContent = 'Agregar Tarea';
+            }
+            
+            // Filtrar opciones del select según el modo
+            const taskTypeSelect = document.getElementById('taskType');
+            taskTypeSelect.innerHTML = '';
+            
+            if (mode === 'simple') {
+                taskTypeSelect.innerHTML = `
+                    <option value="binary">✓ Sí o No (Logrado/No Logrado)</option>
+                    <option value="levels">📊 Niveles de Logro (Insuficiente, Elemental, Adecuado, Destacado)</option>
+                `;
+            } else if (mode === 'evaluation') {
+                taskTypeSelect.innerHTML = `
+                    <option value="rubric">📝 Rúbrica (Plantilla de evaluación)</option>
+                    <option value="checklist">📋 Lista de Cotejo (Plantilla de evaluación)</option>
+                `;
+            }
+            
             document.getElementById('taskModal').classList.add('active');
             updateTaskTypeOptions(); // Inicializar opciones
             calculateTotalPercentage(); // Mostrar total actual
@@ -3900,18 +3923,8 @@ SOLUCIÓN:
         }
 
         // Función auxiliar para abrir modal y cargar estudiante
-        function openAndLoadTemplate(taskId, studentId) {
-            openTemplateEvaluation(taskId);
-            setTimeout(() => {
-                const studentSelector = document.getElementById('studentSelector');
-                if (studentSelector) {
-                    studentSelector.value = studentId;
-                    loadStudentTemplate(taskId);
-                }
-            }, 200);
-        }
-
-        async function openTemplateEvaluation(taskId) {
+        // Abrir evaluación directamente para un estudiante específico
+        async function openAndLoadTemplate(taskId, studentId) {
             const tasks = await getAllData('tasks');
             const task = tasks.find(t => t.id === taskId);
             
@@ -3921,10 +3934,23 @@ SOLUCIÓN:
             }
 
             const students = await getAllData('students');
-            const courseStudents = students.filter(s => s.courseId === courseActual && !s.retirado);
-            const evalMap = await getEvaluationsMap();
+            const student = students.find(s => s.id === studentId);
+            if (!student) {
+                alert('Estudiante no encontrado.');
+                return;
+            }
 
             const template = task.templateData.data;
+            const evalMap = await getEvaluationsMap();
+            const existing = evalMap.get(taskId + ':' + studentId);
+            const existingData = existing ? (existing.templateEvaluation || {}) : {};
+
+            // Obtener nombre del estudiante
+            const lastName = student.lastNameP || student.apellidoPaterno || '';
+            const middleName = student.lastNameM || student.apellidoMaterno || '';
+            const firstName = student.firstNames || student.nombre || student.nombres || 'Sin nombre';
+            const fullName = lastName && middleName ? `${lastName} ${middleName}, ${firstName}` : firstName;
+
             const title = document.getElementById('templateEvalTitle');
             const content = document.getElementById('templateEvalContent');
 
@@ -3935,50 +3961,28 @@ SOLUCIÓN:
                     <div style="font-size: 14px; font-weight: 600; color: #667eea; margin-bottom: 8px;">
                         <i class="fas fa-info-circle"></i> ${template.description}
                     </div>
-                    <div style="font-size: 12px; color: #666;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
                         <strong>OAs:</strong> ${template.oas.join(', ')}
+                    </div>
+                    <div style="font-size: 14px; font-weight: 600; color: #333; padding: 10px; background: white; border-radius: 6px; border: 2px solid #667eea;">
+                        <i class="fas fa-user"></i> Estudiante: ${fullName}
                     </div>
                 </div>
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="font-weight: 600; display: block; margin-bottom: 8px;">
-                        <i class="fas fa-user"></i> Selecciona un estudiante:
-                    </label>
-                    <select id="studentSelector" onchange="loadStudentTemplate('${taskId}')" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
-                        <option value="">-- Seleccionar estudiante --</option>
-                        ${courseStudents.map(st => {
-                            const lastName = st.lastNameP || st.apellidoPaterno || '';
-                            const middleName = st.lastNameM || st.apellidoMaterno || '';
-                            const firstName = st.firstNames || st.nombre || st.nombres || 'Sin nombre';
-                            const fullName = lastName && middleName ? `${lastName} ${middleName}, ${firstName}` : firstName;
-                            return `<option value="${st.id}">${fullName}</option>`;
-                        }).join('')}
-                    </select>
-                </div>
-                
-                <div id="templateEvalForm" style="display: none;">
-                    <!-- Formulario de evaluación se cargará aquí -->
+                <div id="templateEvalForm">
+                    <!-- Formulario de evaluación -->
                 </div>
             `;
 
             content.innerHTML = html;
+            
+            // Cargar formulario directamente
+            await loadStudentTemplate(taskId, studentId, task, template, existingData);
+            
             document.getElementById('templateEvaluationModal').classList.add('active');
         }
 
-        async function loadStudentTemplate(taskId) {
-            const studentId = document.getElementById('studentSelector').value;
-            if (!studentId) {
-                document.getElementById('templateEvalForm').style.display = 'none';
-                return;
-            }
-
-            const tasks = await getAllData('tasks');
-            const task = tasks.find(t => t.id === taskId);
-            const template = task.templateData.data;
-            const evalMap = await getEvaluationsMap();
-            const existing = evalMap.get(taskId + ':' + studentId);
-            const existingData = existing ? (existing.templateEvaluation || {}) : {};
-
+        async function loadStudentTemplate(taskId, studentId, task, template, existingData) {
             const formDiv = document.getElementById('templateEvalForm');
             let formHTML = '';
 
