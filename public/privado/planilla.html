@@ -916,17 +916,53 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
     <!-- MODAL: AGREGAR TAREA -->
     <div id="taskModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 700px;">
             <button class="close-btn" onclick="closeModal('taskModal')">&times;</button>
-            <div class="modal-header">Agregar Tarea</div>
+            <div class="modal-header">Agregar Tarea/Evaluación</div>
+            
             <div class="form-group">
                 <label>Nombre:</label>
-                <input type="text" id="taskName" placeholder="Ej: Tarea 1">
+                <input type="text" id="taskName" placeholder="Ej: Evaluación 1, Tarea de comprensión">
             </div>
+            
             <div class="form-group">
                 <label>Fecha:</label>
                 <input type="date" id="taskDate">
             </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-clipboard-check"></i> Tipo de Evaluación:</label>
+                <select id="taskType" onchange="updateTaskTypeOptions()" style="font-size: 14px;">
+                    <option value="binary">✓ Sí o No (Logrado/No Logrado)</option>
+                    <option value="levels">📊 Niveles de Logro (Insuficiente, Elemental, Adecuado, Destacado)</option>
+                    <option value="checklist">📋 Lista de Cotejo (Archivo adjunto)</option>
+                    <option value="rubric">📝 Rúbrica (Archivo adjunto)</option>
+                </select>
+            </div>
+
+            <!-- Opciones para archivo adjunto -->
+            <div id="fileAttachmentSection" style="display: none;" class="form-group">
+                <label><i class="fas fa-paperclip"></i> Archivo de Evaluación:</label>
+                <input type="file" id="taskFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: block; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%;">
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    📁 Los archivos se guardarán en: <strong>RUBRICAS Y PAUTAS/</strong><br>
+                    Formatos aceptados: PDF, DOC, DOCX, JPG, PNG
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-percentage"></i> Porcentaje de la Nota Final:</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="number" id="taskPercentage" min="0" max="100" step="1" value="0" placeholder="0" style="width: 80px; text-align: center; font-size: 18px; font-weight: bold;">
+                    <span style="font-size: 24px; font-weight: bold; color: #667eea;">%</span>
+                    <small style="color: #666; flex: 1;">Si es 0%, no afecta la nota final (solo formativa)</small>
+                </div>
+                <div id="percentageWarning" style="display: none; margin-top: 10px; padding: 10px; background: #fff3cd; border-left: 3px solid #ffc107; border-radius: 4px;">
+                    <i class="fas fa-exclamation-triangle" style="color: #ffc107;"></i>
+                    <strong>Advertencia:</strong> <span id="percentageWarningText"></span>
+                </div>
+            </div>
+            
             <div class="form-group">
                 <label>OA (Objetivo de Aprendizaje):</label>
                 <select id="taskOA" onchange="updateOAPreview()">
@@ -937,14 +973,18 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     <option value="OA11">OA11 - Aprendizaje autónomo</option>
                 </select>
             </div>
+            
             <div id="oaPreview" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #667eea;">
                 <div style="font-weight: bold; margin-bottom: 8px; color: #667eea;" id="oaTitle"></div>
                 <div style="font-size: 12px; color: #666; margin-bottom: 10px;" id="oaDescription"></div>
                 <div style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">Indicadores (selecciona los relevantes):</div>
                 <div id="oaIndicators" style="font-size: 12px;"></div>
             </div>
+
             <div class="modal-buttons">
-                <button class="modal-btn modal-btn-primary" onclick="saveTask()">Guardar</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveTask()">
+                    <i class="fas fa-save"></i> Guardar Evaluación
+                </button>
                 <button class="modal-btn modal-btn-cancel" onclick="closeModal('taskModal')">Cancelar</button>
             </div>
         </div>
@@ -1398,8 +1438,22 @@ ASCENCIO ROZAS MAXIMO MARIANO
             return await firebaseDB.getEvaluationsMap();
         }
 
-        async function upsertEvaluation(taskId, studentId, value) {
-            await firebaseDB.upsertEvaluation(taskId, studentId, value);
+        async function upsertEvaluation(taskId, studentId, value, gradeType) {
+            // Convertir el valor según el tipo de evaluación
+            let processedValue = value;
+            
+            switch(gradeType) {
+                case 'binary':
+                case 'checklist':
+                case 'rubric':
+                    processedValue = !!value; // Boolean
+                    break;
+                case 'levels':
+                    processedValue = value || ''; // String (nombre del nivel)
+                    break;
+            }
+            
+            await firebaseDB.upsertEvaluation(taskId, studentId, processedValue);
             loadPlanilla();
         }
 
@@ -1542,16 +1596,55 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             let headerHTML = '<th class="col-num">N</th><th class="col-apellido-p">APELLIDO PATERNO</th><th class="col-apellido-m">APELLIDO MATERNO</th><th class="col-nombre">NOMBRE</th>';
             courseTasks.forEach(t => {
+                // Iconos y etiquetas por tipo de evaluación
+                let typeIcon = '✓';
+                let typeLabel = 'Sí/No';
+                let typeBg = '#28a745';
+                
+                switch(t.gradeType) {
+                    case 'levels':
+                        typeIcon = '📊';
+                        typeLabel = 'Niveles';
+                        typeBg = '#17a2b8';
+                        break;
+                    case 'checklist':
+                        typeIcon = '📋';
+                        typeLabel = 'Cotejo';
+                        typeBg = '#ffc107';
+                        break;
+                    case 'rubric':
+                        typeIcon = '📝';
+                        typeLabel = 'Rúbrica';
+                        typeBg = '#6f42c1';
+                        break;
+                    default:
+                        typeIcon = '✓';
+                        typeLabel = 'Sí/No';
+                        typeBg = '#28a745';
+                }
+
+                // Mostrar porcentaje si existe
+                let percentageInfo = '';
+                const percentage = parseFloat(t.percentage || 0);
+                if (percentage > 0) {
+                    percentageInfo = '<br><span style="background: #667eea; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold;">' + percentage + '%</span>';
+                } else {
+                    percentageInfo = '<br><span style="background: #6c757d; color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px;">Formativa</span>';
+                }
+
                 let oaInfo = '';
                 if (t.oa && oaData[t.oa]) {
                     oaInfo = '<br><small style="color: #666;">' + t.oa + '</small>';
                     if (t.indicators && t.indicators.length > 0) {
-                        // Mostrar solo el número de indicadores, no el texto completo
                         oaInfo += '<br><small style="color: #888; font-size: 9px;">' + t.indicators.length + ' indicador(es)</small>';
                     }
                 }
+                
+                // Badge del tipo de evaluación
+                const typeBadge = '<span style="background: ' + typeBg + '; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; display: inline-block; margin-top: 4px;">' + typeIcon + ' ' + typeLabel + '</span>';
+                
                 oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px;">Editar</button>';
-                headerHTML += '<th class="task-header">' + t.name + oaInfo + '<span class="task-subtitle">' + (t.date||'') + '</span></th>';
+                headerHTML += '<th class="task-header">' + t.name + '<span class="task-subtitle">' + (t.date||'') + '</span>' + typeBadge + percentageInfo + oaInfo + '</th>';
             });
             headerHTML += '<th class="col-puntos">PUNTOS</th><th class="col-nota">NOTA</th><th class="col-acciones">ACCIONES</th>';
             tableHead.innerHTML = headerHTML;
@@ -1570,17 +1663,120 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 bodyHTML += '<td class="col-apellido-m">' + materno + '</td>';
                 bodyHTML += '<td class="col-nombre">' + st.firstNames + '</td>';
 
+                let totalWeightedScore = 0;
+                let totalPercentage = 0;
+                let formativeComplete = 0;
+                let formativeTotal = 0;
+
                 courseTasks.forEach(t => {
                     const existing = evalMap.get(t.id + ':' + st.id);
-                    const checked = existing ? !!existing.value : false;
-                    if (checked && !isRetirado) puntos++;
-                    bodyHTML += '<td><input type="checkbox" ' + (checked?'checked':'') + ' onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.checked)" ' + (isRetirado?'disabled':'') + '></td>';
+                    const percentage = parseFloat(t.percentage || 0);
+                    const gradeType = t.gradeType || 'binary';
+                    
+                    let cellHTML = '<td style="text-align: center;">';
+                    
+                    if (isRetirado) {
+                        cellHTML += '<span style="color: #999;">-</span>';
+                    } else {
+                        switch(gradeType) {
+                            case 'binary':
+                                // Sí/No (checkbox)
+                                const checked = existing ? !!existing.value : false;
+                                cellHTML += '<input type="checkbox" ' + (checked?'checked':'') + ' onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.checked, \'binary\')">';
+                                if (checked) {
+                                    if (percentage > 0) {
+                                        totalWeightedScore += percentage;
+                                        totalPercentage += percentage;
+                                        puntos++;
+                                    } else {
+                                        formativeComplete++;
+                                        formativeTotal++;
+                                    }
+                                } else {
+                                    if (percentage > 0) totalPercentage += percentage;
+                                    else formativeTotal++;
+                                }
+                                break;
+                                
+                            case 'levels':
+                                // Niveles de Logro (dropdown)
+                                const levelValue = existing ? (existing.value || '') : '';
+                                const levelOptions = [
+                                    {val: '', label: '-', color: '#ccc', score: 0},
+                                    {val: 'Insuficiente', label: 'I', color: '#dc3545', score: 0.25},
+                                    {val: 'Elemental', label: 'E', color: '#ffc107', score: 0.5},
+                                    {val: 'Adecuado', label: 'A', color: '#17a2b8', score: 0.75},
+                                    {val: 'Destacado', label: 'D', color: '#28a745', score: 1}
+                                ];
+                                
+                                cellHTML += '<select onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.value, \'levels\')" style="width: 50px; padding: 2px; font-weight: bold; border-radius: 4px;">';
+                                levelOptions.forEach(opt => {
+                                    const selected = (opt.val === levelValue) ? 'selected' : '';
+                                    const bgColor = (opt.val === levelValue) ? opt.color : 'transparent';
+                                    cellHTML += '<option value="' + opt.val + '" ' + selected + ' style="background: ' + bgColor + '; color: white;">' + opt.label + '</option>';
+                                });
+                                cellHTML += '</select>';
+                                
+                                const selectedLevel = levelOptions.find(o => o.val === levelValue) || levelOptions[0];
+                                if (percentage > 0) {
+                                    totalPercentage += percentage;
+                                    totalWeightedScore += (percentage * selectedLevel.score);
+                                    if (selectedLevel.score > 0) puntos++;
+                                } else {
+                                    formativeTotal++;
+                                    if (selectedLevel.score > 0) formativeComplete++;
+                                }
+                                break;
+                                
+                            case 'checklist':
+                            case 'rubric':
+                                // Lista de Cotejo o Rúbrica (checkbox + ícono de archivo)
+                                const fileChecked = existing ? !!existing.value : false;
+                                cellHTML += '<input type="checkbox" ' + (fileChecked?'checked':'') + ' onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.checked, \'' + gradeType + '\')">';
+                                if (t.fileName) {
+                                    cellHTML += '<br><small style="color: #666;">📎 ' + t.fileName.substring(0, 15) + '</small>';
+                                }
+                                if (fileChecked) {
+                                    if (percentage > 0) {
+                                        totalWeightedScore += percentage;
+                                        totalPercentage += percentage;
+                                        puntos++;
+                                    } else {
+                                        formativeComplete++;
+                                        formativeTotal++;
+                                    }
+                                } else {
+                                    if (percentage > 0) totalPercentage += percentage;
+                                    else formativeTotal++;
+                                }
+                                break;
+                        }
+                    }
+                    
+                    cellHTML += '</td>';
+                    bodyHTML += cellHTML;
                 });
 
-                const max = courseTasks.length || 1;
-                const nota = max > 0 ? (1 + (puntos/max)*6).toFixed(1) : '1.0';
-                bodyHTML += '<td class="col-puntos">' + puntos + '</td>';
-                bodyHTML += '<td class="col-nota">' + nota + '</td>';
+                // Calcular nota basada en porcentajes
+                let nota = '1.0';
+                if (totalPercentage > 0) {
+                    // Si hay evaluaciones con porcentaje, calcular proporcionalmente
+                    const scorePercentage = (totalWeightedScore / totalPercentage) * 100;
+                    nota = (1 + (scorePercentage / 100) * 6).toFixed(1);
+                } else {
+                    // Si todas son formativas, usar el método anterior
+                    const max = courseTasks.length || 1;
+                    nota = max > 0 ? (1 + (puntos/max)*6).toFixed(1) : '1.0';
+                }
+
+                // Mostrar puntos con información adicional
+                let puntosDisplay = puntos + '';
+                if (formativeTotal > 0) {
+                    puntosDisplay += '<br><small style="color: #666; font-size: 10px;">(' + formativeComplete + '/' + formativeTotal + ' form.)</small>';
+                }
+
+                bodyHTML += '<td class="col-puntos">' + puntosDisplay + '</td>';
+                bodyHTML += '<td class="col-nota"><strong>' + nota + '</strong></td>';
                 bodyHTML += '<td class="col-acciones"><button class="btn-small" onclick="editStudent(\'' + st.id + '\')">Editar</button></td>';
                 bodyHTML += '</tr>';
             });
@@ -1820,14 +2016,91 @@ ASCENCIO ROZAS MAXIMO MARIANO
             if (!courseActual) { alert('Seleccione un curso primero'); return; }
             document.getElementById('oaPreview').style.display = 'none';
             document.getElementById('taskModal').classList.add('active');
+            updateTaskTypeOptions(); // Inicializar opciones
+            calculateTotalPercentage(); // Mostrar total actual
         }
+
+        function updateTaskTypeOptions() {
+            const taskType = document.getElementById('taskType').value;
+            const fileSection = document.getElementById('fileAttachmentSection');
+            
+            // Mostrar sección de archivo solo para checklist y rubric
+            if (taskType === 'checklist' || taskType === 'rubric') {
+                fileSection.style.display = 'block';
+            } else {
+                fileSection.style.display = 'none';
+            }
+        }
+
+        async function calculateTotalPercentage() {
+            const tasks = await getAllData('tasks');
+            const courseTasks = tasks.filter(t => t.courseId === courseActual);
+            
+            let total = 0;
+            courseTasks.forEach(t => {
+                total += parseFloat(t.percentage || 0);
+            });
+
+            const currentPercentage = parseFloat(document.getElementById('taskPercentage').value || 0);
+            const newTotal = total + currentPercentage;
+            
+            const warningDiv = document.getElementById('percentageWarning');
+            const warningText = document.getElementById('percentageWarningText');
+            
+            if (newTotal > 100) {
+                warningDiv.style.display = 'block';
+                warningDiv.style.background = '#f8d7da';
+                warningDiv.style.borderColor = '#dc3545';
+                warningText.innerHTML = `El total sería ${newTotal}% (excede el 100%). Ya tienes ${total}% asignado.`;
+            } else if (newTotal < 100 && currentPercentage > 0) {
+                warningDiv.style.display = 'block';
+                warningDiv.style.background = '#d1ecf1';
+                warningDiv.style.borderColor = '#17a2b8';
+                warningText.innerHTML = `Total: ${newTotal}% de 100%. Quedan ${(100 - newTotal)}% por asignar.`;
+            } else if (newTotal === 100) {
+                warningDiv.style.display = 'block';
+                warningDiv.style.background = '#d4edda';
+                warningDiv.style.borderColor = '#28a745';
+                warningText.innerHTML = `✓ Perfecto! Total: 100% de 100%`;
+            } else {
+                warningDiv.style.display = 'none';
+            }
+        }
+
+        // Agregar listener para calcular porcentaje en tiempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            const percentageInput = document.getElementById('taskPercentage');
+            if (percentageInput) {
+                percentageInput.addEventListener('input', calculateTotalPercentage);
+            }
+        });
 
         async function saveTask() {
             const name = document.getElementById('taskName').value;
             const date = document.getElementById('taskDate').value;
             const oa = document.getElementById('taskOA').value;
+            const taskType = document.getElementById('taskType').value;
+            const percentage = parseFloat(document.getElementById('taskPercentage').value || 0);
+            const fileInput = document.getElementById('taskFile');
 
-            if (!name) { alert('Ingresa un nombre'); return; }
+            if (!name) { 
+                alert('⚠️ Ingresa un nombre para la evaluación'); 
+                return; 
+            }
+
+            // Validar porcentaje
+            const tasks = await getAllData('tasks');
+            const courseTasks = tasks.filter(t => t.courseId === courseActual);
+            let totalPercentage = 0;
+            courseTasks.forEach(t => {
+                totalPercentage += parseFloat(t.percentage || 0);
+            });
+
+            if (totalPercentage + percentage > 100) {
+                if (!confirm(`⚠️ El total de porcentajes será ${(totalPercentage + percentage).toFixed(1)}% (excede el 100%).\n\n¿Deseas continuar de todos modos?`)) {
+                    return;
+                }
+            }
 
             // Obtener indicadores seleccionados
             const selectedIndicators = [];
@@ -1836,20 +2109,51 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 selectedIndicators.push(parseInt(checkbox.value));
             });
 
+            // Manejar archivo adjunto
+            let fileName = '';
+            if (fileInput && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                fileName = `${Date.now()}_${file.name}`;
+                
+                // Aquí podrías implementar la subida a Firebase Storage o guardar la referencia
+                console.log('Archivo a guardar:', fileName);
+                alert(`📎 Archivo "${file.name}" será guardado en RUBRICAS Y PAUTAS/\n\nNota: La funcionalidad de subida de archivos se implementará en la próxima actualización.`);
+            }
+
+            // Guardar tarea con todos los datos
             await addData('tasks', {
                 courseId: courseActual,
                 name,
                 date: date || '',
                 oa: oa || '',
-                indicators: selectedIndicators, // Guardar índices de indicadores seleccionados
-                gradeType: 'binary'
+                indicators: selectedIndicators,
+                gradeType: taskType, // binary, levels, checklist, rubric
+                percentage: percentage,
+                fileName: fileName,
+                createdAt: new Date().toISOString()
             });
 
+            // Mostrar mensaje de éxito
+            let typeLabel = '';
+            switch(taskType) {
+                case 'binary': typeLabel = 'Sí/No'; break;
+                case 'levels': typeLabel = 'Niveles de Logro'; break;
+                case 'checklist': typeLabel = 'Lista de Cotejo'; break;
+                case 'rubric': typeLabel = 'Rúbrica'; break;
+            }
+
+            alert(`✅ Evaluación creada exitosamente!\n\nTipo: ${typeLabel}\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(Evaluación formativa)' : ''}`);
+
+            // Limpiar formulario
             closeModal('taskModal');
             document.getElementById('taskName').value = '';
             document.getElementById('taskDate').value = '';
             document.getElementById('taskOA').value = '';
+            document.getElementById('taskType').value = 'binary';
+            document.getElementById('taskPercentage').value = '0';
             document.getElementById('oaPreview').style.display = 'none';
+            if (fileInput) fileInput.value = '';
+            
             loadPlanilla();
         }
 
@@ -2256,12 +2560,27 @@ ASCENCIO ROZAS MAXIMO MARIANO
                             const existing = evalMap.get(t.id + ':' + st.id);
                             if (existing && existing.value) completed++;
                         });
+                        
+                        const gradeType = t.gradeType || 'binary';
+                        const typeLabel = {
+                            'binary': 'Sí/No',
+                            'levels': 'Niveles de Logro',
+                            'checklist': 'Lista de Cotejo',
+                            'rubric': 'Rúbrica'
+                        }[gradeType];
+                        
+                        const percentage = parseFloat(t.percentage || 0);
+                        const isFormative = percentage === 0;
+                        
                         stats.taskCompletion.push({
                             name: t.name,
                             oa: t.oa,
                             completed: completed,
                             total: courseStudents.length,
-                            percentage: ((completed/courseStudents.length)*100).toFixed(0)
+                            percentage: ((completed/courseStudents.length)*100).toFixed(0),
+                            gradeType: typeLabel,
+                            weight: isFormative ? 'Formativa (0%)' : percentage + '%',
+                            isFormative: isFormative
                         });
                     });
 
@@ -2274,7 +2593,9 @@ DATOS DEL CURSO:
 - Estudiantes que completaron todas las tareas: ${stats.studentsCompletedAll}
 
 DESEMPEÑO POR TAREA:
-${stats.taskCompletion.map(t => `- ${t.name} (${t.oa || 'Sin OA'}): ${t.completed}/${t.total} estudiantes (${t.percentage}%)`).join('\n')}
+${stats.taskCompletion.map(t => `- ${t.name} [${t.gradeType}] - ${t.weight}
+  OA: ${t.oa || 'Sin OA'}
+  Logro: ${t.completed}/${t.total} estudiantes (${t.percentage}%)${t.isFormative ? ' [FORMATIVA]' : ''}`).join('\n')}
 
 ANÁLISIS POR OBJETIVOS DE APRENDIZAJE:
 ${Object.keys(stats.oaAnalysis).map(oa => {
@@ -2302,14 +2623,58 @@ El informe debe ser profesional, específico y orientado a la mejora pedagógica
                     let studentTasks = [];
                     let oaProgress = {};
 
+                    let totalWeightedScore = 0;
+                    let totalPercentage = 0;
+                    
                     courseTasks.forEach(t => {
                         const existing = evalMap.get(t.id + ':' + studentId);
-                        const completed = existing ? !!existing.value : false;
+                        const gradeType = t.gradeType || 'binary';
+                        let completed = false;
+                        let level = '';
+                        
+                        // Determinar si está completado según el tipo
+                        if (gradeType === 'levels') {
+                            level = existing ? (existing.value || '') : '';
+                            completed = level !== '';
+                        } else {
+                            completed = existing ? !!existing.value : false;
+                        }
+                        
+                        const typeLabel = {
+                            'binary': 'Sí/No',
+                            'levels': 'Niveles de Logro',
+                            'checklist': 'Lista de Cotejo',
+                            'rubric': 'Rúbrica'
+                        }[gradeType];
+                        
+                        const percentage = parseFloat(t.percentage || 0);
+                        const isFormative = percentage === 0;
+                        
+                        // Calcular puntuación ponderada
+                        if (percentage > 0) {
+                            totalPercentage += percentage;
+                            if (gradeType === 'levels' && level) {
+                                const levelScores = {
+                                    'Insuficiente': 0.25,
+                                    'Elemental': 0.5,
+                                    'Adecuado': 0.75,
+                                    'Destacado': 1
+                                };
+                                totalWeightedScore += (percentage * (levelScores[level] || 0));
+                            } else if (completed) {
+                                totalWeightedScore += percentage;
+                            }
+                        }
+                        
                         studentTasks.push({
                             name: t.name,
                             oa: t.oa,
                             date: t.date,
-                            completed: completed
+                            completed: completed,
+                            gradeType: typeLabel,
+                            weight: isFormative ? 'Formativa (0%)' : percentage + '%',
+                            level: level,
+                            isFormative: isFormative
                         });
 
                         if (t.oa) {
@@ -2321,7 +2686,15 @@ El informe debe ser profesional, específico y orientado a la mejora pedagógica
 
                     const completedCount = studentTasks.filter(t => t.completed).length;
                     const completionRate = ((completedCount / courseTasks.length) * 100).toFixed(0);
-                    const nota = (1 + (completedCount/courseTasks.length)*6).toFixed(1);
+                    
+                    // Calcular nota con ponderación
+                    let nota = '1.0';
+                    if (totalPercentage > 0) {
+                        const scorePercentage = (totalWeightedScore / totalPercentage) * 100;
+                        nota = (1 + (scorePercentage / 100) * 6).toFixed(1);
+                    } else {
+                        nota = (1 + (completedCount/courseTasks.length)*6).toFixed(1);
+                    }
 
                     prompt = `Como docente tutor, genera un reporte individual de retroalimentación constructiva para el estudiante ${student.firstNames} ${student.lastNames} en el curso "${course?.name || 'Lenguaje'}".
 
@@ -2333,8 +2706,9 @@ PERFIL DEL ESTUDIANTE:
 - Nota actual: ${nota}
 
 DESEMPEÑO DETALLADO POR TAREA:
-${studentTasks.map(t => `- ${t.name} (${t.oa || 'Sin OA'}) - Fecha: ${t.date || 'Sin fecha'}
-  Estado: ${t.completed ? 'Completado ✓' : 'Pendiente ✗'}`).join('\n')}
+${studentTasks.map(t => `- ${t.name} [${t.gradeType}] - ${t.weight}
+  OA: ${t.oa || 'Sin OA'} | Fecha: ${t.date || 'Sin fecha'}
+  Estado: ${t.completed ? (t.level ? 'Nivel: ' + t.level + ' ✓' : 'Completado ✓') : 'Pendiente ✗'}${t.isFormative ? ' [FORMATIVA]' : ''}`).join('\n')}
 
 PROGRESO POR OBJETIVOS DE APRENDIZAJE:
 ${Object.keys(oaProgress).map(oa => {
