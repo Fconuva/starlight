@@ -297,7 +297,7 @@
         input[type="checkbox"] {
             transform: scale(1.4);
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: #6366f1;
         }
         input[type="text"] {
             padding: 6px 8px;
@@ -308,18 +308,18 @@
         }
         input[type="text"]:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
         .col-puntos {
             font-weight: bold;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #6366f1;
             color: white;
             width: 60px;
         }
         .col-nota {
             font-weight: bold;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: #0ea5e9;
             color: white;
             width: 60px;
         }
@@ -328,7 +328,7 @@
         }
         .btn-small {
             padding: 6px 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #6366f1;
             color: white;
             border: none;
             border-radius: 6px;
@@ -340,14 +340,15 @@
         }
         .btn-small:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            background: #4f46e5;
         }
         .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            background: #ef4444;
         }
         .btn-danger:hover {
-            background: linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%);
-            box-shadow: 0 4px 12px rgba(238, 90, 36, 0.3);
+            background: #dc2626;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
         }
         .student-retirado {
             text-decoration: line-through;
@@ -537,7 +538,7 @@
             padding: 20px;
             background: #f8f9fa;
             border-radius: 10px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #6366f1;
         }
         .report-section h3 {
             color: #333;
@@ -548,7 +549,7 @@
         }
         .report-section h3 i {
             margin-right: 10px;
-            color: #667eea;
+            color: #6366f1;
         }
         .metric-card {
             background: white;
@@ -806,7 +807,7 @@
                 <button class="card-btn" onclick="openAddStudentModal()"><i class="fas fa-user-plus"></i> Agregar Estudiante</button>
                 <button class="card-btn" onclick="openBulkStudentModal()"><i class="fas fa-users"></i> Carga Masiva</button>
                 <button class="card-btn" onclick="openAddTaskModal('simple')"><i class="fas fa-tasks"></i> Agregar Tarea</button>
-                <button class="card-btn" onclick="openAddTaskModal('evaluation')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><i class="fas fa-clipboard-check"></i> Agregar Evaluación</button>
+                <button class="card-btn" onclick="openAddTaskModal('evaluation')" style="background: #7c3aed;"><i class="fas fa-clipboard-check"></i> Agregar Evaluación</button>
             </div>
         </div>
 
@@ -1814,9 +1815,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 let percentageInfo = '';
                 const percentage = parseFloat(t.percentage || 0);
                 if (percentage > 0) {
-                    percentageInfo = '<br><span style="background: #059669; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">' + percentage + '%</span>';
+                    percentageInfo = '<br><span style="background: #10b981; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">' + percentage + '%</span>';
                 } else {
-                    percentageInfo = '<br><span style="background: #475569; color: white; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 600;">Formativa</span>';
+                    percentageInfo = '<br><span style="background: #64748b; color: white; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 600;">Formativa</span>';
                 }
 
                 let oaInfo = '';
@@ -1852,12 +1853,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     templateInfo = '<br><small style="color: #667eea; font-weight: 600;">📄 ' + t.fileName + '</small>';
                 }
                 
-                oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; margin-right: 3px;">✏️ Editar</button>';
-                oaInfo += '<button class="btn-small" onclick="deleteTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #dc2626; border-color: #dc2626;">🗑️ Eliminar</button>';
+                oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; margin-right: 3px; background: #0891b2; border: none;">✏️ Editar</button>';
+                oaInfo += '<button class="btn-small" onclick="deleteTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #dc2626; border: none;">🗑️ Eliminar</button>';
                 
                 // Si tiene plantilla, agregar botón para evaluar
                 if (t.templateData) {
-                    oaInfo += '<br><button class="btn-small" onclick="openTemplateEvaluation(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #059669; border-color: #059669;">📊 Evaluar</button>';
+                    oaInfo += '<br><button class="btn-small" onclick="openTemplateEvaluation(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #10b981; border: none;">📊 Evaluar</button>';
                 }
                 
                 headerHTML += '<th class="task-header">' + t.name + '<span class="task-subtitle">' + (t.date||'') + '</span>' + typeBadge + percentageInfo + templateInfo + oaInfo + '</th>';
@@ -1963,7 +1964,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                                 const points = parseInt(evalData[`criterion_${idx}`]) || 0;
                                                 score += points;
                                             });
-                                            cellHTML += '<div style="color: #059669; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' pts</div>';
+                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' pts</div>';
                                         } else if (t.gradeType === 'checklist') {
                                             // Contar items completados
                                             maxScore = t.templateData.data.totalItems;
@@ -1974,10 +1975,10 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                                     }
                                                 });
                                             });
-                                            cellHTML += '<div style="color: #059669; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' ✓</div>';
+                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' ✓</div>';
                                         }
                                         
-                                        cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #667eea; color: white; border: none; border-radius: 3px; cursor: pointer;">Ver/Editar</button>';
+                                        cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #0891b2; color: white; border: none; border-radius: 3px; cursor: pointer;">Ver/Editar</button>';
                                         if (percentage > 0) {
                                             totalWeightedScore += percentage;
                                             totalPercentage += percentage;
@@ -1988,7 +1989,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                         }
                                     } else {
                                         cellHTML += '<div style="color: #999; font-size: 16px;">○</div>';
-                                        cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #059669; color: white; border: none; border-radius: 3px; cursor: pointer;">Evaluar</button>';
+                                        cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #10b981; color: white; border: none; border-radius: 3px; cursor: pointer;">Evaluar</button>';
                                         if (percentage > 0) totalPercentage += percentage;
                                         else formativeTotal++;
                                     }
@@ -3957,7 +3958,7 @@ SOLUCIÓN:
             title.textContent = `📊 ${task.name} - ${template.name}`;
 
             let html = `
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #6366f1;">
                     <div style="font-size: 14px; font-weight: 600; color: #667eea; margin-bottom: 8px;">
                         <i class="fas fa-info-circle"></i> ${template.description}
                     </div>
