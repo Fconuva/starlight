@@ -1882,7 +1882,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                     const hasEval = existing && existing.value && existing.value.completed;
                                     if (hasEval) {
                                         cellHTML += '<div style="color: #059669; font-weight: bold; font-size: 18px;">✓</div>';
-                                        cellHTML += '<button onclick="openTemplateEvaluation(\'' + t.id + '\'); setTimeout(() => document.getElementById(\'studentSelector\').value = \'' + st.id + '\'; loadStudentTemplate(\'' + t.id + '\'), 100);" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #667eea; color: white; border: none; border-radius: 3px; cursor: pointer;">Ver/Editar</button>';
+                                        cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #667eea; color: white; border: none; border-radius: 3px; cursor: pointer;">Ver/Editar</button>';
                                         if (percentage > 0) {
                                             totalWeightedScore += percentage;
                                             totalPercentage += percentage;
@@ -1893,7 +1893,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                         }
                                     } else {
                                         cellHTML += '<div style="color: #999; font-size: 16px;">○</div>';
-                                        cellHTML += '<button onclick="openTemplateEvaluation(\'' + t.id + '\'); setTimeout(() => document.getElementById(\'studentSelector\').value = \'' + st.id + '\'; loadStudentTemplate(\'' + t.id + '\'), 100);" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #059669; color: white; border: none; border-radius: 3px; cursor: pointer;">Evaluar</button>';
+                                        cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #059669; color: white; border: none; border-radius: 3px; cursor: pointer;">Evaluar</button>';
                                         if (percentage > 0) totalPercentage += percentage;
                                         else formativeTotal++;
                                     }
@@ -2433,11 +2433,16 @@ ASCENCIO ROZAS MAXIMO MARIANO
             closeModal('taskModal');
             document.getElementById('taskName').value = '';
             document.getElementById('taskDate').value = '';
-            document.getElementById('taskOA').value = '';
             document.getElementById('taskType').value = 'binary';
             document.getElementById('taskPercentage').value = '0';
             document.getElementById('oaPreview').style.display = 'none';
-            if (fileInput) fileInput.value = '';
+            document.getElementById('templatePreview').style.display = 'none';
+            
+            // Limpiar checkboxes de OA
+            document.querySelectorAll('.task-oa-checkbox').forEach(cb => cb.checked = false);
+            
+            // Limpiar radio buttons de plantillas
+            document.querySelectorAll('input[name="predefinedTemplate"]').forEach(rb => rb.checked = false);
             
             loadPlanilla();
         }
@@ -3774,6 +3779,18 @@ SOLUCIÓN:
                 console.error('❌ Error al eliminar tarea:', error);
                 alert(`Error al eliminar la tarea: ${error.message}`);
             }
+        }
+
+        // Función auxiliar para abrir modal y cargar estudiante
+        function openAndLoadTemplate(taskId, studentId) {
+            openTemplateEvaluation(taskId);
+            setTimeout(() => {
+                const studentSelector = document.getElementById('studentSelector');
+                if (studentSelector) {
+                    studentSelector.value = studentId;
+                    loadStudentTemplate(taskId);
+                }
+            }, 200);
         }
 
         async function openTemplateEvaluation(taskId) {
