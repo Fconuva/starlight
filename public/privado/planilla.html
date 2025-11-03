@@ -2569,8 +2569,6 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 case 'rubric': typeLabel = 'Rúbrica'; break;
             }
 
-            alert(`✅ Evaluación creada exitosamente!\n\nTipo: ${typeLabel}\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(Evaluación formativa)' : ''}`);
-
             // Limpiar formulario
             closeModal('taskModal');
             document.getElementById('taskName').value = '';
@@ -2586,7 +2584,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
             // Limpiar radio buttons de plantillas
             document.querySelectorAll('input[name="predefinedTemplate"]').forEach(rb => rb.checked = false);
             
-            loadPlanilla();
+            // Recargar planilla primero
+            await loadPlanilla();
+            console.log('✅ Tarea guardada - Planilla recargada');
+            
+            alert(`✅ Evaluación creada exitosamente!\n\nTipo: ${typeLabel}\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(Evaluación formativa)' : ''}`);
         }
 
         function openReportModal(type) {
@@ -3781,6 +3783,7 @@ SOLUCIÓN:
         async function editTask(taskId) {
             const tasks = await getAllData('tasks');
             const task = tasks.find(t => t.id === taskId);
+            const currentPercentage = parseFloat(task.percentage || 0);
 
             const html = `
                 <div class="form-group">
@@ -3792,6 +3795,14 @@ SOLUCIÓN:
                     <input type="date" id="editTaskDate" value="${task.date || ''}">
                 </div>
                 <div class="form-group">
+                    <label><i class="fas fa-percentage"></i> Porcentaje de la Nota Final:</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" id="editTaskPercentage" min="0" max="100" step="1" value="${currentPercentage}" placeholder="0" style="width: 80px; text-align: center; font-size: 18px; font-weight: bold;">
+                        <span style="font-size: 24px; font-weight: bold; color: #6366f1;">%</span>
+                        <small style="color: #666; flex: 1;">Si es 0%, no afecta la nota final (solo formativa)</small>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label>OA (Objetivo de Aprendizaje):</label>
                     <select id="editTaskOA" onchange="updateEditOAPreview()">
                         <option value="">Sin OA</option>
@@ -3801,14 +3812,14 @@ SOLUCIÓN:
                         <option value="OA11" ${task.oa === 'OA11' ? 'selected' : ''}>OA11 - Aprendizaje autónomo</option>
                     </select>
                 </div>
-                <div id="editOAPreview" style="display: ${task.oa ? 'block' : 'none'}; background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #667eea;">
-                    <div style="font-weight: bold; margin-bottom: 8px; color: #667eea;" id="editOATitle"></div>
+                <div id="editOAPreview" style="display: ${task.oa ? 'block' : 'none'}; background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #6366f1;">
+                    <div style="font-weight: bold; margin-bottom: 8px; color: #6366f1;" id="editOATitle"></div>
                     <div style="font-size: 12px; color: #666; margin-bottom: 10px;" id="editOADescription"></div>
                     <div style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">Indicadores (selecciona los relevantes):</div>
                     <div id="editOAIndicators" style="font-size: 12px;"></div>
                 </div>
                 <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-primary" onclick="saveEditedTask(${taskId})">Guardar Cambios</button>
+                    <button class="modal-btn modal-btn-primary" onclick="saveEditedTask('${taskId}')">Guardar Cambios</button>
                     <button class="modal-btn modal-btn-cancel" onclick="closeModal('editTaskModal')">Cancelar</button>
                 </div>
             `;
@@ -3868,6 +3879,7 @@ SOLUCIÓN:
         async function saveEditedTask(taskId) {
             const name = document.getElementById('editTaskName').value;
             const date = document.getElementById('editTaskDate').value;
+            const percentage = parseFloat(document.getElementById('editTaskPercentage').value || 0);
             const oa = document.getElementById('editTaskOA').value;
 
             if (!name) { alert('Ingresa un nombre'); return; }
@@ -3883,12 +3895,15 @@ SOLUCIÓN:
             const task = tasks.find(t => t.id === taskId);
             task.name = name;
             task.date = date || '';
+            task.percentage = percentage;
             task.oa = oa || '';
             task.indicators = selectedIndicators;
 
             await updateData('tasks', task);
             closeModal('editTaskModal');
-            loadPlanilla();
+            await loadPlanilla();
+            console.log('✅ Tarea editada (incluyendo porcentaje) - Planilla recargada');
+            alert(`✅ Tarea actualizada!\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(Evaluación formativa)' : ''}`);
         }
 
         async function deleteTask(taskId) {
