@@ -955,39 +955,23 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 </select>
             </div>
 
-            <!-- Opciones para archivo adjunto -->
+            <!-- Opciones para plantillas de evaluación -->
             <div id="fileAttachmentSection" style="display: none;" class="form-group">
-                <label><i class="fas fa-paperclip"></i> Selecciona o Adjunta tu Evaluación:</label>
+                <label><i class="fas fa-file-alt"></i> Selecciona una Plantilla de Evaluación:</label>
                 
                 <!-- Opciones predefinidas -->
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px;">
-                    <div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">
-                        <i class="fas fa-file-alt"></i> Plantillas Predefinidas:
-                    </div>
-                    
-                    <div id="predefinedTemplates" style="margin-bottom: 10px;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
+                    <div id="predefinedTemplates">
                         <!-- Se llenarán dinámicamente según el tipo -->
                     </div>
-                    
-                    <div style="text-align: center; margin: 12px 0; color: #666; font-weight: 500;">
-                        — O —
-                    </div>
-                    
-                    <div style="font-weight: bold; margin-bottom: 8px; color: #667eea;">
-                        <i class="fas fa-upload"></i> Adjuntar Archivo Personalizado:
-                    </div>
-                    <input type="file" id="taskFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: block; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%;">
-                    <small style="color: #666; display: block; margin-top: 5px;">
-                        📁 Formatos aceptados: PDF, DOC, DOCX, JPG, PNG
-                    </small>
                 </div>
                 
                 <!-- Preview de la plantilla seleccionada -->
-                <div id="templatePreview" style="display: none; background: white; padding: 12px; border-radius: 6px; border: 2px solid #667eea; margin-top: 10px;">
+                <div id="templatePreview" style="display: none; background: white; padding: 12px; border-radius: 6px; border: 2px solid #667eea; margin-top: 12px;">
                     <div style="font-weight: bold; color: #667eea; margin-bottom: 8px;">
                         <i class="fas fa-eye"></i> Vista previa de la plantilla:
                     </div>
-                    <div id="templatePreviewContent" style="font-size: 12px; color: #333; max-height: 200px; overflow-y: auto;">
+                    <div id="templatePreviewContent" style="font-size: 12px; color: #333; max-height: 250px; overflow-y: auto;">
                     </div>
                 </div>
             </div>
@@ -1007,31 +991,23 @@ ASCENCIO ROZAS MAXIMO MARIANO
             
             <div class="form-group">
                 <label><i class="fas fa-bullseye"></i> OA (Objetivos de Aprendizaje):</label>
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd;">
-                    <div style="margin-bottom: 8px;">
-                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
-                            <input type="checkbox" class="task-oa-checkbox" value="OA3" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                            <span style="font-weight: 500;">OA3 - Comprensión y producción textual</span>
-                        </label>
-                    </div>
-                    <div style="margin-bottom: 8px;">
-                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
-                            <input type="checkbox" class="task-oa-checkbox" value="OA5" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                            <span style="font-weight: 500;">OA5 - Sistema de la lengua española</span>
-                        </label>
-                    </div>
-                    <div style="margin-bottom: 8px;">
-                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
-                            <input type="checkbox" class="task-oa-checkbox" value="OA6" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                            <span style="font-weight: 500;">OA6 - Reflexión sobre el lenguaje</span>
-                        </label>
-                    </div>
-                    <div style="margin-bottom: 0;">
-                        <label style="display: flex; align-items: center; cursor: pointer; padding: 6px; hover:background: #e9ecef; border-radius: 4px;">
-                            <input type="checkbox" class="task-oa-checkbox" value="OA11" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                            <span style="font-weight: 500;">OA11 - Aprendizaje autónomo</span>
-                        </label>
-                    </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #ddd; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        <input type="checkbox" class="task-oa-checkbox" value="OA3" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                        <span style="font-weight: 500; font-size: 13px;">OA3 - Comprensión y producción textual</span>
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        <input type="checkbox" class="task-oa-checkbox" value="OA5" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                        <span style="font-weight: 500; font-size: 13px;">OA5 - Sistema de la lengua española</span>
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        <input type="checkbox" class="task-oa-checkbox" value="OA6" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                        <span style="font-weight: 500; font-size: 13px;">OA6 - Reflexión sobre el lenguaje</span>
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        <input type="checkbox" class="task-oa-checkbox" value="OA11" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
+                        <span style="font-weight: 500; font-size: 13px;">OA11 - Aprendizaje autónomo</span>
+                    </label>
                 </div>
                 <small style="color: #666; display: block; margin-top: 5px;">
                     <i class="fas fa-info-circle"></i> Puedes seleccionar múltiples OA si la tarea aborda varios objetivos
@@ -1058,6 +1034,17 @@ ASCENCIO ROZAS MAXIMO MARIANO
             <button class="close-btn" onclick="closeModal('editTaskModal')">&times;</button>
             <div class="modal-header">Editar Tarea</div>
             <div id="editTaskContent">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EVALUACIÓN CON PLANTILLA -->
+    <div id="templateEvaluationModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="close-btn" onclick="closeModal('templateEvaluationModal')">&times;</button>
+            <div class="modal-header" id="templateEvalTitle"></div>
+            <div id="templateEvalContent" style="max-height: 70vh; overflow-y: auto;">
                 <!-- Contenido dinámico -->
             </div>
         </div>
@@ -1789,9 +1776,21 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 // Badge del tipo de evaluación
                 const typeBadge = '<span style="background: ' + typeBg + '; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; display: inline-block; margin-top: 4px; font-weight: 600;">' + typeIcon + ' ' + typeLabel + '</span>';
                 
+                // Mostrar nombre de plantilla si existe
+                let templateInfo = '';
+                if (t.templateData && t.fileName) {
+                    templateInfo = '<br><small style="color: #667eea; font-weight: 600;">📄 ' + t.fileName + '</small>';
+                }
+                
                 oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; margin-right: 3px;">✏️ Editar</button>';
                 oaInfo += '<button class="btn-small" onclick="deleteTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #dc2626; border-color: #dc2626;">🗑️ Eliminar</button>';
-                headerHTML += '<th class="task-header">' + t.name + '<span class="task-subtitle">' + (t.date||'') + '</span>' + typeBadge + percentageInfo + oaInfo + '</th>';
+                
+                // Si tiene plantilla, agregar botón para evaluar
+                if (t.templateData) {
+                    oaInfo += '<br><button class="btn-small" onclick="openTemplateEvaluation(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #059669; border-color: #059669;">📊 Evaluar</button>';
+                }
+                
+                headerHTML += '<th class="task-header">' + t.name + '<span class="task-subtitle">' + (t.date||'') + '</span>' + typeBadge + percentageInfo + templateInfo + oaInfo + '</th>';
             });
             headerHTML += '<th class="col-puntos">PUNTOS</th><th class="col-nota">NOTA</th><th class="col-acciones">ACCIONES</th>';
             tableHead.innerHTML = headerHTML;
@@ -1877,24 +1876,44 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                 
                             case 'checklist':
                             case 'rubric':
-                                // Lista de Cotejo o Rúbrica (checkbox + ícono de archivo)
-                                const fileChecked = existing ? !!existing.value : false;
-                                cellHTML += '<input type="checkbox" ' + (fileChecked?'checked':'') + ' onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.checked, \'' + gradeType + '\')">';
-                                if (t.fileName) {
-                                    cellHTML += '<br><small style="color: #666;">📎 ' + t.fileName.substring(0, 15) + '</small>';
-                                }
-                                if (fileChecked) {
-                                    if (percentage > 0) {
-                                        totalWeightedScore += percentage;
-                                        totalPercentage += percentage;
-                                        puntos++;
+                                // Lista de Cotejo o Rúbrica con plantilla
+                                if (t.templateData) {
+                                    // Usar plantilla - mostrar estado y botón
+                                    const hasEval = existing && existing.value && existing.value.completed;
+                                    if (hasEval) {
+                                        cellHTML += '<div style="color: #059669; font-weight: bold; font-size: 18px;">✓</div>';
+                                        cellHTML += '<button onclick="openTemplateEvaluation(\'' + t.id + '\'); setTimeout(() => document.getElementById(\'studentSelector\').value = \'' + st.id + '\'; loadStudentTemplate(\'' + t.id + '\'), 100);" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #667eea; color: white; border: none; border-radius: 3px; cursor: pointer;">Ver/Editar</button>';
+                                        if (percentage > 0) {
+                                            totalWeightedScore += percentage;
+                                            totalPercentage += percentage;
+                                            puntos++;
+                                        } else {
+                                            formativeComplete++;
+                                            formativeTotal++;
+                                        }
                                     } else {
-                                        formativeComplete++;
-                                        formativeTotal++;
+                                        cellHTML += '<div style="color: #999; font-size: 16px;">○</div>';
+                                        cellHTML += '<button onclick="openTemplateEvaluation(\'' + t.id + '\'); setTimeout(() => document.getElementById(\'studentSelector\').value = \'' + st.id + '\'; loadStudentTemplate(\'' + t.id + '\'), 100);" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #059669; color: white; border: none; border-radius: 3px; cursor: pointer;">Evaluar</button>';
+                                        if (percentage > 0) totalPercentage += percentage;
+                                        else formativeTotal++;
                                     }
                                 } else {
-                                    if (percentage > 0) totalPercentage += percentage;
-                                    else formativeTotal++;
+                                    // Modo simple sin plantilla (checkbox)
+                                    const fileChecked = existing ? !!existing.value : false;
+                                    cellHTML += '<input type="checkbox" ' + (fileChecked?'checked':'') + ' onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.checked, \'' + gradeType + '\')">';
+                                    if (fileChecked) {
+                                        if (percentage > 0) {
+                                            totalWeightedScore += percentage;
+                                            totalPercentage += percentage;
+                                            puntos++;
+                                        } else {
+                                            formativeComplete++;
+                                            formativeTotal++;
+                                        }
+                                    } else {
+                                        if (percentage > 0) totalPercentage += percentage;
+                                        else formativeTotal++;
+                                    }
                                 }
                                 break;
                         }
@@ -2262,9 +2281,6 @@ ASCENCIO ROZAS MAXIMO MARIANO
             
             content.innerHTML = previewHtml;
             preview.style.display = 'block';
-            
-            // Limpiar el input file cuando se selecciona una plantilla
-            document.getElementById('taskFile').value = '';
         }
 
         async function calculateTotalPercentage() {
@@ -2356,14 +2372,19 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 selectedIndicators[oaKey].push(indicatorIndex);
             });
 
-            // Manejar plantilla predefinida o archivo adjunto
+            // Manejar plantilla predefinida
             let fileName = '';
             let templateId = null;
             let templateData = null;
             
-            // Verificar si se seleccionó una plantilla predefinida
-            const selectedTemplate = document.querySelector('input[name="predefinedTemplate"]:checked');
-            if (selectedTemplate) {
+            // Verificar si se seleccionó una plantilla predefinida (obligatorio para checklist y rubric)
+            if (taskType === 'checklist' || taskType === 'rubric') {
+                const selectedTemplate = document.querySelector('input[name="predefinedTemplate"]:checked');
+                if (!selectedTemplate) {
+                    alert('⚠️ Debes seleccionar una plantilla de evaluación para este tipo de tarea.');
+                    return;
+                }
+                
                 templateId = selectedTemplate.value;
                 const template = evaluationTemplates[taskType].find(t => t.id === templateId);
                 if (template) {
@@ -2373,20 +2394,13 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         type: taskType,
                         data: template
                     };
-                    fileName = `[Plantilla] ${template.name}`;
+                    fileName = template.name;
                     
                     // Si es una plantilla, autocompletar los OAs si no hay ninguno seleccionado
                     if (selectedOAs.length === 0 && template.oas) {
                         template.oas.forEach(oa => selectedOAs.push(oa));
                     }
                 }
-            } 
-            // Si no hay plantilla, verificar archivo personalizado
-            else if (fileInput && fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                fileName = file.name;
-                console.log('📎 Archivo personalizado seleccionado:', fileName);
-                // Nota: La subida real del archivo se puede implementar con Firebase Storage después
             }
 
             // Guardar tarea con todos los datos
@@ -3760,6 +3774,262 @@ SOLUCIÓN:
                 console.error('❌ Error al eliminar tarea:', error);
                 alert(`Error al eliminar la tarea: ${error.message}`);
             }
+        }
+
+        async function openTemplateEvaluation(taskId) {
+            const tasks = await getAllData('tasks');
+            const task = tasks.find(t => t.id === taskId);
+            
+            if (!task || !task.templateData) {
+                alert('Esta tarea no tiene una plantilla de evaluación asociada.');
+                return;
+            }
+
+            const students = await getAllData('students');
+            const courseStudents = students.filter(s => s.courseId === courseActual && !s.retirado);
+            const evalMap = await getEvaluationsMap();
+
+            const template = task.templateData.data;
+            const title = document.getElementById('templateEvalTitle');
+            const content = document.getElementById('templateEvalContent');
+
+            title.textContent = `📊 ${task.name} - ${template.name}`;
+
+            let html = `
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                    <div style="font-size: 14px; font-weight: 600; color: #667eea; margin-bottom: 8px;">
+                        <i class="fas fa-info-circle"></i> ${template.description}
+                    </div>
+                    <div style="font-size: 12px; color: #666;">
+                        <strong>OAs:</strong> ${template.oas.join(', ')}
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 8px;">
+                        <i class="fas fa-user"></i> Selecciona un estudiante:
+                    </label>
+                    <select id="studentSelector" onchange="loadStudentTemplate('${taskId}')" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                        <option value="">-- Seleccionar estudiante --</option>
+                        ${courseStudents.map(st => `<option value="${st.id}">${st.lastNameP} ${st.lastNameM}, ${st.firstNames}</option>`).join('')}
+                    </select>
+                </div>
+                
+                <div id="templateEvalForm" style="display: none;">
+                    <!-- Formulario de evaluación se cargará aquí -->
+                </div>
+            `;
+
+            content.innerHTML = html;
+            document.getElementById('templateEvaluationModal').classList.add('active');
+        }
+
+        async function loadStudentTemplate(taskId) {
+            const studentId = document.getElementById('studentSelector').value;
+            if (!studentId) {
+                document.getElementById('templateEvalForm').style.display = 'none';
+                return;
+            }
+
+            const tasks = await getAllData('tasks');
+            const task = tasks.find(t => t.id === taskId);
+            const template = task.templateData.data;
+            const evalMap = await getEvaluationsMap();
+            const existing = evalMap.get(taskId + ':' + studentId);
+            const existingData = existing ? (existing.templateEvaluation || {}) : {};
+
+            const formDiv = document.getElementById('templateEvalForm');
+            let formHTML = '';
+
+            if (task.gradeType === 'rubric') {
+                formHTML = `
+                    <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                        <div style="font-weight: bold; margin-bottom: 15px; color: #667eea; font-size: 15px;">
+                            📝 Rúbrica de Evaluación
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #667eea; color: white;">
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Criterio</th>
+                                    <th style="padding: 10px; text-align: center; border: 1px solid #ddd; width: 120px;">Puntos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                template.criteria.forEach((criterion, idx) => {
+                    const currentValue = existingData[`criterion_${idx}`] || '';
+                    formHTML += `
+                        <tr style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 10px; border: 1px solid #ddd;">
+                                <strong>${criterion.name}</strong>
+                            </td>
+                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">
+                                <select id="criterion_${idx}" data-max="${criterion.maxPoints}" style="width: 80px; padding: 5px;">
+                                    <option value="">-</option>
+                                    ${Array.from({length: criterion.maxPoints + 1}, (_, i) => i).map(p => 
+                                        `<option value="${p}" ${currentValue == p ? 'selected' : ''}>${p}</option>`
+                                    ).join('')}
+                                </select>
+                                <small style="color: #666; display: block;">/ ${criterion.maxPoints}</small>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                formHTML += `
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 6px; text-align: right;">
+                            <strong style="font-size: 16px; color: #667eea;">Total: <span id="rubricTotal">0</span> / ${template.totalPoints} puntos</strong>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Observaciones:</label>
+                            <textarea id="templateObservations" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-height: 80px;">${existingData.observations || ''}</textarea>
+                        </div>
+                        <div class="modal-buttons" style="margin-top: 15px;">
+                            <button class="modal-btn modal-btn-primary" onclick="saveTemplateEvaluation('${taskId}', '${studentId}')">
+                                <i class="fas fa-save"></i> Guardar Evaluación
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                formDiv.innerHTML = formHTML;
+                formDiv.style.display = 'block';
+
+                // Agregar listeners para calcular total
+                template.criteria.forEach((_, idx) => {
+                    document.getElementById(`criterion_${idx}`).addEventListener('change', calculateRubricTotal);
+                });
+                calculateRubricTotal();
+
+            } else if (task.gradeType === 'checklist') {
+                formHTML = `
+                    <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                        <div style="font-weight: bold; margin-bottom: 15px; color: #667eea; font-size: 15px;">
+                            📋 Lista de Cotejo
+                        </div>
+                `;
+
+                template.items.forEach((section, secIdx) => {
+                    formHTML += `
+                        <div style="margin-bottom: 20px; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                            <div style="font-weight: bold; margin-bottom: 10px; color: #667eea;">
+                                ${section.section}
+                            </div>
+                    `;
+
+                    section.items.forEach((item, itemIdx) => {
+                        const itemKey = `section_${secIdx}_item_${itemIdx}`;
+                        const isChecked = existingData[itemKey] === true;
+                        formHTML += `
+                            <div style="margin-bottom: 8px; padding: 8px; background: white; border-radius: 4px;">
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="checkbox" id="${itemKey}" ${isChecked ? 'checked' : ''} style="margin-right: 10px; transform: scale(1.3);">
+                                    <span style="font-size: 13px;">${item}</span>
+                                </label>
+                            </div>
+                        `;
+                    });
+
+                    formHTML += '</div>';
+                });
+
+                formHTML += `
+                        <div style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                            <strong style="font-size: 14px; color: #667eea;">Logrados: <span id="checklistTotal">0</span> / ${template.totalItems}</strong>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Observaciones:</label>
+                            <textarea id="templateObservations" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-height: 80px;">${existingData.observations || ''}</textarea>
+                        </div>
+                        <div class="modal-buttons" style="margin-top: 15px;">
+                            <button class="modal-btn modal-btn-primary" onclick="saveTemplateEvaluation('${taskId}', '${studentId}')">
+                                <i class="fas fa-save"></i> Guardar Evaluación
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                formDiv.innerHTML = formHTML;
+                formDiv.style.display = 'block';
+
+                // Agregar listeners para calcular total
+                template.items.forEach((section, secIdx) => {
+                    section.items.forEach((_, itemIdx) => {
+                        const itemKey = `section_${secIdx}_item_${itemIdx}`;
+                        document.getElementById(itemKey).addEventListener('change', calculateChecklistTotal);
+                    });
+                });
+                calculateChecklistTotal();
+            }
+        }
+
+        function calculateRubricTotal() {
+            let total = 0;
+            const selects = document.querySelectorAll('[id^="criterion_"]');
+            selects.forEach(select => {
+                const value = parseInt(select.value) || 0;
+                total += value;
+            });
+            const totalSpan = document.getElementById('rubricTotal');
+            if (totalSpan) totalSpan.textContent = total;
+        }
+
+        function calculateChecklistTotal() {
+            let total = 0;
+            const checkboxes = document.querySelectorAll('[id^="section_"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) total++;
+            });
+            const totalSpan = document.getElementById('checklistTotal');
+            if (totalSpan) totalSpan.textContent = total;
+        }
+
+        async function saveTemplateEvaluation(taskId, studentId) {
+            const tasks = await getAllData('tasks');
+            const task = tasks.find(t => t.id === taskId);
+            const template = task.templateData.data;
+
+            const evaluationData = {
+                observations: document.getElementById('templateObservations').value
+            };
+
+            let completed = false;
+
+            if (task.gradeType === 'rubric') {
+                template.criteria.forEach((_, idx) => {
+                    const select = document.getElementById(`criterion_${idx}`);
+                    evaluationData[`criterion_${idx}`] = select.value;
+                });
+                
+                // Considerar completado si tiene al menos un criterio evaluado
+                completed = Object.keys(evaluationData).some(key => key.startsWith('criterion_') && evaluationData[key] !== '');
+
+            } else if (task.gradeType === 'checklist') {
+                template.items.forEach((section, secIdx) => {
+                    section.items.forEach((_, itemIdx) => {
+                        const itemKey = `section_${secIdx}_item_${itemIdx}`;
+                        const checkbox = document.getElementById(itemKey);
+                        evaluationData[itemKey] = checkbox.checked;
+                    });
+                });
+                
+                // Considerar completado si tiene al menos un ítem marcado
+                completed = Object.keys(evaluationData).some(key => key.startsWith('section_') && evaluationData[key] === true);
+            }
+
+            // Guardar en Firebase
+            await firebaseDB.upsertEvaluation(taskId, studentId, {
+                completed: completed,
+                templateEvaluation: evaluationData,
+                evaluatedAt: new Date().toISOString()
+            });
+
+            alert('✅ Evaluación guardada correctamente');
+            closeModal('templateEvaluationModal');
+            await loadPlanilla();
         }
 
         // Backup and Restore functions
