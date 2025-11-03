@@ -1854,13 +1854,19 @@ ASCENCIO ROZAS MAXIMO MARIANO
         }
 
         function openReportModal(type) {
-            if (!courseActual) { alert('Seleccione un curso primero'); return; }
-            document.getElementById('reportTitle').textContent = type === 'grupal' ? 'Reporte Grupal' : 'Reporte Individual';
+            if (!courseActual) { 
+                alert('Selecciona un curso primero'); 
+                return; 
+            }
             document.getElementById('reportModal').classList.add('active');
-            loadReport(type);
+            if (type === 'grupal') {
+                showGroupReport();
+            } else {
+                showIndividualReport();
+            }
         }
 
-        async function loadReport(type) {
+        async function showGroupReport() {
             const [courses, students, tasks, evalMap] = await Promise.all([
                 getAllData('courses'),
                 getAllData('students'),
@@ -1874,138 +1880,147 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             let html = '<div class="report-container">';
 
-            if (type === 'grupal') {
-                // Estadísticas del curso
-                let totalPuntos = 0;
-                let estudiantesCompletaron = 0;
-                let tareasCompletadas = 0;
-                let taskStats = [];
+            // Estadísticas del curso
+            let totalPuntos = 0;
+            let estudiantesCompletaron = 0;
+            let tareasCompletadas = 0;
+            let taskStats = [];
 
-                courseStudents.forEach(st => {
-                    let puntosEstudiante = 0;
-                    courseTasks.forEach(t => {
-                        const existing = evalMap.get(t.id + ':' + st.id);
-                        if (existing && existing.value) {
-                            puntosEstudiante++;
-                            tareasCompletadas++;
-                        }
-                    });
-                    totalPuntos += puntosEstudiante;
-                    if (puntosEstudiante === courseTasks.length) estudiantesCompletaron++;
-                });
-
+            courseStudents.forEach(st => {
+                let puntosEstudiante = 0;
                 courseTasks.forEach(t => {
-                    let completaron = 0;
-                    courseStudents.forEach(st => {
-                        const existing = evalMap.get(t.id + ':' + st.id);
-                        if (existing && existing.value) completaron++;
-                    });
-                    const porcentaje = courseStudents.length > 0 ? ((completaron/courseStudents.length)*100).toFixed(0) : '0';
-                    taskStats.push({
-                        name: t.name,
-                        oa: t.oa,
-                        completed: completaron,
-                        total: courseStudents.length,
-                        percentage: porcentaje
-                    });
-                });
-
-                const promedioCurso = courseStudents.length > 0 ? (totalPuntos / courseStudents.length).toFixed(1) : '0.0';
-                const notaPromedio = courseTasks.length > 0 ? (1 + (parseFloat(promedioCurso)/courseTasks.length)*6).toFixed(1) : '1.0';
-
-                html += '<div class="report-header">';
-                html += '<h2><i class="fas fa-chart-bar"></i> Reporte Grupal - ' + (course?.name||'') + '</h2>';
-                html += '<div class="student-info">Análisis de desempeño del curso completo</div>';
-                html += '</div>';
-
-                // Métricas principales
-                html += '<div class="report-section">';
-                html += '<h3><i class="fas fa-tachometer-alt"></i> Métricas Principales</h3>';
-                html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">';
-                html += '<div class="metric-card"><div class="metric-value">' + courseStudents.length + '</div><div class="metric-label">Estudiantes Activos</div></div>';
-                html += '<div class="metric-card"><div class="metric-value">' + courseTasks.length + '</div><div class="metric-label">Tareas Totales</div></div>';
-                html += '<div class="metric-card"><div class="metric-value">' + estudiantesCompletaron + '</div><div class="metric-label">Completaron Todo</div></div>';
-                html += '<div class="metric-card"><div class="metric-value">' + notaPromedio + '</div><div class="metric-label">Nota Promedio</div></div>';
-                html += '</div></div>';
-
-                // Gráfico de desempeño por tarea
-                html += '<div class="report-section">';
-                html += '<h3><i class="fas fa-chart-line"></i> Desempeño por Tarea</h3>';
-                html += '<div class="chart-container"><canvas id="taskChart" width="400" height="200"></canvas></div>';
-                html += '<div style="margin-top: 20px;">';
-                html += '<table style="width: 100%; border-collapse: collapse; margin-top: 15px;">';
-                html += '<thead><tr style="background: #667eea; color: white;"><th style="padding: 10px; text-align: left;">Tarea</th><th style="padding: 10px;">OA</th><th style="padding: 10px;">Completaron</th><th style="padding: 10px;">%</th></tr></thead><tbody>';
-                taskStats.forEach(t => {
-                    html += '<tr><td style="padding: 8px; border-bottom: 1px solid #eee;">' + t.name + '</td><td style="padding: 8px; border-bottom: 1px solid #eee;">' + (t.oa||'-') + '</td><td style="padding: 8px; border-bottom: 1px solid #eee;">' + t.completed + '/' + t.total + '</td><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>' + t.percentage + '%</strong></td></tr>';
-                });
-                html += '</tbody></table></div></div>';
-
-                // Análisis por OA
-                const oaStats = {};
-                taskStats.forEach(t => {
-                    if (t.oa) {
-                        if (!oaStats[t.oa]) oaStats[t.oa] = { total: 0, completed: 0 };
-                        oaStats[t.oa].total++;
-                        if (t.percentage >= 70) oaStats[t.oa].completed++;
+                    const existing = evalMap.get(t.id + ':' + st.id);
+                    if (existing && existing.value) {
+                        puntosEstudiante++;
+                        tareasCompletadas++;
                     }
                 });
+                totalPuntos += puntosEstudiante;
+                if (puntosEstudiante === courseTasks.length) estudiantesCompletaron++;
+            });
 
-                if (Object.keys(oaStats).length > 0) {
-                    html += '<div class="report-section">';
-                    html += '<h3><i class="fas fa-bullseye"></i> Progreso por Objetivos de Aprendizaje</h3>';
-                    html += '<div class="oa-progress">';
-                    Object.keys(oaStats).forEach(oa => {
-                        const stat = oaStats[oa];
-                        const percentage = stat.total > 0 ? ((stat.completed/stat.total)*100).toFixed(0) : 0;
-                        const oaInfo = oaData[oa];
-                        html += '<div class="oa-card">';
-                        html += '<h4>' + oa + ' - ' + (oaInfo?.titulo || 'Sin título') + '</h4>';
-                        html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">';
-                        html += '<span>Tareas logradas: ' + stat.completed + '/' + stat.total + '</span>';
-                        html += '<span style="font-weight: bold; color: ' + (percentage >= 70 ? '#28a745' : percentage >= 50 ? '#ffc107' : '#dc3545') + ';">' + percentage + '%</span>';
-                        html += '</div></div>';
-                    });
-                    html += '</div></div>';
-                }
-
-                // Botones para IA y PDF
-                document.getElementById('reportButtons').innerHTML = '<button class="btn-ai" onclick="generateAIReport(\'grupal\')"><i class="fas fa-robot"></i> Generar Informe con IA</button><button class="btn-pdf" onclick="downloadPDF(\'grupal\')"><i class="fas fa-download"></i> Descargar PDF</button>';
-
-                // Crear gráfico después de agregar al DOM
-                setTimeout(() => {
-                    createTaskChart(taskStats);
-                }, 100);
-
-            } else {
-                html += '<div class="report-header">';
-                html += '<h2><i class="fas fa-users"></i> Reporte Individual - ' + (course?.name||'') + '</h2>';
-                html += '<div class="student-info">Selecciona un estudiante para ver su análisis detallado</div>';
-                html += '</div>';
-
-                html += '<div class="report-section">';
-                html += '<h3><i class="fas fa-user-graduate"></i> Seleccionar Estudiante</h3>';
-                html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;">';
+            courseTasks.forEach(t => {
+                let completaron = 0;
                 courseStudents.forEach(st => {
-                    let completedTasks = 0;
-                    courseTasks.forEach(t => {
-                        const existing = evalMap.get(t.id + ':' + st.id);
-                        if (existing && existing.value) completedTasks++;
-                    });
-                    const percentage = courseTasks.length > 0 ? ((completedTasks/courseTasks.length)*100).toFixed(0) : '0';
-                    html += '<button class="card-btn" onclick="showStudentDetail(\'' + st.id + '\')" style="text-align: left; padding: 15px;">';
-                    html += '<div style="font-weight: bold;">' + st.firstNames + ' ' + st.lastNames + '</div>';
-                    html += '<div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">Completado: ' + completedTasks + '/' + courseTasks.length + ' (' + percentage + '%)</div>';
-                    html += '</button>';
+                    const existing = evalMap.get(t.id + ':' + st.id);
+                    if (existing && existing.value) completaron++;
+                });
+                const porcentaje = courseStudents.length > 0 ? ((completaron/courseStudents.length)*100).toFixed(0) : '0';
+                taskStats.push({
+                    name: t.name,
+                    oa: t.oa,
+                    completed: completaron,
+                    total: courseStudents.length,
+                    percentage: porcentaje
+                });
+            });
+
+            const promedioCurso = courseStudents.length > 0 ? (totalPuntos / courseStudents.length).toFixed(1) : '0.0';
+            const notaPromedio = courseTasks.length > 0 ? (1 + (parseFloat(promedioCurso)/courseTasks.length)*6).toFixed(1) : '1.0';
+
+            html += '<div class="report-header">';
+            html += '<h2><i class="fas fa-chart-bar"></i> Reporte Grupal - ' + (course?.name||'') + '</h2>';
+            html += '<div class="student-info">Análisis de desempeño del curso completo</div>';
+            html += '</div>';
+
+            // Métricas principales
+            html += '<div class="report-section">';
+            html += '<h3><i class="fas fa-tachometer-alt"></i> Métricas Principales</h3>';
+            html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">';
+            html += '<div class="metric-card"><div class="metric-value">' + courseStudents.length + '</div><div class="metric-label">Estudiantes Activos</div></div>';
+            html += '<div class="metric-card"><div class="metric-value">' + courseTasks.length + '</div><div class="metric-label">Tareas Totales</div></div>';
+            html += '<div class="metric-card"><div class="metric-value">' + estudiantesCompletaron + '</div><div class="metric-label">Completaron Todo</div></div>';
+            html += '<div class="metric-card"><div class="metric-value">' + notaPromedio + '</div><div class="metric-label">Nota Promedio</div></div>';
+            html += '</div></div>';
+
+            // Gráfico de desempeño por tarea
+            html += '<div class="report-section">';
+            html += '<h3><i class="fas fa-chart-line"></i> Desempeño por Tarea</h3>';
+            html += '<div class="chart-container"><canvas id="taskChart" width="400" height="200"></canvas></div>';
+            html += '<div style="margin-top: 20px;">';
+            html += '<table style="width: 100%; border-collapse: collapse; margin-top: 15px;">';
+            html += '<thead><tr style="background: #667eea; color: white;"><th style="padding: 10px; text-align: left;">Tarea</th><th style="padding: 10px;">OA</th><th style="padding: 10px;">Completaron</th><th style="padding: 10px;">%</th></tr></thead><tbody>';
+            taskStats.forEach(t => {
+                html += '<tr><td style="padding: 8px; border-bottom: 1px solid #eee;">' + t.name + '</td><td style="padding: 8px; border-bottom: 1px solid #eee;">' + (t.oa||'-') + '</td><td style="padding: 8px; border-bottom: 1px solid #eee;">' + t.completed + '/' + t.total + '</td><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>' + t.percentage + '%</strong></td></tr>';
+            });
+            html += '</tbody></table></div></div>';
+
+            // Análisis por OA
+            const oaStats = {};
+            taskStats.forEach(t => {
+                if (t.oa) {
+                    if (!oaStats[t.oa]) oaStats[t.oa] = { total: 0, completed: 0 };
+                    oaStats[t.oa].total++;
+                    if (t.percentage >= 70) oaStats[t.oa].completed++;
+                }
+            });
+
+            if (Object.keys(oaStats).length > 0) {
+                html += '<div class="report-section">';
+                html += '<h3><i class="fas fa-bullseye"></i> Progreso por Objetivos de Aprendizaje</h3>';
+                html += '<div class="oa-progress">';
+                Object.keys(oaStats).forEach(oa => {
+                    const stat = oaStats[oa];
+                    const percentage = stat.total > 0 ? ((stat.completed/stat.total)*100).toFixed(0) : 0;
+                    const oaInfo = oaData[oa];
+                    html += '<div class="oa-card">';
+                    html += '<h4>' + oa + ' - ' + (oaInfo?.titulo || 'Sin título') + '</h4>';
+                    html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">';
+                    html += '<span>Tareas logradas: ' + stat.completed + '/' + stat.total + '</span>';
+                    html += '<span style="font-weight: bold; color: ' + (percentage >= 70 ? '#28a745' : percentage >= 50 ? '#ffc107' : '#dc3545') + ';">' + percentage + '%</span>';
+                    html += '</div></div>';
                 });
                 html += '</div></div>';
-
-            html += '</div></div>';
             }
 
             html += '<div class="action-buttons">';
-            html += '<button class="btn-ai" onclick="generateAIReport(\'estudiantes\')"><i class="fas fa-robot"></i> Análisis General con IA</button>';
+            html += '<button class="btn-ai" onclick="generateAIReport(\'grupal\')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
             html += '<button class="btn-pdf" onclick="downloadPDF(\'grupal\')"><i class="fas fa-download"></i> Descargar PDF</button>';
             html += '</div>';
+
+            html += '</div>';
+            document.getElementById('reportContent').innerHTML = html;
+
+            // Crear gráfico después de agregar al DOM
+            setTimeout(() => {
+                createTaskChart(taskStats);
+            }, 100);
+        }
+
+        async function showIndividualReport() {
+            const [courses, students, tasks, evalMap] = await Promise.all([
+                getAllData('courses'),
+                getAllData('students'),
+                getAllData('tasks'),
+                getEvaluationsMap()
+            ]);
+
+            const course = courses.find(c => c.id === courseActual);
+            const courseStudents = students.filter(s => s.courseId === courseActual && !s.retirado);
+            const courseTasks = tasks.filter(t => t.courseId === courseActual);
+
+            let html = '<div class="report-container">';
+            html += '<div class="report-header">';
+            html += '<h2><i class="fas fa-users"></i> Reporte Individual - ' + (course?.name||'') + '</h2>';
+            html += '<div class="student-info">Selecciona un estudiante para ver su análisis detallado</div>';
+            html += '</div>';
+
+            html += '<div class="report-section">';
+            html += '<h3><i class="fas fa-user-graduate"></i> Seleccionar Estudiante</h3>';
+            html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;">';
+            courseStudents.forEach(st => {
+                let completedTasks = 0;
+                courseTasks.forEach(t => {
+                    const existing = evalMap.get(t.id + ':' + st.id);
+                    if (existing && existing.value) completedTasks++;
+                });
+                const percentage = courseTasks.length > 0 ? ((completedTasks/courseTasks.length)*100).toFixed(0) : '0';
+                html += '<button class="card-btn" onclick="showStudentDetail(\'' + st.id + '\')" style="text-align: left; padding: 15px;">';
+                html += '<div style="font-weight: bold;">' + st.firstNames + ' ' + st.lastNames + '</div>';
+                html += '<div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">Completado: ' + completedTasks + '/' + courseTasks.length + ' (' + percentage + '%)</div>';
+                html += '</button>';
+            });
+            html += '</div></div>';
 
             html += '</div>';
             document.getElementById('reportContent').innerHTML = html;
@@ -2136,6 +2151,44 @@ ASCENCIO ROZAS MAXIMO MARIANO
             setTimeout(() => {
                 createStudentChart(taskDetails);
             }, 100);
+        }
+
+        // Función para formatear reportes de IA eliminando asteriscos y convirtiendo a HTML limpio
+        function formatAIReport(text) {
+            if (!text) return '';
+
+            // Convertir títulos con asteriscos a encabezados HTML
+            text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+            // Convertir títulos numerados a encabezados
+            text = text.replace(/^(\d+)\.\s+(.+)$/gm, '<h3 class="ai-section-title"><span class="ai-section-number">$1.</span> $2</h3>');
+
+            // Convertir subtítulos con guiones o asteriscos
+            text = text.replace(/^-\s+(.+)$/gm, '<div class="ai-highlight">$1</div>');
+            text = text.replace(/^\*\s+(.+)$/gm, '<div class="ai-highlight">$1</div>');
+
+            // Convertir listas con guiones
+            text = text.replace(/^(\s*)-\s+(.+)$/gm, '$1<li class="ai-list-item">$2</li>');
+            text = text.replace(/(<li class="ai-list-item">.+<\/li>\n?)+/g, '<ul class="ai-list">$&</ul>');
+
+            // Convertir párrafos
+            text = text.replace(/\n\n/g, '</p><p>');
+            text = '<p>' + text + '</p>';
+
+            // Limpiar párrafos vacíos
+            text = text.replace(/<p><\/p>/g, '');
+            text = text.replace(/<p>\s*<h3/g, '<h3');
+            text = text.replace(/<\/h3>\s*<\/p>/g, '</h3>');
+            text = text.replace(/<p>\s*<ul/g, '<ul');
+            text = text.replace(/<\/ul>\s*<\/p>/g, '</ul>');
+            text = text.replace(/<p>\s*<div/g, '<div');
+            text = text.replace(/<\/div>\s*<\/p>/g, '</div>');
+
+            // Limpiar saltos de línea innecesarios
+            text = text.replace(/\n/g, '');
+
+            return text;
         }
 
         async function generateAIReport(type, studentId = null) {
@@ -2410,9 +2463,10 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                 console.log(`✅ Informe generado con: ${usedProvider}`);
 
                 // Mostrar el informe generado
-                let reportHtml = '<div class="feedback-section">';
-                reportHtml += `<h3><i class="fas fa-robot"></i> Informe IA - Generado con ${usedProvider}</h3>`;
-                reportHtml += '<div style="line-height: 1.6; white-space: pre-wrap; background: white; padding: 20px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #333;">' + aiReport + '</div>';
+                let formattedReport = formatAIReport(aiReport);
+                let reportHtml = '<div class="ai-report-container">';
+                reportHtml += `<div class="ai-report-header"><i class="fas fa-robot"></i> Informe IA - Generado con ${usedProvider}</div>`;
+                reportHtml += '<div class="ai-report-content">' + formattedReport + '</div>';
                 reportHtml += '</div>';
 
                 document.getElementById('reportContent').innerHTML += reportHtml;
@@ -2558,136 +2612,342 @@ SOLUCIÓN:
         }
 
         async function downloadPDF(type, studentId = null) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            // Mostrar indicador de carga
+            const loadingModal = document.createElement('div');
+            loadingModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;';
+            loadingModal.innerHTML = '<div style="text-align: center;"><i class="fas fa-file-pdf" style="font-size: 48px; margin-bottom: 20px;"></i><br>Generando PDF profesional...<br><small style="opacity: 0.8;">Capturando gráficos e informe IA</small></div>';
+            document.body.appendChild(loadingModal);
 
-            const [courses, students, tasks, evalMap] = await Promise.all([
-                getAllData('courses'),
-                getAllData('students'),
-                getAllData('tasks'),
-                getEvaluationsMap()
-            ]);
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
 
-            const course = courses.find(c => c.id === courseActual);
+                const [courses, students, tasks, evalMap] = await Promise.all([
+                    getAllData('courses'),
+                    getAllData('students'),
+                    getAllData('tasks'),
+                    getEvaluationsMap()
+                ]);
 
-            // Título
+                const course = courses.find(c => c.id === courseActual);
+
+            // Título principal
             doc.setFontSize(20);
             doc.setTextColor(102, 126, 234);
-            doc.text(type === 'grupal' ? 'Reporte Grupal' : 'Reporte Individual', 20, 30);
+            doc.text(type === 'grupal' ? 'Reporte Grupal - ' + (course?.name || '') : 'Reporte Individual - ' + (course?.name || ''), 20, 30);
             doc.setFontSize(12);
             doc.setTextColor(0, 0, 0);
-            doc.text('Curso: ' + (course?.name || ''), 20, 45);
-            doc.text('Fecha: ' + new Date().toLocaleDateString('es-ES'), 20, 55);
+            doc.text('Fecha: ' + new Date().toLocaleDateString('es-ES'), 20, 45);
 
-            let yPosition = 70;
+            let yPosition = 65;
 
             if (type === 'grupal') {
                 const courseStudents = students.filter(s => s.courseId === courseActual && !s.retirado);
                 const courseTasks = tasks.filter(t => t.courseId === courseActual);
 
-                // Estadísticas generales
-                doc.setFontSize(14);
-                doc.setTextColor(102, 126, 234);
-                doc.text('Estadísticas Generales', 20, yPosition);
-                yPosition += 15;
+                // Estadísticas calculadas (igual que en la vista HTML)
+                let totalPuntos = 0;
+                let estudiantesCompletaron = 0;
+                let tareasCompletadas = 0;
+                let taskStats = [];
 
-                doc.setFontSize(10);
-                doc.setTextColor(0, 0, 0);
-                doc.text('Estudiantes activos: ' + courseStudents.length, 20, yPosition);
-                yPosition += 10;
-                doc.text('Tareas totales: ' + courseTasks.length, 20, yPosition);
-                yPosition += 10;
-
-                let totalCompleted = 0;
                 courseStudents.forEach(st => {
+                    let puntosEstudiante = 0;
                     courseTasks.forEach(t => {
                         const existing = evalMap.get(t.id + ':' + st.id);
-                        if (existing && existing.value) totalCompleted++;
+                        if (existing && existing.value) {
+                            puntosEstudiante++;
+                            tareasCompletadas++;
+                        }
+                    });
+                    totalPuntos += puntosEstudiante;
+                    if (puntosEstudiante === courseTasks.length) estudiantesCompletaron++;
+                });
+
+                courseTasks.forEach(t => {
+                    let completaron = 0;
+                    courseStudents.forEach(st => {
+                        const existing = evalMap.get(t.id + ':' + st.id);
+                        if (existing && existing.value) completaron++;
+                    });
+                    const porcentaje = courseStudents.length > 0 ? ((completaron/courseStudents.length)*100).toFixed(0) : '0';
+                    taskStats.push({
+                        name: t.name,
+                        oa: t.oa,
+                        completed: completaron,
+                        total: courseStudents.length,
+                        percentage: porcentaje
                     });
                 });
-                doc.text('Tareas completadas: ' + totalCompleted, 20, yPosition);
+
+                const promedioCurso = courseStudents.length > 0 ? (totalPuntos / courseStudents.length).toFixed(1) : '0.0';
+                const notaPromedio = courseTasks.length > 0 ? (1 + (parseFloat(promedioCurso)/courseTasks.length)*6).toFixed(1) : '1.0';
+
+                // Métricas principales
+                doc.setFontSize(16);
+                doc.setTextColor(102, 126, 234);
+                doc.text('Métricas Principales', 20, yPosition);
+                yPosition += 15;
+
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+                doc.text('• Estudiantes activos: ' + courseStudents.length, 25, yPosition);
+                yPosition += 8;
+                doc.text('• Tareas totales: ' + courseTasks.length, 25, yPosition);
+                yPosition += 8;
+                doc.text('• Estudiantes que completaron todo: ' + estudiantesCompletaron, 25, yPosition);
+                yPosition += 8;
+                doc.text('• Nota promedio del curso: ' + notaPromedio, 25, yPosition);
                 yPosition += 20;
 
-                // Tabla de tareas
-                doc.setFontSize(14);
+                // Desempeño por tarea
+                doc.setFontSize(16);
                 doc.setTextColor(102, 126, 234);
                 doc.text('Desempeño por Tarea', 20, yPosition);
                 yPosition += 15;
 
-                doc.setFontSize(8);
+                doc.setFontSize(9);
                 doc.setTextColor(0, 0, 0);
 
-                courseTasks.forEach(t => {
-                    let completed = 0;
-                    courseStudents.forEach(st => {
-                        const existing = evalMap.get(t.id + ':' + st.id);
-                        if (existing && existing.value) completed++;
-                    });
-                    const percentage = courseStudents.length > 0 ? ((completed/courseStudents.length)*100).toFixed(0) : '0';
-
+                taskStats.forEach(t => {
                     if (yPosition > 270) {
                         doc.addPage();
                         yPosition = 30;
                     }
 
-                    doc.text(t.name, 20, yPosition);
-                    doc.text(completed + '/' + courseStudents.length + ' (' + percentage + '%)', 150, yPosition);
-                    yPosition += 8;
+                    doc.text(t.name + ' (' + (t.oa || 'Sin OA') + ')', 25, yPosition);
+                    doc.text(t.completed + '/' + t.total + ' (' + t.percentage + '%)', 150, yPosition);
+                    yPosition += 7;
                 });
+
+                yPosition += 10;
+
+                // Análisis por OA
+                const oaStats = {};
+                taskStats.forEach(t => {
+                    if (t.oa) {
+                        if (!oaStats[t.oa]) oaStats[t.oa] = { total: 0, completed: 0 };
+                        oaStats[t.oa].total++;
+                        if (t.percentage >= 70) oaStats[t.oa].completed++;
+                    }
+                });
+
+                if (Object.keys(oaStats).length > 0) {
+                    if (yPosition > 250) {
+                        doc.addPage();
+                        yPosition = 30;
+                    }
+
+                    doc.setFontSize(16);
+                    doc.setTextColor(102, 126, 234);
+                    doc.text('Progreso por Objetivos de Aprendizaje', 20, yPosition);
+                    yPosition += 15;
+
+                    doc.setFontSize(10);
+                    doc.setTextColor(0, 0, 0);
+
+                    Object.keys(oaStats).forEach(oa => {
+                        const stat = oaStats[oa];
+                        const percentage = stat.total > 0 ? ((stat.completed/stat.total)*100).toFixed(0) : 0;
+                        const oaInfo = oaData[oa];
+
+                        if (yPosition > 270) {
+                            doc.addPage();
+                            yPosition = 30;
+                        }
+
+                        doc.text(oa + ' - ' + (oaInfo?.titulo || 'Sin título'), 25, yPosition);
+                        yPosition += 7;
+                        doc.text('Tareas logradas: ' + stat.completed + '/' + stat.total + ' (' + percentage + '%)', 30, yPosition);
+                        yPosition += 10;
+                    });
+                }
 
             } else if (studentId) {
                 const student = students.find(s => s.id === studentId);
                 const courseTasks = tasks.filter(t => t.courseId === courseActual);
 
-                doc.setFontSize(14);
+                doc.setFontSize(16);
                 doc.setTextColor(102, 126, 234);
                 doc.text('Estudiante: ' + student.firstNames + ' ' + student.lastNames, 20, yPosition);
                 yPosition += 20;
 
-                let completed = 0;
+                let completedTasks = 0;
+                let taskDetails = [];
+                let oaProgress = {};
+
                 courseTasks.forEach(t => {
                     const existing = evalMap.get(t.id + ':' + studentId);
-                    if (existing && existing.value) completed++;
+                    const completed = existing ? !!existing.value : false;
+                    if (completed) completedTasks++;
+
+                    taskDetails.push({
+                        name: t.name,
+                        oa: t.oa,
+                        date: t.date,
+                        completed: completed
+                    });
+
+                    // Contar progreso por OA
+                    if (t.oa && completed) {
+                        oaProgress[t.oa] = (oaProgress[t.oa] || 0) + 1;
+                    }
                 });
 
-                const percentage = courseTasks.length > 0 ? ((completed/courseTasks.length)*100).toFixed(0) : '0';
-                const nota = courseTasks.length > 0 ? (1 + (completed/courseTasks.length)*6).toFixed(1) : '1.0';
+                const completionRate = courseTasks.length > 0 ? ((completedTasks/courseTasks.length)*100).toFixed(0) : '0';
+                const nota = courseTasks.length > 0 ? (1 + (completedTasks/courseTasks.length)*6).toFixed(1) : '1.0';
 
-                doc.setFontSize(10);
+                // Resumen de desempeño
+                doc.setFontSize(14);
+                doc.setTextColor(102, 126, 234);
+                doc.text('Resumen de Desempeño', 20, yPosition);
+                yPosition += 15;
+
+                doc.setFontSize(11);
                 doc.setTextColor(0, 0, 0);
-                doc.text('Tareas completadas: ' + completed + '/' + courseTasks.length + ' (' + percentage + '%)', 20, yPosition);
-                yPosition += 10;
-                doc.text('Nota final: ' + nota, 20, yPosition);
+                doc.text('• Tareas completadas: ' + completedTasks + '/' + courseTasks.length + ' (' + completionRate + '%)', 25, yPosition);
+                yPosition += 8;
+                doc.text('• Nota final: ' + nota, 25, yPosition);
+                yPosition += 8;
+                doc.text('• OA trabajados: ' + Object.keys(oaProgress).length, 25, yPosition);
                 yPosition += 20;
 
                 // Detalle de tareas
-                doc.setFontSize(12);
+                doc.setFontSize(14);
                 doc.setTextColor(102, 126, 234);
                 doc.text('Detalle de Tareas', 20, yPosition);
                 yPosition += 15;
 
-                doc.setFontSize(8);
+                doc.setFontSize(9);
                 doc.setTextColor(0, 0, 0);
 
-                courseTasks.forEach(t => {
-                    const existing = evalMap.get(t.id + ':' + studentId);
-                    const status = existing && existing.value ? 'Completado' : 'Pendiente';
-
+                taskDetails.forEach(t => {
                     if (yPosition > 270) {
                         doc.addPage();
                         yPosition = 30;
                     }
 
-                    doc.text(t.name, 20, yPosition);
+                    const status = t.completed ? '✓ Completado' : '✗ Pendiente';
+                    doc.text(t.name, 25, yPosition);
                     doc.text(status, 150, yPosition);
-                    if (t.oa) doc.text('OA: ' + t.oa, 20, yPosition + 5);
-                    yPosition += 12;
+                    yPosition += 6;
+                    if (t.oa) {
+                        doc.setFontSize(8);
+                        doc.setTextColor(100, 100, 100);
+                        doc.text('OA: ' + t.oa, 30, yPosition);
+                        doc.setFontSize(9);
+                        doc.setTextColor(0, 0, 0);
+                        yPosition += 6;
+                    }
+                    yPosition += 4;
                 });
+
+                // Progreso por OA
+                if (Object.keys(oaProgress).length > 0) {
+                    if (yPosition > 230) {
+                        doc.addPage();
+                        yPosition = 30;
+                    }
+
+                    doc.setFontSize(14);
+                    doc.setTextColor(102, 126, 234);
+                    doc.text('Logros por Objetivos de Aprendizaje', 20, yPosition);
+                    yPosition += 15;
+
+                    doc.setFontSize(10);
+                    doc.setTextColor(0, 0, 0);
+
+                    Object.keys(oaProgress).forEach(oa => {
+                        const completed = oaProgress[oa];
+                        const oaInfo = oaData[oa];
+                        const totalTasksForOA = courseTasks.filter(t => t.oa === oa).length;
+                        const percentage = totalTasksForOA > 0 ? ((completed/totalTasksForOA)*100).toFixed(0) : 0;
+
+                        if (yPosition > 270) {
+                            doc.addPage();
+                            yPosition = 30;
+                        }
+
+                        doc.text(oa + ' - ' + (oaInfo?.titulo || 'Sin título'), 25, yPosition);
+                        yPosition += 7;
+                        doc.text('Completadas: ' + completed + '/' + totalTasksForOA + ' (' + percentage + '%)', 30, yPosition);
+                        yPosition += 12;
+                    });
+                }
             }
 
-            // Guardar PDF
-            const fileName = type === 'grupal' ? 'reporte_grupal.pdf' : 'reporte_individual.pdf';
-            doc.save(fileName);
+                // Capturar el contenido del reporte como imagen usando html2canvas
+                const reportContent = document.getElementById('reportContent');
+                
+                if (reportContent) {
+                    // Usar html2canvas para capturar TODO el contenido visual
+                    const canvas = await html2canvas(reportContent, {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#ffffff',
+                        windowWidth: reportContent.scrollWidth,
+                        windowHeight: reportContent.scrollHeight
+                    });
+
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 190; // Ancho de la página A4 menos márgenes
+                    const pageHeight = 277; // Alto de la página A4
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = 10;
+
+                    // Agregar portada
+                    doc.setFontSize(22);
+                    doc.setTextColor(102, 126, 234);
+                    doc.text(type === 'grupal' ? 'Reporte Grupal Completo' : 'Reporte Individual Completo', 105, 30, { align: 'center' });
+                    doc.setFontSize(14);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('Curso: ' + (course?.name || ''), 105, 45, { align: 'center' });
+                    doc.setFontSize(12);
+                    doc.text('Fecha: ' + new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), 105, 55, { align: 'center' });
+                    
+                    // Línea decorativa
+                    doc.setDrawColor(102, 126, 234);
+                    doc.setLineWidth(0.5);
+                    doc.line(20, 65, 190, 65);
+
+                    doc.setFontSize(10);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text('Sistema de Evaluación Profesora Javiera Poblete', 105, 75, { align: 'center' });
+                    doc.text('Incluye: Estadísticas • Gráficos • Análisis IA', 105, 82, { align: 'center' });
+
+                    // Agregar primera página del contenido capturado
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+
+                    // Agregar páginas adicionales si el contenido es largo
+                    while (heightLeft > 0) {
+                        position = heightLeft - imgHeight + 10;
+                        doc.addPage();
+                        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                }
+
+                // Guardar PDF
+                const fileName = type === 'grupal' 
+                    ? `reporte_grupal_${course?.name.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+                    : `reporte_individual_${course?.name.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+                
+                doc.save(fileName);
+
+                // Mensaje de éxito
+                alert('✅ PDF generado exitosamente\n\n📊 Incluye:\n• Estadísticas completas\n• Gráficos visuales\n• Informe de IA (si fue generado)\n• Análisis por OA');
+
+            } catch (error) {
+                console.error('Error generando PDF:', error);
+                alert('❌ Error al generar el PDF. Por favor intenta nuevamente.');
+            } finally {
+                // Remover indicador de carga
+                document.body.removeChild(loadingModal);
+            }
         }
 
         async function editTask(taskId) {
