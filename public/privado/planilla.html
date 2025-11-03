@@ -1423,6 +1423,16 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 await migrateToFirebase();
             }
 
+            // Pre-cargar datos en paralelo para caché
+            console.log('⚡ Pre-cargando datos en caché...');
+            const startTime = Date.now();
+            await Promise.all([
+                getAllData('courses'),
+                getAllData('students'),
+                getAllData('tasks')
+            ]);
+            console.log(`✅ Datos pre-cargados en ${Date.now() - startTime}ms`);
+
             await loadCourses();
         });
 
@@ -1606,20 +1616,54 @@ ASCENCIO ROZAS MAXIMO MARIANO
         }
 
         // Database functions (now using Firebase)
-        async function getAllData(storeName) {
-            return await firebaseDB.getAll(storeName);
+        // Sistema de caché para reducir llamadas a Firebase
+        const dataCache = {};
+        const CACHE_DURATION = 30000; // 30 segundos
+
+        async function getAllData(storeName, forceRefresh = false) {
+            const cacheKey = `${docenteActual}_${storeName}`;
+            const now = Date.now();
+            
+            // Si hay caché válido y no se fuerza refresh, usar caché
+            if (!forceRefresh && dataCache[cacheKey] && (now - dataCache[cacheKey].timestamp < CACHE_DURATION)) {
+                console.log(`📦 Usando caché para ${storeName}`);
+                return dataCache[cacheKey].data;
+            }
+            
+            // Si no hay caché o expiró, obtener de Firebase
+            console.log(`🔄 Obteniendo ${storeName} de Firebase`);
+            const data = await firebaseDB.getAll(storeName);
+            
+            // Guardar en caché
+            dataCache[cacheKey] = {
+                data: data,
+                timestamp: now
+            };
+            
+            return data;
+        }
+        
+        // Función para invalidar caché cuando se modifica data
+        function invalidateCache(storeName) {
+            const cacheKey = `${docenteActual}_${storeName}`;
+            delete dataCache[cacheKey];
+            console.log(`🗑️ Caché invalidado para ${storeName}`);
         }
 
         async function addData(storeName, data) {
-            return await firebaseDB.add(storeName, data);
+            const result = await firebaseDB.add(storeName, data);
+            invalidateCache(storeName);
+            return result;
         }
 
         async function deleteData(storeName, id) {
             await firebaseDB.delete(storeName, id);
+            invalidateCache(storeName);
         }
 
         async function updateData(storeName, data) {
             await firebaseDB.update(storeName, data.id, data);
+            invalidateCache(storeName);
         }
 
         async function getEvaluationsMap() {
@@ -1964,7 +2008,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                                 const points = parseInt(evalData[`criterion_${idx}`]) || 0;
                                                 score += points;
                                             });
-                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' pts</div>';
+                                            // Calcular nota (1.0 a 7.0)
+                                            const scorePercentage = (score / maxScore) * 100;
+                                            const nota = (1 + (scorePercentage / 100) * 6).toFixed(1);
+                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 10px;">' + score + '/' + maxScore + ' pts</div>';
+                                            cellHTML += '<div style="color: #6366f1; font-weight: bold; font-size: 11px;">Nota: ' + nota + '</div>';
                                         } else if (t.gradeType === 'checklist') {
                                             // Contar items completados
                                             maxScore = t.templateData.data.totalItems;
@@ -1975,7 +2023,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                                     }
                                                 });
                                             });
-                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' ✓</div>';
+                                            // Calcular nota (1.0 a 7.0)
+                                            const scorePercentage = (score / maxScore) * 100;
+                                            const nota = (1 + (scorePercentage / 100) * 6).toFixed(1);
+                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 10px;">' + score + '/' + maxScore + ' ✓</div>';
+                                            cellHTML += '<div style="color: #6366f1; font-weight: bold; font-size: 11px;">Nota: ' + nota + '</div>';
                                         }
                                         
                                         cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #0891b2; color: white; border: none; border-radius: 3px; cursor: pointer;">Ver/Editar</button>';
@@ -2320,22 +2372,43 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 const templates = evaluationTemplates[taskType] || [];
                 let templatesHtml = '';
                 
-                templates.forEach(template => {
-                    templatesHtml += `
-                        <div style="margin-bottom: 10px;">
-                            <label style="display: flex; align-items: center; cursor: pointer; padding: 12px; background: white; border: 2px solid #ddd; border-radius: 6px; transition: all 0.2s; hover: border-color: #6366f1;">
-                                <input type="radio" name="predefinedTemplate" value="${template.id}" onchange="showTemplatePreview('${taskType}', '${template.id}')" style="margin-right: 12px; margin-top: 0; transform: scale(1.4); flex-shrink: 0;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: #6366f1; margin-bottom: 4px; font-size: 13px;">${template.name}</div>
-                                    <div style="font-size: 11px; color: #64748b; line-height: 1.4;">${template.description}</div>
-                                    <div style="font-size: 10px; color: #94a3b8; margin-top: 6px;">
-                                        <i class="fas fa-bullseye"></i> ${template.oas.join(', ')}
-                                    </div>
-                                </div>
-                            </label>
+                if (templates.length === 1) {
+                    // Si solo hay una plantilla, mostrarla sin radio button y auto-seleccionar
+                    const template = templates[0];
+                    templatesHtml = `
+                        <input type="hidden" name="predefinedTemplate" value="${template.id}" id="autoSelectedTemplate">
+                        <div style="padding: 15px; background: white; border: 2px solid #6366f1; border-radius: 8px; box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <i class="fas fa-check-circle" style="color: #10b981; font-size: 20px; margin-right: 10px;"></i>
+                                <div style="font-weight: 600; color: #6366f1; font-size: 14px;">${template.name}</div>
+                            </div>
+                            <div style="font-size: 12px; color: #64748b; line-height: 1.5; margin-bottom: 8px;">${template.description}</div>
+                            <div style="font-size: 11px; color: #94a3b8;">
+                                <i class="fas fa-bullseye"></i> ${template.oas.join(', ')}
+                            </div>
                         </div>
                     `;
-                });
+                    // Auto-mostrar preview
+                    setTimeout(() => showTemplatePreview(taskType, template.id), 100);
+                } else {
+                    // Si hay múltiples plantillas, mostrar radio buttons
+                    templates.forEach(template => {
+                        templatesHtml += `
+                            <div style="margin-bottom: 10px;">
+                                <label style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; cursor: pointer; padding: 12px; background: white; border: 2px solid #ddd; border-radius: 6px; transition: all 0.2s;">
+                                    <input type="radio" name="predefinedTemplate" value="${template.id}" onchange="showTemplatePreview('${taskType}', '${template.id}')" style="margin-top: 2px; transform: scale(1.4);">
+                                    <div>
+                                        <div style="font-weight: 600; color: #6366f1; margin-bottom: 4px; font-size: 13px;">${template.name}</div>
+                                        <div style="font-size: 11px; color: #64748b; line-height: 1.4;">${template.description}</div>
+                                        <div style="font-size: 10px; color: #94a3b8; margin-top: 6px;">
+                                            <i class="fas fa-bullseye"></i> ${template.oas.join(', ')}
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        `;
+                    });
+                }
                 
                 if (templatesHtml === '') {
                     templatesHtml = '<div style="color: #999; font-style: italic; text-align: center;">No hay plantillas disponibles</div>';
@@ -2521,7 +2594,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
             
             // Verificar si se seleccionó una plantilla predefinida (obligatorio para checklist y rubric)
             if (taskType === 'checklist' || taskType === 'rubric') {
-                const selectedTemplate = document.querySelector('input[name="predefinedTemplate"]:checked');
+                // Buscar tanto radio button como hidden input (para plantilla única)
+                const selectedTemplate = document.querySelector('input[name="predefinedTemplate"]:checked') || 
+                                       document.getElementById('autoSelectedTemplate');
                 if (!selectedTemplate) {
                     alert('⚠️ Debes seleccionar una plantilla de evaluación para este tipo de tarea.');
                     return;
