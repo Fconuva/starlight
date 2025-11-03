@@ -1283,14 +1283,86 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     description: 'Evaluación formativa para obra de títeres (Unidad IV "Poder y ambición")',
                     oas: ['OA5', 'OA6', 'OA11', 'OA14', 'OA15'],
                     criteria: [
-                        { name: 'Guion dramático: coherencia y estructura', maxPoints: 4 },
-                        { name: 'Construcción de personajes', maxPoints: 4 },
-                        { name: 'Creatividad en la propuesta', maxPoints: 4 },
-                        { name: 'Confección de títeres', maxPoints: 4 },
-                        { name: 'Guion técnico y uso de elementos dramáticos', maxPoints: 4 },
-                        { name: 'Redacción y ortografía en el guion', maxPoints: 4 },
-                        { name: 'Trabajo colaborativo', maxPoints: 4 },
-                        { name: 'Responsabilidad y cumplimiento en clases', maxPoints: 4 }
+                        { 
+                            name: 'Guion dramático: coherencia y estructura', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'El guion presenta una estructura clara con inicio, desarrollo, clímax y desenlace perfectamente articulados.',
+                                3: 'El guion tiene estructura clara, aunque alguna etapa puede estar menos desarrollada.',
+                                2: 'La estructura es reconocible pero presenta inconsistencias o etapas poco desarrolladas.',
+                                1: 'La estructura es confusa o carece de coherencia en la secuencia de acciones.'
+                            }
+                        },
+                        { 
+                            name: 'Construcción de personajes', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'Los personajes están plenamente desarrollados con motivaciones claras y evolución coherente.',
+                                3: 'Los personajes están bien construidos, aunque su desarrollo podría profundizarse.',
+                                2: 'Los personajes son básicos, con motivaciones poco claras o estereotipadas.',
+                                1: 'Los personajes carecen de desarrollo o sus acciones son incoherentes.'
+                            }
+                        },
+                        { 
+                            name: 'Creatividad en la propuesta', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'La propuesta es original, innovadora y aporta elementos únicos al tema trabajado.',
+                                3: 'La propuesta muestra creatividad y elementos originales interesantes.',
+                                2: 'La propuesta tiene algunos elementos creativos pero predominan los elementos convencionales.',
+                                1: 'La propuesta es muy básica o carece de originalidad.'
+                            }
+                        },
+                        { 
+                            name: 'Confección de títeres', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'Los títeres están muy bien confeccionados, con detalles cuidados y materiales apropiados.',
+                                3: 'Los títeres están bien hechos y son funcionales para la obra.',
+                                2: 'Los títeres son básicos y su confección presenta deficiencias menores.',
+                                1: 'Los títeres están mal confeccionados o no son adecuados para la representación.'
+                            }
+                        },
+                        { 
+                            name: 'Guion técnico y uso de elementos dramáticos', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'El guion técnico integra acotaciones, iluminación, sonido y otros elementos de forma coherente y efectiva.',
+                                3: 'El guion técnico incluye los elementos principales aunque podría mejorarse la integración.',
+                                2: 'El guion técnico está presente pero incompleto o poco detallado.',
+                                1: 'El guion técnico es muy deficiente o inexistente.'
+                            }
+                        },
+                        { 
+                            name: 'Redacción y ortografía en el guion', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'El guion está impecablemente escrito, sin errores ortográficos ni gramaticales.',
+                                3: 'El guion presenta buena redacción con errores mínimos que no afectan la comprensión.',
+                                2: 'El guion tiene varios errores ortográficos o gramaticales que dificultan la lectura.',
+                                1: 'El guion presenta numerosos errores que impiden una lectura fluida.'
+                            }
+                        },
+                        { 
+                            name: 'Trabajo colaborativo', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'Todos los integrantes participaron activamente, respetándose mutuamente y distribuyendo equitativamente las tareas.',
+                                3: 'El grupo trabajó colaborativamente, aunque la participación no fue completamente equitativa.',
+                                2: 'Hubo trabajo en equipo pero con dificultades de colaboración o distribución de tareas.',
+                                1: 'El trabajo colaborativo fue deficiente, con participación desigual o conflictos.'
+                            }
+                        },
+                        { 
+                            name: 'Responsabilidad y cumplimiento en clases', 
+                            maxPoints: 4,
+                            descriptors: {
+                                4: 'El estudiante/grupo fue totalmente responsable, cumpliendo con todos los plazos y compromisos.',
+                                3: 'Mostró buen nivel de responsabilidad, con cumplimiento en la mayoría de los compromisos.',
+                                2: 'El cumplimiento fue irregular, faltando a algunos compromisos o plazos.',
+                                1: 'Mostró escasa responsabilidad y no cumplió con los compromisos establecidos.'
+                            }
+                        }
                     ],
                     totalPoints: 32,
                     levels: ['Destacado (4)', 'Logrado (3)', 'Medianamente logrado (2)', 'Por Mejorar (1)']
@@ -1881,7 +1953,32 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                     // Usar plantilla - mostrar estado y botón
                                     const hasEval = existing && existing.value && existing.value.completed;
                                     if (hasEval) {
-                                        cellHTML += '<div style="color: #059669; font-weight: bold; font-size: 18px;">✓</div>';
+                                        // Calcular puntaje obtenido
+                                        let score = 0;
+                                        let maxScore = 0;
+                                        const evalData = existing.value.templateEvaluation || {};
+                                        
+                                        if (t.gradeType === 'rubric') {
+                                            // Contar puntos de rúbrica
+                                            t.templateData.data.criteria.forEach((crit, idx) => {
+                                                maxScore += crit.maxPoints;
+                                                const points = parseInt(evalData[`criterion_${idx}`]) || 0;
+                                                score += points;
+                                            });
+                                            cellHTML += '<div style="color: #059669; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' pts</div>';
+                                        } else if (t.gradeType === 'checklist') {
+                                            // Contar items completados
+                                            maxScore = t.templateData.data.totalItems;
+                                            t.templateData.data.items.forEach((section, secIdx) => {
+                                                section.items.forEach((item, itemIdx) => {
+                                                    if (evalData[`section_${secIdx}_item_${itemIdx}`] === true) {
+                                                        score++;
+                                                    }
+                                                });
+                                            });
+                                            cellHTML += '<div style="color: #059669; font-weight: bold; font-size: 11px;">' + score + '/' + maxScore + ' ✓</div>';
+                                        }
+                                        
                                         cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #667eea; color: white; border: none; border-radius: 3px; cursor: pointer;">Ver/Editar</button>';
                                         if (percentage > 0) {
                                             totalWeightedScore += percentage;
@@ -2240,20 +2337,41 @@ ASCENCIO ROZAS MAXIMO MARIANO
             
             if (type === 'rubric') {
                 previewHtml = `
-                    <div style="font-weight: bold; margin-bottom: 8px; color: #333;">
+                    <div style="font-weight: bold; margin-bottom: 12px; color: #333; font-size: 13px;">
                         📊 ${template.name} (${template.totalPoints} puntos)
                     </div>
-                    <div style="margin-bottom: 8px; font-size: 11px; color: #666;">
-                        <strong>Niveles:</strong> ${template.levels.join(' | ')}
+                    <div style="margin-bottom: 12px; padding: 8px; background: #e7f3ff; border-radius: 4px; font-size: 10px; color: #555;">
+                        <strong>Niveles de Evaluación:</strong><br>
+                        ${template.levels.map((level, idx) => {
+                            const colors = ['#28a745', '#17a2b8', '#ffc107', '#dc3545'];
+                            return `<span style="color: ${colors[idx]}; font-weight: bold;">■</span> ${level}`;
+                        }).join(' | ')}
                     </div>
-                    <div style="font-weight: bold; margin-bottom: 6px; font-size: 11px;">Criterios de Evaluación:</div>
+                    <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px; color: #667eea;">Criterios con Indicadores:</div>
                 `;
                 template.criteria.forEach((criterion, idx) => {
                     previewHtml += `
-                        <div style="padding: 4px 0; border-bottom: 1px solid #eee; font-size: 11px;">
-                            ${idx + 1}. ${criterion.name} <span style="color: #667eea; font-weight: bold;">(${criterion.maxPoints} pts)</span>
-                        </div>
+                        <div style="margin-bottom: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #667eea; border-radius: 4px;">
+                            <div style="font-weight: bold; font-size: 11px; margin-bottom: 4px;">
+                                ${idx + 1}. ${criterion.name} <span style="color: #667eea;">(${criterion.maxPoints} pts)</span>
+                            </div>
                     `;
+                    
+                    // Mostrar descriptores si existen
+                    if (criterion.descriptors) {
+                        for (let level = criterion.maxPoints; level >= 1; level--) {
+                            if (criterion.descriptors[level]) {
+                                const bgColor = level === 4 ? '#d4edda' : level === 3 ? '#d1ecf1' : level === 2 ? '#fff3cd' : '#f8d7da';
+                                previewHtml += `
+                                    <div style="font-size: 9px; padding: 4px; margin: 2px 0; background: ${bgColor}; border-radius: 3px;">
+                                        <strong>${level}:</strong> ${criterion.descriptors[level]}
+                                    </div>
+                                `;
+                            }
+                        }
+                    }
+                    
+                    previewHtml += `</div>`;
                 });
             } else if (type === 'checklist') {
                 previewHtml = `
@@ -3828,7 +3946,13 @@ SOLUCIÓN:
                     </label>
                     <select id="studentSelector" onchange="loadStudentTemplate('${taskId}')" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
                         <option value="">-- Seleccionar estudiante --</option>
-                        ${courseStudents.map(st => `<option value="${st.id}">${st.lastNameP} ${st.lastNameM}, ${st.firstNames}</option>`).join('')}
+                        ${courseStudents.map(st => {
+                            const lastName = st.lastNameP || st.apellidoPaterno || '';
+                            const middleName = st.lastNameM || st.apellidoMaterno || '';
+                            const firstName = st.firstNames || st.nombre || st.nombres || 'Sin nombre';
+                            const fullName = lastName && middleName ? `${lastName} ${middleName}, ${firstName}` : firstName;
+                            return `<option value="${st.id}">${fullName}</option>`;
+                        }).join('')}
                     </select>
                 </div>
                 
@@ -3864,34 +3988,40 @@ SOLUCIÓN:
                         <div style="font-weight: bold; margin-bottom: 15px; color: #667eea; font-size: 15px;">
                             📝 Rúbrica de Evaluación
                         </div>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr style="background: #667eea; color: white;">
-                                    <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Criterio</th>
-                                    <th style="padding: 10px; text-align: center; border: 1px solid #ddd; width: 120px;">Puntos</th>
-                                </tr>
-                            </thead>
-                            <tbody>
                 `;
 
                 template.criteria.forEach((criterion, idx) => {
                     const currentValue = existingData[`criterion_${idx}`] || '';
                     formHTML += `
-                        <tr style="border-bottom: 1px solid #ddd;">
-                            <td style="padding: 10px; border: 1px solid #ddd;">
-                                <strong>${criterion.name}</strong>
-                            </td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">
-                                <select id="criterion_${idx}" data-max="${criterion.maxPoints}" style="width: 80px; padding: 5px;">
-                                    <option value="">-</option>
+                        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <strong style="color: #333; font-size: 14px;">${criterion.name}</strong>
+                                <select id="criterion_${idx}" data-max="${criterion.maxPoints}" style="width: 100px; padding: 8px; font-size: 14px; border: 2px solid #667eea; border-radius: 6px; font-weight: bold;">
+                                    <option value="">Seleccionar</option>
                                     ${Array.from({length: criterion.maxPoints + 1}, (_, i) => i).map(p => 
-                                        `<option value="${p}" ${currentValue == p ? 'selected' : ''}>${p}</option>`
+                                        `<option value="${p}" ${currentValue == p ? 'selected' : ''}>${p} / ${criterion.maxPoints}</option>`
                                     ).join('')}
                                 </select>
-                                <small style="color: #666; display: block;">/ ${criterion.maxPoints}</small>
-                            </td>
-                        </tr>
+                            </div>
                     `;
+
+                    // Agregar descriptores si existen
+                    if (criterion.descriptors) {
+                        formHTML += `<div style="margin-top: 10px; font-size: 12px;">`;
+                        for (let level = criterion.maxPoints; level >= 1; level--) {
+                            if (criterion.descriptors[level]) {
+                                const bgColor = level === 4 ? '#d4edda' : level === 3 ? '#d1ecf1' : level === 2 ? '#fff3cd' : '#f8d7da';
+                                formHTML += `
+                                    <div style="margin-bottom: 6px; padding: 8px; background: ${bgColor}; border-radius: 4px;">
+                                        <strong>${level} puntos:</strong> ${criterion.descriptors[level]}
+                                    </div>
+                                `;
+                            }
+                        }
+                        formHTML += `</div>`;
+                    }
+
+                    formHTML += `</div>`;
                 });
 
                 formHTML += `
