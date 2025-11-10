@@ -3,7 +3,7 @@
 
 const GEMINI_MODEL = 'gemini-2.0-flash-exp';
 const OPENAI_MODEL = 'gpt-3.5-turbo';
-const HF_MODEL = 'mistralai/Mixtral-8x7B-Instruct-v0.1';
+const HF_MODEL = 'microsoft/Phi-3-mini-4k-instruct'; // Modelo actualizado y activo
 
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
