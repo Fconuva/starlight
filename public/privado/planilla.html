@@ -214,26 +214,37 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
-            overflow-y: visible;
+            overflow-x: scroll !important;
+            overflow-y: auto;
             position: relative;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
         
         /* Scroll horizontal mejorado */
         .table-wrapper::-webkit-scrollbar {
-            height: 14px;
+            height: 16px;
+            display: block !important;
         }
         .table-wrapper::-webkit-scrollbar-track {
             background: #e2e8f0;
-            border-radius: 7px;
+            border-radius: 8px;
+            margin: 0 10px;
         }
         .table-wrapper::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 7px;
+            border-radius: 8px;
             border: 3px solid #e2e8f0;
+            min-width: 60px;
         }
         .table-wrapper::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+        
+        /* Firefox scroll */
+        .table-wrapper {
+            scrollbar-width: auto;
+            scrollbar-color: #667eea #e2e8f0;
         }
         
         /* Indicador de scroll */
@@ -262,6 +273,40 @@
         @keyframes pulse-scroll {
             0%, 100% { opacity: 0.9; transform: translateY(-50%) translateX(0); }
             50% { opacity: 1; transform: translateY(-50%) translateX(-8px); }
+        }
+        
+        /* Botones de navegación de scroll */
+        .scroll-nav-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        .scroll-nav-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .scroll-nav-btn.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .scroll-nav-btn.left {
+            left: 20px;
+        }
+        .scroll-nav-btn.right {
+            right: 20px;
         }
         
         /* Columnas fijas al hacer scroll horizontal */
@@ -310,10 +355,19 @@
         }
         
         table {
-            width: 100%;
+            width: max-content;
+            min-width: 100%;
             border-collapse: collapse;
             font-size: 13px;
+            table-layout: fixed;
         }
+        
+        /* Ancho de columnas de tareas */
+        .task-header {
+            min-width: 180px !important;
+            width: 180px;
+        }
+        
         th, td {
             border: 1px solid #e1e5e9;
             padding: 12px 8px;
@@ -921,6 +975,14 @@
                 </span>
                 <span id="meta" style="margin-left: auto;"></span>
             </div>
+            
+            <!-- Botones de navegación de scroll -->
+            <button class="scroll-nav-btn left" id="scrollLeft" onclick="scrollTable(-300)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="scroll-nav-btn right" id="scrollRight" onclick="scrollTable(300)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
             
             <!-- Indicador de scroll -->
             <div class="scroll-indicator" id="scrollIndicator">
@@ -2249,19 +2311,54 @@ ASCENCIO ROZAS MAXIMO MARIANO
             setTimeout(checkScrollIndicator, 100);
         }
         
-        // Función para mostrar/ocultar indicador de scroll
+        // Función para scroll suave de la tabla
+        function scrollTable(amount) {
+            const wrapper = document.getElementById('tableWrapper');
+            if (wrapper) {
+                wrapper.scrollBy({
+                    left: amount,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Función para mostrar/ocultar indicador y botones de scroll
         function checkScrollIndicator() {
             const wrapper = document.getElementById('tableWrapper');
             const indicator = document.getElementById('scrollIndicator');
-            if (!wrapper || !indicator) return;
+            const scrollLeft = document.getElementById('scrollLeft');
+            const scrollRight = document.getElementById('scrollRight');
+            
+            if (!wrapper) return;
             
             const hasHorizontalScroll = wrapper.scrollWidth > wrapper.clientWidth + 50;
+            const isScrolledToStart = wrapper.scrollLeft <= 20;
             const isScrolledToEnd = wrapper.scrollLeft >= (wrapper.scrollWidth - wrapper.clientWidth - 20);
             
-            if (hasHorizontalScroll && !isScrolledToEnd) {
-                indicator.classList.add('show');
-            } else {
-                indicator.classList.remove('show');
+            // Mostrar/ocultar botón izquierdo
+            if (scrollLeft) {
+                if (hasHorizontalScroll && !isScrolledToStart) {
+                    scrollLeft.classList.add('show');
+                } else {
+                    scrollLeft.classList.remove('show');
+                }
+            }
+            
+            // Mostrar/ocultar botón derecho e indicador
+            if (scrollRight) {
+                if (hasHorizontalScroll && !isScrolledToEnd) {
+                    scrollRight.classList.add('show');
+                } else {
+                    scrollRight.classList.remove('show');
+                }
+            }
+            
+            if (indicator) {
+                if (hasHorizontalScroll && !isScrolledToEnd) {
+                    indicator.classList.add('show');
+                } else {
+                    indicator.classList.remove('show');
+                }
             }
         }
         
