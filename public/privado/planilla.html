@@ -309,6 +309,71 @@
             right: 20px;
         }
         
+        /* Barra de navegación superior */
+        .top-scroll-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        .scroll-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .scroll-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .scroll-btn:hover {
+            background: rgba(255,255,255,0.35);
+            transform: scale(1.05);
+        }
+        .scroll-position {
+            color: white;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .scroll-slider {
+            width: 200px;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        .scroll-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .scroll-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
         /* Columnas fijas al hacer scroll horizontal */
         th.col-num, td.col-num { 
             position: sticky; 
@@ -987,6 +1052,18 @@
             <!-- Indicador de scroll -->
             <div class="scroll-indicator" id="scrollIndicator">
                 <i class="fas fa-arrow-right"></i> Más tareas →
+            </div>
+            
+            <!-- Barra de navegación superior -->
+            <div id="topScrollBar" class="top-scroll-bar" style="display: none;">
+                <div class="scroll-controls">
+                    <button onclick="scrollTable(-500)" class="scroll-btn"><i class="fas fa-angle-double-left"></i></button>
+                    <button onclick="scrollTable(-200)" class="scroll-btn"><i class="fas fa-angle-left"></i></button>
+                    <span id="scrollPosition" class="scroll-position">Inicio</span>
+                    <button onclick="scrollTable(200)" class="scroll-btn"><i class="fas fa-angle-right"></i></button>
+                    <button onclick="scrollTable(500)" class="scroll-btn"><i class="fas fa-angle-double-right"></i></button>
+                    <input type="range" id="scrollSlider" min="0" max="100" value="0" oninput="scrollToPercent(this.value)" class="scroll-slider">
+                </div>
             </div>
 
             <div class="table-wrapper" id="tableWrapper">
@@ -2319,7 +2396,53 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     left: amount,
                     behavior: 'smooth'
                 });
+                setTimeout(updateScrollUI, 100);
             }
+        }
+        
+        // Función para ir a un porcentaje del scroll
+        function scrollToPercent(percent) {
+            const wrapper = document.getElementById('tableWrapper');
+            if (wrapper) {
+                const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+                wrapper.scrollLeft = (percent / 100) * maxScroll;
+                updateScrollUI();
+            }
+        }
+        
+        // Actualizar UI del scroll (slider y posición)
+        function updateScrollUI() {
+            const wrapper = document.getElementById('tableWrapper');
+            const slider = document.getElementById('scrollSlider');
+            const position = document.getElementById('scrollPosition');
+            const topBar = document.getElementById('topScrollBar');
+            
+            if (!wrapper) return;
+            
+            const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+            const hasScroll = maxScroll > 50;
+            
+            // Mostrar/ocultar barra superior
+            if (topBar) {
+                topBar.style.display = hasScroll ? 'block' : 'none';
+            }
+            
+            if (hasScroll && slider) {
+                const percent = Math.round((wrapper.scrollLeft / maxScroll) * 100);
+                slider.value = percent;
+                
+                if (position) {
+                    if (percent <= 5) {
+                        position.textContent = '◀ Inicio';
+                    } else if (percent >= 95) {
+                        position.textContent = 'Final ▶';
+                    } else {
+                        position.textContent = `${percent}%`;
+                    }
+                }
+            }
+            
+            checkScrollIndicator();
         }
         
         // Función para mostrar/ocultar indicador y botones de scroll
@@ -2366,8 +2489,28 @@ ASCENCIO ROZAS MAXIMO MARIANO
         document.addEventListener('DOMContentLoaded', () => {
             const wrapper = document.getElementById('tableWrapper');
             if (wrapper) {
-                wrapper.addEventListener('scroll', checkScrollIndicator);
-                window.addEventListener('resize', checkScrollIndicator);
+                wrapper.addEventListener('scroll', () => {
+                    checkScrollIndicator();
+                    updateScrollUI();
+                });
+                window.addEventListener('resize', () => {
+                    checkScrollIndicator();
+                    updateScrollUI();
+                });
+                
+                // Habilitar scroll horizontal con la rueda del mouse
+                wrapper.addEventListener('wheel', (e) => {
+                    // Si hay scroll horizontal disponible
+                    if (wrapper.scrollWidth > wrapper.clientWidth) {
+                        e.preventDefault();
+                        // Usar deltaY (scroll vertical del mouse) para scroll horizontal
+                        wrapper.scrollLeft += e.deltaY * 2;
+                        updateScrollUI();
+                    }
+                }, { passive: false });
+                
+                // Inicializar UI de scroll
+                setTimeout(updateScrollUI, 500);
             }
         });
 
