@@ -214,7 +214,99 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: visible;
+            position: relative;
+        }
+        
+        /* Scroll horizontal mejorado */
+        .table-wrapper::-webkit-scrollbar {
+            height: 14px;
+        }
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 7px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 7px;
+            border: 3px solid #e2e8f0;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+        
+        /* Indicador de scroll */
+        .scroll-indicator {
+            display: none;
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            animation: pulse-scroll 2s infinite;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .scroll-indicator.show {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        @keyframes pulse-scroll {
+            0%, 100% { opacity: 0.9; transform: translateY(-50%) translateX(0); }
+            50% { opacity: 1; transform: translateY(-50%) translateX(-8px); }
+        }
+        
+        /* Columnas fijas al hacer scroll horizontal */
+        th.col-num, td.col-num { 
+            position: sticky; 
+            left: 0; 
+            min-width: 50px;
+            z-index: 5;
+        }
+        th.col-apellido-p, td.col-apellido-p { 
+            position: sticky; 
+            left: 50px; 
+            min-width: 130px;
+            z-index: 5;
+        }
+        th.col-apellido-m, td.col-apellido-m { 
+            position: sticky; 
+            left: 180px; 
+            min-width: 130px;
+            z-index: 5;
+        }
+        th.col-nombre, td.col-nombre { 
+            position: sticky; 
+            left: 310px; 
+            min-width: 150px;
+            z-index: 5;
+            border-right: 3px solid #764ba2 !important;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Fondos para columnas sticky */
+        th.col-num, th.col-apellido-p, th.col-apellido-m, th.col-nombre {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 15;
+        }
+        td.col-num, td.col-apellido-p, td.col-apellido-m, td.col-nombre {
+            background: white;
+        }
+        tbody tr:nth-child(even) td.col-num, tbody tr:nth-child(even) td.col-apellido-p,
+        tbody tr:nth-child(even) td.col-apellido-m, tbody tr:nth-child(even) td.col-nombre {
+            background: #f8f9fa;
+        }
+        tbody tr:hover td.col-num, tbody tr:hover td.col-apellido-p,
+        tbody tr:hover td.col-apellido-m, tbody tr:hover td.col-nombre {
+            background: linear-gradient(135deg, #e8f4fd 0%, #d1e7f0 100%);
         }
         
         table {
@@ -821,10 +913,18 @@
                 <button class="btn-small btn-danger" onclick="deleteCourse()" style="margin-left: 10px;">
                     <i class="fas fa-trash"></i> Eliminar Curso
                 </button>
+                <span id="dbIndicator" style="margin-left: 15px; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(22, 101, 52, 0.15);">
+                    <i class="fas fa-cloud"></i> Firebase Cloud
+                </span>
                 <span id="meta" style="margin-left: auto;"></span>
             </div>
+            
+            <!-- Indicador de scroll -->
+            <div class="scroll-indicator" id="scrollIndicator">
+                <i class="fas fa-arrow-right"></i> Más tareas →
+            </div>
 
-            <div class="table-wrapper">
+            <div class="table-wrapper" id="tableWrapper">
                 <table id="planillaTable">
                     <thead>
                         <tr>
@@ -2097,7 +2197,35 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             tbody.innerHTML = bodyHTML;
             meta.textContent = (course?.name||'') + ' - ' + activeStudents.length + ' estudiantes activos (' + courseStudents.length + ' total), ' + courseTasks.length + ' tareas';
+            
+            // Verificar si hay scroll horizontal
+            setTimeout(checkScrollIndicator, 100);
         }
+        
+        // Función para mostrar/ocultar indicador de scroll
+        function checkScrollIndicator() {
+            const wrapper = document.getElementById('tableWrapper');
+            const indicator = document.getElementById('scrollIndicator');
+            if (!wrapper || !indicator) return;
+            
+            const hasHorizontalScroll = wrapper.scrollWidth > wrapper.clientWidth + 50;
+            const isScrolledToEnd = wrapper.scrollLeft >= (wrapper.scrollWidth - wrapper.clientWidth - 20);
+            
+            if (hasHorizontalScroll && !isScrolledToEnd) {
+                indicator.classList.add('show');
+            } else {
+                indicator.classList.remove('show');
+            }
+        }
+        
+        // Configurar eventos de scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrapper = document.getElementById('tableWrapper');
+            if (wrapper) {
+                wrapper.addEventListener('scroll', checkScrollIndicator);
+                window.addEventListener('resize', checkScrollIndicator);
+            }
+        });
 
         // Modal utilities
         function closeModal(modalId) {
