@@ -1975,6 +1975,129 @@ ASCENCIO ROZAS MAXIMO MARIANO
             loadPlanilla();
         }
 
+        /**
+         * Rellena evaluaciones demo realistas para todos los cursos/estudiantes/tareas.
+         * Uso desde consola (F12):
+         *   simulateDemoData()              -> todos los cursos
+         *   simulateDemoData('idCurso')     -> un curso
+         *   simulateDemoData(null, true)    -> borra evaluaciones previas antes
+         */
+        window.simulateDemoData = async function(courseId = null, resetExisting = false) {
+            const confirmMsg = `Esto generará evaluaciones DEMO en Firebase${resetExisting ? ' y borrará las existentes' : ''}.\n\n¿Continuar?`;
+            if (!confirm(confirmMsg)) { console.log('Cancelado.'); return; }
+
+            console.log('🎲 Simulando datos demo...');
+            const t0 = Date.now();
+            const db = firebaseDB.getDb();
+            const docenteId = firebaseDB.docenteId;
+
+            const [courses, students, tasks] = await Promise.all([
+                getAllData('courses', true),
+                getAllData('students', true),
+                getAllData('tasks', true)
+            ]);
+
+            const targetCourses = courseId ? courses.filter(c => c.id === courseId) : courses;
+            if (!targetCourses.length) { alert('No se encontraron cursos.'); return; }
+
+            // Si piden reset, borrar evaluaciones del/los cursos afectados
+            if (resetExisting) {
+                const evals = await firebaseDB.getEvaluations();
+                const affectedTaskIds = new Set(tasks.filter(t => targetCourses.some(c => c.id === t.courseId)).map(t => t.id));
+                const delBatch = {};
+                evals.forEach(ev => { if (affectedTaskIds.has(ev.taskId)) delBatch[`evaluations/${ev.id}`] = null; });
+                if (Object.keys(delBatch).length) {
+                    await db.ref(`courses/${docenteId}`).update(delBatch);
+                    console.log(`🗑️ Borradas ${Object.keys(delBatch).length} evaluaciones previas`);
+                }
+            }
+
+            // Cargar evaluaciones existentes una sola vez para no duplicar
+            const existingEvals = resetExisting ? [] : await firebaseDB.getEvaluations();
+            const existingMap = new Map();
+            existingEvals.forEach(ev => existingMap.set(ev.taskId + ':' + ev.studentId, ev.id));
+
+            // Perfiles de estudiante con distribuciones distintas
+            const PROFILES = [
+                { name: 'destacado',  weight: 15, pDone: 0.95, levels: { Destacado: 0.65, Adecuado: 0.30, Elemental: 0.05 } },
+                { name: 'adecuado',   weight: 40, pDone: 0.80, levels: { Destacado: 0.25, Adecuado: 0.55, Elemental: 0.18, Insuficiente: 0.02 } },
+                { name: 'proceso',    weight: 30, pDone: 0.60, levels: { Adecuado: 0.20, Elemental: 0.55, Insuficiente: 0.25 } },
+                { name: 'inicial',    weight: 15, pDone: 0.30, levels: { Elemental: 0.30, Insuficiente: 0.70 } }
+            ];
+            function pickProfile(seed) {
+                const total = PROFILES.reduce((a,p) => a+p.weight, 0);
+                let r = (Math.abs(Math.sin(seed * 9301 + 49297)) * total) % total;
+                for (const p of PROFILES) { if (r < p.weight) return p; r -= p.weight; }
+                return PROFILES[0];
+            }
+            function pickLevel(distrib, rng) {
+                let acc = 0;
+                for (const [name, w] of Object.entries(distrib)) {
+                    acc += w;
+                    if (rng < acc) return name;
+                }
+                return 'Elemental';
+            }
+            function rand(seed) { return Math.abs(Math.sin(seed * 1327 + 17.17)) % 1; }
+
+            const batch = {};
+            let newCount = 0, updCount = 0, seedN = 1;
+
+            for (const course of targetCourses) {
+                const courseStudents = students.filter(s => s.courseId === course.id && !s.retirado);
+                const courseTasks = tasks.filter(t => t.courseId === course.id);
+                if (!courseStudents.length || !courseTasks.length) continue;
+
+                console.log(`📚 ${course.name}: ${courseStudents.length} estudiantes × ${courseTasks.length} tareas`);
+
+                courseStudents.forEach((st, sIdx) => {
+                    const profile = pickProfile(seedN++);
+                    courseTasks.forEach((task, tIdx) => {
+                        const key = task.id + ':' + st.id;
+                        const r1 = rand(seedN++);
+                        const gradeType = task.gradeType || 'binary';
+                        let value;
+                        if (gradeType === 'levels') {
+                            if (r1 > profile.pDone) value = '';
+                            else value = pickLevel(profile.levels, rand(seedN++));
+                        } else {
+                            value = r1 < profile.pDone;
+                        }
+                        if (gradeType !== 'levels' && !value) return; // no guardamos falsos
+
+                        const existingId = existingMap.get(key);
+                        if (existingId) {
+                            batch[`evaluations/${existingId}`] = { taskId: task.id, studentId: st.id, value };
+                            updCount++;
+                        } else {
+                            const newKey = db.ref(`courses/${docenteId}/evaluations`).push().key;
+                            batch[`evaluations/${newKey}`] = { taskId: task.id, studentId: st.id, value };
+                            newCount++;
+                        }
+                    });
+                });
+            }
+
+            if (!Object.keys(batch).length) { console.log('Nada que escribir.'); return; }
+
+            console.log(`⏫ Escribiendo ${newCount} nuevas + ${updCount} actualizadas en Firebase...`);
+            // Firebase permite multi-path update pero en lotes razonables
+            const entries = Object.entries(batch);
+            const chunkSize = 500;
+            for (let i = 0; i < entries.length; i += chunkSize) {
+                const slice = entries.slice(i, i + chunkSize);
+                const obj = {}; slice.forEach(([k,v]) => { obj[k] = v; });
+                await db.ref(`courses/${docenteId}`).update(obj);
+                console.log(`  ✓ lote ${Math.floor(i/chunkSize)+1}/${Math.ceil(entries.length/chunkSize)}`);
+            }
+            if (typeof invalidateCache === 'function') invalidateCache('evaluations');
+            await loadPlanilla();
+            const secs = ((Date.now() - t0)/1000).toFixed(1);
+            const msg = `✅ Demo lista en ${secs}s: ${newCount} nuevas, ${updCount} actualizadas.`;
+            console.log(msg);
+            alert(msg);
+        };
+
         async function loadCourses() {
             const courses = await getAllData('courses');
             console.log('📖 Cursos cargados:', courses);
