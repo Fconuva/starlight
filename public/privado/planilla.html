@@ -3780,11 +3780,19 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                 const data = await response.json();
                 const aiReport = data.text;
                 const usedProvider = data.provider || 'Desconocido';
-                console.log(`✅ Informe generado con: ${usedProvider}`);
+                const isDemo = data.demo === true;
+                console.log(`✅ Informe generado con: ${usedProvider}${isDemo ? ' [DEMO]' : ''}`);
 
                 // Mostrar el informe generado
                 let formattedReport = formatAIReport(aiReport);
                 let reportHtml = '<div class="ai-report-container">';
+                if (isDemo) {
+                    reportHtml += '<div style="background:#fff3cd;border:1px solid #ffc107;color:#664d03;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;">' +
+                        '<i class="fas fa-info-circle"></i> <strong>Modo demostración:</strong> no hay API key de IA activa en Netlify. ' +
+                        'Este informe se generó con una plantilla a partir de tus datos reales. ' +
+                        'Para activar análisis con IA configura <code>GROQ_API_KEY</code> (recomendado, gratis) en Netlify → Site settings → Environment variables.' +
+                        '</div>';
+                }
                 reportHtml += `<div class="ai-report-header"><i class="fas fa-robot"></i> Informe IA - Generado con ${usedProvider}</div>`;
                 reportHtml += '<div class="ai-report-content">' + formattedReport + '</div>';
                 reportHtml += '</div>';
@@ -4196,77 +4204,138 @@ SOLUCIÓN:
                 }
             }
 
-                // Capturar el contenido del reporte como imagen usando html2canvas
-                const reportContent = document.getElementById('reportContent');
-                
-                if (reportContent) {
-                    // Usar html2canvas para capturar TODO el contenido visual
-                    const canvas = await html2canvas(reportContent, {
-                        scale: 2,
-                        useCORS: true,
-                        logging: false,
-                        backgroundColor: '#ffffff',
-                        windowWidth: reportContent.scrollWidth,
-                        windowHeight: reportContent.scrollHeight
-                    });
-
-                    const imgData = canvas.toDataURL('image/png');
-                    const imgWidth = 190; // Ancho de la página A4 menos márgenes
-                    const pageHeight = 277; // Alto de la página A4
-                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = 10;
-
-                    // Agregar portada
-                    doc.setFontSize(22);
-                    doc.setTextColor(102, 126, 234);
-                    doc.text(type === 'grupal' ? 'Reporte Grupal Completo' : 'Reporte Individual Completo', 105, 30, { align: 'center' });
-                    doc.setFontSize(14);
-                    doc.setTextColor(0, 0, 0);
-                    doc.text('Curso: ' + (course?.name || ''), 105, 45, { align: 'center' });
-                    doc.setFontSize(12);
-                    doc.text('Fecha: ' + new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), 105, 55, { align: 'center' });
-                    
-                    // Línea decorativa
-                    doc.setDrawColor(102, 126, 234);
-                    doc.setLineWidth(0.5);
-                    doc.line(20, 65, 190, 65);
-
-                    doc.setFontSize(10);
-                    doc.setTextColor(100, 100, 100);
-                    doc.text('Sistema de Evaluación Profesora Javiera Poblete', 105, 75, { align: 'center' });
-                    doc.text('Incluye: Estadísticas • Gráficos • Análisis IA', 105, 82, { align: 'center' });
-
-                    // Agregar primera página del contenido capturado
-                    doc.addPage();
-                    doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-
-                    // Agregar páginas adicionales si el contenido es largo
-                    while (heightLeft > 0) {
-                        position = heightLeft - imgHeight + 10;
+                // === Agregar análisis IA como TEXTO REAL (no captura de imagen) ===
+                // Se extrae el texto del div ai-report-content y se vuelca al PDF
+                // como texto vectorial: ligero, seleccionable y de alta calidad.
+                const aiContentEl = document.querySelector('#reportContent .ai-report-content');
+                const aiHeaderEl  = document.querySelector('#reportContent .ai-report-header');
+                if (aiContentEl) {
+                    const aiText = (aiContentEl.innerText || aiContentEl.textContent || '').trim();
+                    if (aiText) {
                         doc.addPage();
-                        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
+                        yPosition = 25;
+                        // Cabecera sección IA
+                        doc.setFillColor(102, 126, 234);
+                        doc.rect(0, 0, 210, 18, 'F');
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(14);
+                        doc.text((aiHeaderEl?.innerText || 'Análisis con IA').trim(), 15, 12);
+                        yPosition = 30;
+                        doc.setTextColor(0, 0, 0);
+                        doc.setFontSize(11);
+
+                        // Render línea a línea con estilos básicos (títulos en azul, bullets)
+                        const lines = aiText.split(/\n+/).map(l => l.trim()).filter(Boolean);
+                        for (const raw of lines) {
+                            if (yPosition > 275) { doc.addPage(); yPosition = 25; }
+
+                            // Título tipo markdown (###, ##, **X**)
+                            const isTitle = /^(#{2,3}\s+|[A-ZÁÉÍÓÚÑ][^\n]{0,60}:$)/.test(raw);
+                            const cleaned = raw.replace(/^#+\s*/, '').replace(/\*\*/g, '');
+
+                            if (isTitle) {
+                                yPosition += 4;
+                                doc.setFontSize(13);
+                                doc.setTextColor(102, 126, 234);
+                                const wrapped = doc.splitTextToSize(cleaned, 180);
+                                doc.text(wrapped, 15, yPosition);
+                                yPosition += wrapped.length * 6 + 2;
+                                doc.setFontSize(11);
+                                doc.setTextColor(0, 0, 0);
+                            } else if (/^[-•]\s+/.test(raw)) {
+                                const bullet = cleaned.replace(/^[-•]\s+/, '');
+                                const wrapped = doc.splitTextToSize(bullet, 172);
+                                doc.setTextColor(102, 126, 234);
+                                doc.text('•', 18, yPosition);
+                                doc.setTextColor(0, 0, 0);
+                                doc.text(wrapped, 23, yPosition);
+                                yPosition += wrapped.length * 5.5 + 1;
+                            } else {
+                                const wrapped = doc.splitTextToSize(cleaned, 180);
+                                doc.text(wrapped, 15, yPosition);
+                                yPosition += wrapped.length * 5.5 + 1;
+                            }
+                        }
+                    }
+                }
+
+                // === Insertar portada al inicio ===
+                doc.insertPage(1);
+                doc.setPage(1);
+                doc.setFillColor(102, 126, 234);
+                doc.rect(0, 0, 210, 45, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(22);
+                doc.text(type === 'grupal' ? 'Reporte Grupal' : 'Reporte Individual', 105, 22, { align: 'center' });
+                doc.setFontSize(12);
+                doc.text('Sistema de Evaluación · Profesora Javiera Poblete', 105, 32, { align: 'center' });
+
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(14);
+                doc.text('Curso:', 25, 70);
+                doc.setFont(undefined, 'bold');
+                doc.text((course?.name || '—'), 60, 70);
+                doc.setFont(undefined, 'normal');
+
+                doc.text('Fecha:', 25, 82);
+                doc.setFont(undefined, 'bold');
+                doc.text(new Date().toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), 60, 82);
+                doc.setFont(undefined, 'normal');
+
+                if (type === 'individual' && studentId) {
+                    const stu = students.find(s => s.id === studentId);
+                    if (stu) {
+                        doc.text('Estudiante:', 25, 94);
+                        doc.setFont(undefined, 'bold');
+                        doc.text(stu.firstNames + ' ' + stu.lastNames, 60, 94);
+                        doc.setFont(undefined, 'normal');
+                    }
+                }
+
+                doc.setDrawColor(102, 126, 234);
+                doc.setLineWidth(0.8);
+                doc.line(20, 110, 190, 110);
+
+                doc.setFontSize(11);
+                doc.setTextColor(80, 80, 80);
+                doc.text('Este documento contiene:', 25, 125);
+                doc.setTextColor(0, 0, 0);
+                doc.text('• Métricas principales del curso', 30, 135);
+                doc.text('• Desempeño por tarea y por OA', 30, 143);
+                if (type === 'individual') doc.text('• Detalle individual de tareas', 30, 151);
+                doc.text('• Análisis generado con IA (si está disponible)', 30, type === 'individual' ? 159 : 151);
+
+                doc.setTextColor(130, 130, 130);
+                doc.setFontSize(9);
+                doc.text('Generado automáticamente por el sistema de planilla.', 105, 280, { align: 'center' });
+
+                // === Numerar páginas ===
+                const totalPages = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text(`Página ${i} de ${totalPages}`, 190, 290, { align: 'right' });
+                    if (i > 1) {
+                        doc.text('profesorajavierapoblete.com', 15, 290);
                     }
                 }
 
                 // Guardar PDF
-                const fileName = type === 'grupal' 
-                    ? `reporte_grupal_${course?.name.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
-                    : `reporte_individual_${course?.name.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
-                
+                const safeCourse = (course?.name || 'curso').replace(/[^a-z0-9]/gi, '_');
+                const fileName = type === 'grupal'
+                    ? `reporte_grupal_${safeCourse}_${new Date().toISOString().split('T')[0]}.pdf`
+                    : `reporte_individual_${safeCourse}_${new Date().toISOString().split('T')[0]}.pdf`;
+
                 doc.save(fileName);
 
-                // Mensaje de éxito
-                alert('✅ PDF generado exitosamente\n\n📊 Incluye:\n• Estadísticas completas\n• Gráficos visuales\n• Informe de IA (si fue generado)\n• Análisis por OA');
+                alert('✅ PDF generado exitosamente\n\n📄 Documento con texto real y seleccionable.\n📊 Incluye portada, métricas, desempeño por OA y análisis con IA.');
 
             } catch (error) {
                 console.error('Error generando PDF:', error);
-                alert('❌ Error al generar el PDF. Por favor intenta nuevamente.');
+                alert('❌ Error al generar el PDF. Por favor intenta nuevamente.\n\nDetalle: ' + error.message);
             } finally {
-                // Remover indicador de carga
-                document.body.removeChild(loadingModal);
+                if (loadingModal.parentNode) document.body.removeChild(loadingModal);
             }
         }
 
