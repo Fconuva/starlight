@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -275,7 +275,7 @@
             50% { opacity: 1; transform: translateY(-50%) translateX(-8px); }
         }
         
-        /* Botones de navegaciÃ³n de scroll */
+        /* Botones de navegación de scroll */
         .scroll-nav-btn {
             position: fixed;
             top: 50%;
@@ -309,7 +309,7 @@
             right: 20px;
         }
         
-        /* Barra de navegaciÃ³n superior */
+        /* Barra de navegación superior */
         .top-scroll-bar {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 12px 20px;
@@ -819,7 +819,7 @@
             color: #28a745;
         }
         .indicator-list li.completed::before {
-            content: 'âœ“';
+            content: '✓';
             margin-right: 8px;
             font-weight: bold;
         }
@@ -827,7 +827,7 @@
             color: #dc3545;
         }
         .indicator-list li.pending::before {
-            content: 'âœ—';
+            content: '✗';
             margin-right: 8px;
             font-weight: bold;
         }
@@ -853,7 +853,7 @@
             margin-top: 20px;
         }
         
-        /* Estilos para plantillas de evaluaciÃ³n */
+        /* Estilos para plantillas de evaluación */
         input[name="predefinedTemplate"]:checked + div {
             background: #e7f3ff !important;
         }
@@ -995,7 +995,7 @@
 <body>
     <div class="top-bar">
         <div>
-            <h1><i class="fas fa-table"></i> Planilla de EvaluaciÃ³n</h1>
+            <h1><i class="fas fa-table"></i> Planilla de Evaluación</h1>
             <div id="docenteLabel" style="font-size: 13px; opacity: 0.8; font-weight: 500;"></div>
         </div>
         <div class="top-bar-right">
@@ -1018,7 +1018,7 @@
                 <button class="card-btn" onclick="openAddStudentModal()"><i class="fas fa-user-plus"></i> Agregar Estudiante</button>
                 <button class="card-btn" onclick="openBulkStudentModal()"><i class="fas fa-users"></i> Carga Masiva</button>
                 <button class="card-btn" onclick="openAddTaskModal('simple')"><i class="fas fa-tasks"></i> Agregar Tarea</button>
-                <button class="card-btn" onclick="openAddTaskModal('evaluation')" style="background: #7c3aed;"><i class="fas fa-clipboard-check"></i> Agregar EvaluaciÃ³n</button>
+                <button class="card-btn" onclick="openAddTaskModal('evaluation')" style="background: #7c3aed;"><i class="fas fa-clipboard-check"></i> Agregar Evaluación</button>
             </div>
         </div>
 
@@ -1041,7 +1041,7 @@
                 <span id="meta" style="margin-left: auto;"></span>
             </div>
             
-            <!-- Botones de navegaciÃ³n de scroll -->
+            <!-- Botones de navegación de scroll -->
             <button class="scroll-nav-btn left" id="scrollLeft" onclick="scrollTable(-300)">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -1051,10 +1051,10 @@
             
             <!-- Indicador de scroll -->
             <div class="scroll-indicator" id="scrollIndicator">
-                <i class="fas fa-arrow-right"></i> MÃ¡s tareas â†’
+                <i class="fas fa-arrow-right"></i> Más tareas →
             </div>
             
-            <!-- Barra de navegaciÃ³n superior -->
+            <!-- Barra de navegación superior -->
             <div id="topScrollBar" class="top-scroll-bar" style="display: none;">
                 <div class="scroll-controls">
                     <button onclick="scrollTable(-500)" class="scroll-btn"><i class="fas fa-angle-double-left"></i></button>
@@ -1107,8 +1107,8 @@
                 <label>Modalidad:</label>
                 <select id="courseModality">
                     <option value="">-- Seleccionar --</option>
-                    <option value="HC">HC - CientÃ­fico Humanista</option>
-                    <option value="TP">TP - TÃ©cnico Profesional</option>
+                    <option value="HC">HC - Científico Humanista</option>
+                    <option value="TP">TP - Técnico Profesional</option>
                 </select>
             </div>
             <div class="modal-buttons">
@@ -1148,7 +1148,7 @@
             <button class="close-btn" onclick="closeModal('bulkStudentModal')">&times;</button>
             <div class="modal-header">Carga Masiva de Estudiantes</div>
             <div class="form-group">
-                <label>Pega la lista de estudiantes (un estudiante por lÃ­nea):</label>
+                <label>Pega la lista de estudiantes (un estudiante por línea):</label>
                 <textarea id="bulkStudentList" rows="15" style="width: 100%; padding: 12px; border: 2px solid #e1e5e9; border-radius: 8px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="ALVEAR RODRIGUEZ JUAN IGNACIO
 ARAYA VELIS VICENTE ANIBAL
 ASCENCIO ROZAS MAXIMO MARIANO
@@ -1181,7 +1181,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             
             <div class="form-group">
                 <label>Nombre:</label>
-                <input type="text" id="taskName" placeholder="Ej: EvaluaciÃ³n 1, Tarea de comprensiÃ³n">
+                <input type="text" id="taskName" placeholder="Ej: Evaluación 1, Tarea de comprensión">
             </div>
             
             <div class="form-group">
@@ -1190,20 +1190,20 @@ ASCENCIO ROZAS MAXIMO MARIANO
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-clipboard-check"></i> Tipo de EvaluaciÃ³n:</label>
+                <label><i class="fas fa-clipboard-check"></i> Tipo de Evaluación:</label>
                 <select id="taskType" onchange="updateTaskTypeOptions()" style="font-size: 14px;">
-                    <!-- Las opciones se cargarÃ¡n dinÃ¡micamente segÃºn el modo -->
+                    <!-- Las opciones se cargarán dinámicamente según el modo -->
                 </select>
             </div>
 
-            <!-- Opciones para plantillas de evaluaciÃ³n -->
+            <!-- Opciones para plantillas de evaluación -->
             <div id="fileAttachmentSection" style="display: none;" class="form-group">
-                <label><i class="fas fa-file-alt"></i> Selecciona una Plantilla de EvaluaciÃ³n:</label>
+                <label><i class="fas fa-file-alt"></i> Selecciona una Plantilla de Evaluación:</label>
                 
                 <!-- Opciones predefinidas -->
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
                     <div id="predefinedTemplates">
-                        <!-- Se llenarÃ¡n dinÃ¡micamente segÃºn el tipo -->
+                        <!-- Se llenarán dinámicamente según el tipo -->
                     </div>
                 </div>
                 
@@ -1235,23 +1235,23 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #ddd; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                     <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
                         <input type="checkbox" class="task-oa-checkbox" value="OA3" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                        <span style="font-weight: 500; font-size: 13px;">OA3 - ComprensiÃ³n y producciÃ³n textual</span>
+                        <span style="font-weight: 500; font-size: 13px;">OA3 - Comprensión y producción textual</span>
                     </label>
                     <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
                         <input type="checkbox" class="task-oa-checkbox" value="OA5" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                        <span style="font-weight: 500; font-size: 13px;">OA5 - Sistema de la lengua espaÃ±ola</span>
+                        <span style="font-weight: 500; font-size: 13px;">OA5 - Sistema de la lengua española</span>
                     </label>
                     <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
                         <input type="checkbox" class="task-oa-checkbox" value="OA6" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                        <span style="font-weight: 500; font-size: 13px;">OA6 - ReflexiÃ³n sobre el lenguaje</span>
+                        <span style="font-weight: 500; font-size: 13px;">OA6 - Reflexión sobre el lenguaje</span>
                     </label>
                     <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
                         <input type="checkbox" class="task-oa-checkbox" value="OA11" onchange="updateOAPreview()" style="margin-right: 10px; transform: scale(1.2);">
-                        <span style="font-weight: 500; font-size: 13px;">OA11 - Aprendizaje autÃ³nomo</span>
+                        <span style="font-weight: 500; font-size: 13px;">OA11 - Aprendizaje autónomo</span>
                     </label>
                 </div>
                 <small style="color: #666; display: block; margin-top: 5px;">
-                    <i class="fas fa-info-circle"></i> Puedes seleccionar mÃºltiples OA si la tarea aborda varios objetivos
+                    <i class="fas fa-info-circle"></i> Puedes seleccionar múltiples OA si la tarea aborda varios objetivos
                 </small>
             </div>
             
@@ -1262,7 +1262,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-primary" onclick="saveTask()">
-                    <i class="fas fa-save"></i> Guardar EvaluaciÃ³n
+                    <i class="fas fa-save"></i> Guardar Evaluación
                 </button>
                 <button class="modal-btn modal-btn-cancel" onclick="closeModal('taskModal')">Cancelar</button>
             </div>
@@ -1275,18 +1275,18 @@ ASCENCIO ROZAS MAXIMO MARIANO
             <button class="close-btn" onclick="closeModal('editTaskModal')">&times;</button>
             <div class="modal-header">Editar Tarea</div>
             <div id="editTaskContent">
-                <!-- Contenido dinÃ¡mico -->
+                <!-- Contenido dinámico -->
             </div>
         </div>
     </div>
 
-    <!-- MODAL: EVALUACIÃ“N CON PLANTILLA -->
+    <!-- MODAL: EVALUACIÓN CON PLANTILLA -->
     <div id="templateEvaluationModal" class="modal">
         <div class="modal-content" style="max-width: 900px;">
             <button class="close-btn" onclick="closeModal('templateEvaluationModal')">&times;</button>
             <div class="modal-header" id="templateEvalTitle"></div>
             <div id="templateEvalContent" style="max-height: 70vh; overflow-y: auto;">
-                <!-- Contenido dinÃ¡mico -->
+                <!-- Contenido dinámico -->
             </div>
         </div>
     </div>
@@ -1298,7 +1298,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             <div class="modal-header" id="reportTitle"></div>
             <div id="reportContent" style="max-height: 60vh; overflow-y: auto; font-size: 12px;"></div>
             <div class="modal-buttons" id="reportButtons" style="margin-top: 15px;">
-                <!-- Botones dinÃ¡micos -->
+                <!-- Botones dinámicos -->
             </div>
         </div>
     </div>
@@ -1309,7 +1309,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             <button class="close-btn" onclick="closeModal('editStudentModal')">&times;</button>
             <div class="modal-header">Editar Estudiante</div>
             <div id="editStudentContent">
-                <!-- Contenido dinÃ¡mico -->
+                <!-- Contenido dinámico -->
             </div>
         </div>
     </div>
@@ -1318,7 +1318,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
     <div id="backupModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <button class="close-btn" onclick="closeModal('backupModal')">&times;</button>
-            <div class="modal-header">Backup y RestauraciÃ³n de Datos</div>
+            <div class="modal-header">Backup y Restauración de Datos</div>
             <div style="padding: 20px;">
                 <div class="backup-section">
                     <!-- Crear Backup -->
@@ -1353,12 +1353,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     </button>
                 </div>
 
-                <!-- InformaciÃ³n adicional -->
+                <!-- Información adicional -->
                 <div class="backup-info">
-                    <strong><i class="fas fa-info-circle"></i> InformaciÃ³n importante:</strong>
+                    <strong><i class="fas fa-info-circle"></i> Información importante:</strong>
                     <ul style="margin-top: 8px; padding-left: 20px;">
                         <li>Los backups incluyen todos los cursos, estudiantes, tareas y evaluaciones</li>
-                        <li>La restauraciÃ³n reemplaza completamente los datos actuales</li>
+                        <li>La restauración reemplaza completamente los datos actuales</li>
                         <li>Se recomienda hacer backup antes de restaurar</li>
                         <li>Los archivos CSV contienen solo la planilla actual del curso seleccionado</li>
                     </ul>
@@ -1377,13 +1377,13 @@ ASCENCIO ROZAS MAXIMO MARIANO
             if (firebaseConfigLoaded) return;
             
             try {
-                console.log('ðŸ”„ Cargando configuraciÃ³n de Firebase...');
+                console.log('🔄 Cargando configuración de Firebase...');
                 const response = await fetch('/.netlify/functions/firebase-config');
                 if (!response.ok) {
-                    throw new Error('No se pudo cargar la configuraciÃ³n de Firebase');
+                    throw new Error('No se pudo cargar la configuración de Firebase');
                 }
                 const config = await response.json();
-                console.log('ðŸ“‹ Config recibida (databaseURL):', config.databaseURL);
+                console.log('📋 Config recibida (databaseURL):', config.databaseURL);
                 
                 firebaseApp = firebase.initializeApp(config);
                 firebaseDatabase = firebase.database();
@@ -1393,16 +1393,16 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 const testRef = firebaseDatabase.ref('.info/connected');
                 testRef.on('value', (snapshot) => {
                     if (snapshot.val() === true) {
-                        console.log('âœ… Firebase conectado exitosamente');
+                        console.log('✅ Firebase conectado exitosamente');
                     } else {
-                        console.log('âš ï¸ Firebase desconectado');
+                        console.log('⚠️ Firebase desconectado');
                     }
                 });
                 
-                console.log('âœ… Firebase inicializado correctamente');
+                console.log('✅ Firebase inicializado correctamente');
             } catch (error) {
-                console.error('âŒ Error al inicializar Firebase:', error);
-                alert('Error de conexiÃ³n con Firebase. Verifica tu configuraciÃ³n.');
+                console.error('❌ Error al inicializar Firebase:', error);
+                alert('Error de conexión con Firebase. Verifica tu configuración.');
                 throw error;
             }
         }
@@ -1421,18 +1421,18 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 try {
                     const db = this.getDb();
                     const path = `courses/${this.docenteId}/${storeName}`;
-                    console.log(`ðŸ“– Leyendo de Firebase: ${path}`);
+                    console.log(`📖 Leyendo de Firebase: ${path}`);
                     const snapshot = await db.ref(path).once('value');
                     if (snapshot.exists()) {
                         const data = snapshot.val();
                         const result = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                        console.log(`âœ… Datos encontrados en ${storeName}:`, result);
+                        console.log(`✅ Datos encontrados en ${storeName}:`, result);
                         return result;
                     }
-                    console.log(`âš ï¸ No hay datos en ${storeName}`);
+                    console.log(`⚠️ No hay datos en ${storeName}`);
                     return [];
                 } catch (error) {
-                    console.error(`âŒ Error getting ${storeName}:`, error);
+                    console.error(`❌ Error getting ${storeName}:`, error);
                     return [];
                 }
             }
@@ -1442,10 +1442,10 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     const db = this.getDb();
                     const newRef = db.ref(`courses/${this.docenteId}/${storeName}`).push();
                     await newRef.set(data);
-                    console.log(`âœ… Guardado en Firebase: courses/${this.docenteId}/${storeName}/${newRef.key}`, data);
+                    console.log(`✅ Guardado en Firebase: courses/${this.docenteId}/${storeName}/${newRef.key}`, data);
                     return newRef.key;
                 } catch (error) {
-                    console.error(`âŒ Error adding to ${storeName}:`, error);
+                    console.error(`❌ Error adding to ${storeName}:`, error);
                     alert(`Error al guardar en Firebase: ${error.message}`);
                     throw error;
                 }
@@ -1515,32 +1515,32 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
         let oaData = {};
 
-        // Plantillas predefinidas de evaluaciÃ³n
+        // Plantillas predefinidas de evaluación
         const evaluationTemplates = {
             rubric: [
                 {
                     id: 'rubrica_titeres',
-                    name: 'RÃºbrica: Obra de TÃ­teres',
-                    description: 'EvaluaciÃ³n formativa para obra de tÃ­teres (Unidad IV "Poder y ambiciÃ³n")',
+                    name: 'Rúbrica: Obra de Títeres',
+                    description: 'Evaluación formativa para obra de títeres (Unidad IV "Poder y ambición")',
                     oas: ['OA5', 'OA6', 'OA11', 'OA14', 'OA15'],
                     criteria: [
                         { 
-                            name: 'Guion dramÃ¡tico: coherencia y estructura', 
+                            name: 'Guion dramático: coherencia y estructura', 
                             maxPoints: 4,
                             descriptors: {
-                                4: 'El guion presenta una estructura clara con inicio, desarrollo, clÃ­max y desenlace perfectamente articulados.',
+                                4: 'El guion presenta una estructura clara con inicio, desarrollo, clímax y desenlace perfectamente articulados.',
                                 3: 'El guion tiene estructura clara, aunque alguna etapa puede estar menos desarrollada.',
                                 2: 'La estructura es reconocible pero presenta inconsistencias o etapas poco desarrolladas.',
                                 1: 'La estructura es confusa o carece de coherencia en la secuencia de acciones.'
                             }
                         },
                         { 
-                            name: 'ConstrucciÃ³n de personajes', 
+                            name: 'Construcción de personajes', 
                             maxPoints: 4,
                             descriptors: {
-                                4: 'Los personajes estÃ¡n plenamente desarrollados con motivaciones claras y evoluciÃ³n coherente.',
-                                3: 'Los personajes estÃ¡n bien construidos, aunque su desarrollo podrÃ­a profundizarse.',
-                                2: 'Los personajes son bÃ¡sicos, con motivaciones poco claras o estereotipadas.',
+                                4: 'Los personajes están plenamente desarrollados con motivaciones claras y evolución coherente.',
+                                3: 'Los personajes están bien construidos, aunque su desarrollo podría profundizarse.',
+                                2: 'Los personajes son básicos, con motivaciones poco claras o estereotipadas.',
                                 1: 'Los personajes carecen de desarrollo o sus acciones son incoherentes.'
                             }
                         },
@@ -1548,39 +1548,39 @@ ASCENCIO ROZAS MAXIMO MARIANO
                             name: 'Creatividad en la propuesta', 
                             maxPoints: 4,
                             descriptors: {
-                                4: 'La propuesta es original, innovadora y aporta elementos Ãºnicos al tema trabajado.',
+                                4: 'La propuesta es original, innovadora y aporta elementos únicos al tema trabajado.',
                                 3: 'La propuesta muestra creatividad y elementos originales interesantes.',
                                 2: 'La propuesta tiene algunos elementos creativos pero predominan los elementos convencionales.',
-                                1: 'La propuesta es muy bÃ¡sica o carece de originalidad.'
+                                1: 'La propuesta es muy básica o carece de originalidad.'
                             }
                         },
                         { 
-                            name: 'ConfecciÃ³n de tÃ­teres', 
+                            name: 'Confección de títeres', 
                             maxPoints: 4,
                             descriptors: {
-                                4: 'Los tÃ­teres estÃ¡n muy bien confeccionados, con detalles cuidados y materiales apropiados.',
-                                3: 'Los tÃ­teres estÃ¡n bien hechos y son funcionales para la obra.',
-                                2: 'Los tÃ­teres son bÃ¡sicos y su confecciÃ³n presenta deficiencias menores.',
-                                1: 'Los tÃ­teres estÃ¡n mal confeccionados o no son adecuados para la representaciÃ³n.'
+                                4: 'Los títeres están muy bien confeccionados, con detalles cuidados y materiales apropiados.',
+                                3: 'Los títeres están bien hechos y son funcionales para la obra.',
+                                2: 'Los títeres son básicos y su confección presenta deficiencias menores.',
+                                1: 'Los títeres están mal confeccionados o no son adecuados para la representación.'
                             }
                         },
                         { 
-                            name: 'Guion tÃ©cnico y uso de elementos dramÃ¡ticos', 
+                            name: 'Guion técnico y uso de elementos dramáticos', 
                             maxPoints: 4,
                             descriptors: {
-                                4: 'El guion tÃ©cnico integra acotaciones, iluminaciÃ³n, sonido y otros elementos de forma coherente y efectiva.',
-                                3: 'El guion tÃ©cnico incluye los elementos principales aunque podrÃ­a mejorarse la integraciÃ³n.',
-                                2: 'El guion tÃ©cnico estÃ¡ presente pero incompleto o poco detallado.',
-                                1: 'El guion tÃ©cnico es muy deficiente o inexistente.'
+                                4: 'El guion técnico integra acotaciones, iluminación, sonido y otros elementos de forma coherente y efectiva.',
+                                3: 'El guion técnico incluye los elementos principales aunque podría mejorarse la integración.',
+                                2: 'El guion técnico está presente pero incompleto o poco detallado.',
+                                1: 'El guion técnico es muy deficiente o inexistente.'
                             }
                         },
                         { 
-                            name: 'RedacciÃ³n y ortografÃ­a en el guion', 
+                            name: 'Redacción y ortografía en el guion', 
                             maxPoints: 4,
                             descriptors: {
-                                4: 'El guion estÃ¡ impecablemente escrito, sin errores ortogrÃ¡ficos ni gramaticales.',
-                                3: 'El guion presenta buena redacciÃ³n con errores mÃ­nimos que no afectan la comprensiÃ³n.',
-                                2: 'El guion tiene varios errores ortogrÃ¡ficos o gramaticales que dificultan la lectura.',
+                                4: 'El guion está impecablemente escrito, sin errores ortográficos ni gramaticales.',
+                                3: 'El guion presenta buena redacción con errores mínimos que no afectan la comprensión.',
+                                2: 'El guion tiene varios errores ortográficos o gramaticales que dificultan la lectura.',
                                 1: 'El guion presenta numerosos errores que impiden una lectura fluida.'
                             }
                         },
@@ -1588,10 +1588,10 @@ ASCENCIO ROZAS MAXIMO MARIANO
                             name: 'Trabajo colaborativo', 
                             maxPoints: 4,
                             descriptors: {
-                                4: 'Todos los integrantes participaron activamente, respetÃ¡ndose mutuamente y distribuyendo equitativamente las tareas.',
-                                3: 'El grupo trabajÃ³ colaborativamente, aunque la participaciÃ³n no fue completamente equitativa.',
-                                2: 'Hubo trabajo en equipo pero con dificultades de colaboraciÃ³n o distribuciÃ³n de tareas.',
-                                1: 'El trabajo colaborativo fue deficiente, con participaciÃ³n desigual o conflictos.'
+                                4: 'Todos los integrantes participaron activamente, respetándose mutuamente y distribuyendo equitativamente las tareas.',
+                                3: 'El grupo trabajó colaborativamente, aunque la participación no fue completamente equitativa.',
+                                2: 'Hubo trabajo en equipo pero con dificultades de colaboración o distribución de tareas.',
+                                1: 'El trabajo colaborativo fue deficiente, con participación desigual o conflictos.'
                             }
                         },
                         { 
@@ -1599,9 +1599,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
                             maxPoints: 4,
                             descriptors: {
                                 4: 'El estudiante/grupo fue totalmente responsable, cumpliendo con todos los plazos y compromisos.',
-                                3: 'MostrÃ³ buen nivel de responsabilidad, con cumplimiento en la mayorÃ­a de los compromisos.',
+                                3: 'Mostró buen nivel de responsabilidad, con cumplimiento en la mayoría de los compromisos.',
                                 2: 'El cumplimiento fue irregular, faltando a algunos compromisos o plazos.',
-                                1: 'MostrÃ³ escasa responsabilidad y no cumpliÃ³ con los compromisos establecidos.'
+                                1: 'Mostró escasa responsabilidad y no cumplió con los compromisos establecidos.'
                             }
                         }
                     ],
@@ -1612,28 +1612,28 @@ ASCENCIO ROZAS MAXIMO MARIANO
             checklist: [
                 {
                     id: 'cotejo_dramatico',
-                    name: 'Lista de Cotejo: Texto DramÃ¡tico',
-                    description: 'AnÃ¡lisis de comprensiÃ³n lectora - Unidad IV "Poder y ambiciÃ³n"',
+                    name: 'Lista de Cotejo: Texto Dramático',
+                    description: 'Análisis de comprensión lectora - Unidad IV "Poder y ambición"',
                     oas: ['OA5', 'OA6', 'OA14', 'OA15'],
                     items: [
-                        { section: 'ComprensiÃ³n y anÃ¡lisis literario (OA 5)', items: [
-                            'Identifica el conflicto central de la obra dramÃ¡tica trabajada.',
-                            'Describe la evoluciÃ³n de los personajes principales segÃºn sus acciones y motivaciones.',
-                            'Reconoce sÃ­mbolos literarios presentes en la obra dramÃ¡tica.',
-                            'Explica cÃ³mo la atmÃ³sfera de la obra se construye a partir de diÃ¡logos y acotaciones.',
-                            'Relaciona elementos de la puesta en escena (iluminaciÃ³n, vestuario o escenografÃ­a) con el sentido de la obra.'
+                        { section: 'Comprensión y análisis literario (OA 5)', items: [
+                            'Identifica el conflicto central de la obra dramática trabajada.',
+                            'Describe la evolución de los personajes principales según sus acciones y motivaciones.',
+                            'Reconoce símbolos literarios presentes en la obra dramática.',
+                            'Explica cómo la atmósfera de la obra se construye a partir de diálogos y acotaciones.',
+                            'Relaciona elementos de la puesta en escena (iluminación, vestuario o escenografía) con el sentido de la obra.'
                         ]},
                         { section: 'Contexto cultural y literario (OA 6)', items: [
-                            'Describe caracterÃ­sticas del teatro del Siglo de Oro (estructura, temas o estilo).',
-                            'Explica cÃ³mo el contexto histÃ³rico influye en la construcciÃ³n de las obras del Siglo de Oro.'
+                            'Describe características del teatro del Siglo de Oro (estructura, temas o estilo).',
+                            'Explica cómo el contexto histórico influye en la construcción de las obras del Siglo de Oro.'
                         ]},
-                        { section: 'ProducciÃ³n escrita (OA 14 y OA 15)', items: [
+                        { section: 'Producción escrita (OA 14 y OA 15)', items: [
                             'Formula una postura personal frente a un tema de la obra.',
                             'Usa evidencias provenientes del siglo de oro para sustentar su postura personal.',
-                            'Organiza sus ideas en introducciÃ³n, desarrollo y conclusiÃ³n con coherencia.'
+                            'Organiza sus ideas en introducción, desarrollo y conclusión con coherencia.'
                         ]},
                         { section: 'OA Transversales', items: [
-                            'Participa respetuosamente en discusiones relacionada con la temÃ¡tica del siglo de oro.',
+                            'Participa respetuosamente en discusiones relacionada con la temática del siglo de oro.',
                             'Trabaja de manera colaborativa en equipo cumpliendo su rol asignado.'
                         ]}
                     ],
@@ -1645,9 +1645,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
         // Cargar datos de OA al iniciar
         window.addEventListener('load', async () => {
             docenteActual = localStorage.getItem('docenteActual') || sessionStorage.getItem('docenteActual');
-            console.log(`ðŸ‘¤ Docente actual: ${docenteActual}`);
+            console.log(`👤 Docente actual: ${docenteActual}`);
             if (!docenteActual || !['1','2','3','4'].includes(docenteActual)) {
-                console.error('âŒ No hay docente vÃ¡lido, redirigiendo...');
+                console.error('❌ No hay docente válido, redirigiendo...');
                 window.location.href = 'index.html';
                 return;
             }
@@ -1657,7 +1657,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             // Initialize Firebase
             await initFirebase();
             firebaseDB = new FirebaseDB(docenteActual);
-            console.log(`ðŸ”¥ FirebaseDB inicializado para docente ${docenteActual}`);
+            console.log(`🔥 FirebaseDB inicializado para docente ${docenteActual}`);
 
             // Check if migration is needed
             const needsMigration = await checkMigrationNeeded();
@@ -1665,15 +1665,15 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 await migrateToFirebase();
             }
 
-            // Pre-cargar datos en paralelo para cachÃ©
-            console.log('âš¡ Pre-cargando datos en cachÃ©...');
+            // Pre-cargar datos en paralelo para caché
+            console.log('⚡ Pre-cargando datos en caché...');
             const startTime = Date.now();
             await Promise.all([
                 getAllData('courses'),
                 getAllData('students'),
                 getAllData('tasks')
             ]);
-            console.log(`âœ… Datos pre-cargados en ${Date.now() - startTime}ms`);
+            console.log(`✅ Datos pre-cargados en ${Date.now() - startTime}ms`);
 
             await loadCourses();
         });
@@ -1686,10 +1686,10 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 console.error('Error cargando datos de OA:', error);
                 // Datos de respaldo en caso de error
                 oaData = {
-                    "OA3": { "titulo": "ComprensiÃ³n y producciÃ³n textual", "indicadores": ["Indicador 1", "Indicador 2"] },
+                    "OA3": { "titulo": "Comprensión y producción textual", "indicadores": ["Indicador 1", "Indicador 2"] },
                     "OA5": { "titulo": "Sistema de la lengua", "indicadores": ["Indicador 1", "Indicador 2"] },
-                    "OA6": { "titulo": "ReflexiÃ³n sobre el lenguaje", "indicadores": ["Indicador 1", "Indicador 2"] },
-                    "OA11": { "titulo": "Aprendizaje autÃ³nomo", "indicadores": ["Indicador 1", "Indicador 2"] }
+                    "OA6": { "titulo": "Reflexión sobre el lenguaje", "indicadores": ["Indicador 1", "Indicador 2"] },
+                    "OA11": { "titulo": "Aprendizaje autónomo", "indicadores": ["Indicador 1", "Indicador 2"] }
                 };
             }
         }
@@ -1802,12 +1802,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 // Wait a moment then remove modal
                 setTimeout(() => {
                     document.body.removeChild(migrationModal);
-                    alert('Â¡MigraciÃ³n completada! Tus datos ahora estÃ¡n en la nube.');
+                    alert('¡Migración completada! Tus datos ahora están en la nube.');
                 }, 1000);
 
             } catch (error) {
                 console.error('Error during migration:', error);
-                alert('Error durante la migraciÃ³n. Por favor, contacta al soporte.');
+                alert('Error durante la migración. Por favor, contacta al soporte.');
             }
         }
 
@@ -1858,25 +1858,25 @@ ASCENCIO ROZAS MAXIMO MARIANO
         }
 
         // Database functions (now using Firebase)
-        // Sistema de cachÃ© para reducir llamadas a Firebase
+        // Sistema de caché para reducir llamadas a Firebase
         const dataCache = {};
-        const CACHE_DURATION = 15000; // 15 segundos (reducido para mejor sincronizaciÃ³n)
+        const CACHE_DURATION = 15000; // 15 segundos (reducido para mejor sincronización)
 
-        // FunciÃ³n para forzar sincronizaciÃ³n desde Firebase
+        // Función para forzar sincronización desde Firebase
         async function forceSync() {
             const syncIcon = document.getElementById('syncIcon');
             const syncStatus = document.getElementById('syncStatus');
             const syncBtn = document.getElementById('syncBtn');
             
-            // Mostrar animaciÃ³n de sincronizaciÃ³n
+            // Mostrar animación de sincronización
             syncIcon.classList.add('fa-spin');
             syncBtn.disabled = true;
             syncStatus.textContent = 'Sincronizando...';
             
             try {
-                // Limpiar todo el cachÃ©
+                // Limpiar todo el caché
                 Object.keys(dataCache).forEach(key => delete dataCache[key]);
-                console.log('ðŸ”„ Forzando sincronizaciÃ³n con Firebase...');
+                console.log('🔄 Forzando sincronización con Firebase...');
                 
                 // Recargar datos frescos de Firebase
                 await Promise.all([
@@ -1889,16 +1889,16 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 // Recargar la planilla
                 await loadPlanilla();
                 
-                syncStatus.textContent = 'Sincronizado âœ“';
-                console.log('âœ… SincronizaciÃ³n completada');
+                syncStatus.textContent = 'Sincronizado ✓';
+                console.log('✅ Sincronización completada');
                 
-                // Restaurar texto despuÃ©s de 3 segundos
+                // Restaurar texto después de 3 segundos
                 setTimeout(() => {
                     syncStatus.textContent = 'Firebase Cloud';
                 }, 3000);
                 
             } catch (error) {
-                console.error('âŒ Error en sincronizaciÃ³n:', error);
+                console.error('❌ Error en sincronización:', error);
                 syncStatus.textContent = 'Error de sync';
             } finally {
                 syncIcon.classList.remove('fa-spin');
@@ -1910,17 +1910,17 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const cacheKey = `${docenteActual}_${storeName}`;
             const now = Date.now();
             
-            // Si hay cachÃ© vÃ¡lido y no se fuerza refresh, usar cachÃ©
+            // Si hay caché válido y no se fuerza refresh, usar caché
             if (!forceRefresh && dataCache[cacheKey] && (now - dataCache[cacheKey].timestamp < CACHE_DURATION)) {
-                console.log(`ðŸ“¦ Usando cachÃ© para ${storeName}`);
+                console.log(`📦 Usando caché para ${storeName}`);
                 return dataCache[cacheKey].data;
             }
             
-            // Si no hay cachÃ© o expirÃ³, obtener de Firebase
-            console.log(`ðŸ”„ Obteniendo ${storeName} de Firebase`);
+            // Si no hay caché o expiró, obtener de Firebase
+            console.log(`🔄 Obteniendo ${storeName} de Firebase`);
             const data = await firebaseDB.getAll(storeName);
             
-            // Guardar en cachÃ©
+            // Guardar en caché
             dataCache[cacheKey] = {
                 data: data,
                 timestamp: now
@@ -1929,11 +1929,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
             return data;
         }
         
-        // FunciÃ³n para invalidar cachÃ© cuando se modifica data
+        // Función para invalidar caché cuando se modifica data
         function invalidateCache(storeName) {
             const cacheKey = `${docenteActual}_${storeName}`;
             delete dataCache[cacheKey];
-            console.log(`ðŸ—‘ï¸ CachÃ© invalidado para ${storeName}`);
+            console.log(`🗑️ Caché invalidado para ${storeName}`);
         }
 
         async function addData(storeName, data) {
@@ -1957,7 +1957,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
         }
 
         async function upsertEvaluation(taskId, studentId, value, gradeType) {
-            // Convertir el valor segÃºn el tipo de evaluaciÃ³n
+            // Convertir el valor según el tipo de evaluación
             let processedValue = value;
             
             switch(gradeType) {
@@ -1977,7 +1977,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
         async function loadCourses() {
             const courses = await getAllData('courses');
-            console.log('ðŸ“– Cursos cargados:', courses);
+            console.log('📖 Cursos cargados:', courses);
             const select = document.getElementById('courseSelect');
             select.innerHTML = '<option value="">-- Seleccionar --</option>';
             courses.forEach(c => {
@@ -1986,7 +1986,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 opt.textContent = c.name + ' (' + c.letter + '-' + c.type + ')';
                 select.appendChild(opt);
             });
-            console.log('âœ… Dropdown de cursos actualizado con', courses.length, 'cursos');
+            console.log('✅ Dropdown de cursos actualizado con', courses.length, 'cursos');
         }
 
         // Course functions
@@ -2004,21 +2004,21 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
 
             // Valores por defecto
-            const courseName = `Lengua y Literatura 2Â° ${modality} ${letter}`;
+            const courseName = `Lengua y Literatura 2° ${modality} ${letter}`;
             const courseData = {
                 name: courseName,
                 letter: letter,
                 type: 'Media',
                 modality: modality,
                 subject: 'Lengua y Literatura',
-                grade: '2Â° Medio'
+                grade: '2° Medio'
             };
 
-            console.log('ðŸ’¾ Intentando guardar curso:', courseData);
+            console.log('💾 Intentando guardar curso:', courseData);
             
             try {
                 const newCourseId = await addData('courses', courseData);
-                console.log('âœ… Curso guardado con ID:', newCourseId);
+                console.log('✅ Curso guardado con ID:', newCourseId);
                 
                 closeModal('courseModal');
                 document.getElementById('courseLetter').value = '';
@@ -2026,15 +2026,15 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 
                 await loadCourses();
                 
-                // Seleccionar automÃ¡ticamente el curso reciÃ©n creado
+                // Seleccionar automáticamente el curso recién creado
                 document.getElementById('courseSelect').value = newCourseId;
-                courseActual = newCourseId; // Guardar como string, no como nÃºmero
+                courseActual = newCourseId; // Guardar como string, no como número
                 await loadPlanilla();
                 
                 alert(`Curso "${courseName}" creado y seleccionado. Ya puedes agregar estudiantes.`);
             } catch (error) {
-                console.error('âŒ Error al guardar curso:', error);
-                alert(`Error al guardar el curso: ${error.message}\n\nRevisa la consola para mÃ¡s detalles.`);
+                console.error('❌ Error al guardar curso:', error);
+                alert(`Error al guardar el curso: ${error.message}\n\nRevisa la consola para más detalles.`);
             }
         }
 
@@ -2047,12 +2047,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const courses = await getAllData('courses');
             const course = courses.find(c => c.id === courseActual);
             
-            if (!confirm(`Â¿EstÃ¡s seguro de eliminar el curso "${course?.name}"?\n\nEsto tambiÃ©n eliminarÃ¡ todos los estudiantes, tareas y evaluaciones asociadas.`)) {
+            if (!confirm(`¿Estás seguro de eliminar el curso "${course?.name}"?\n\nEsto también eliminará todos los estudiantes, tareas y evaluaciones asociadas.`)) {
                 return;
             }
 
             try {
-                console.log('ðŸ—‘ï¸ Eliminando curso:', courseActual);
+                console.log('🗑️ Eliminando curso:', courseActual);
 
                 // Eliminar estudiantes del curso
                 const students = await getAllData('students');
@@ -2069,12 +2069,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 }
 
                 // Eliminar evaluaciones (si existen como objetos separados)
-                // Las evaluaciones estÃ¡n anidadas, no es necesario eliminarlas por separado
+                // Las evaluaciones están anidadas, no es necesario eliminarlas por separado
 
                 // Eliminar el curso
                 await deleteData('courses', courseActual);
 
-                console.log('âœ… Curso eliminado correctamente');
+                console.log('✅ Curso eliminado correctamente');
 
                 courseActual = null;
                 await loadCourses();
@@ -2082,14 +2082,14 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
                 alert('Curso eliminado correctamente');
             } catch (error) {
-                console.error('âŒ Error al eliminar curso:', error);
+                console.error('❌ Error al eliminar curso:', error);
                 alert(`Error al eliminar el curso: ${error.message}`);
             }
         }
 
         async function loadPlanilla() {
             courseActual = document.getElementById('courseSelect').value; // Mantener como string
-            console.log('ðŸ“š Curso seleccionado:', courseActual);
+            console.log('📚 Curso seleccionado:', courseActual);
             const tbody = document.getElementById('planillaBody');
             const meta = document.getElementById('meta');
             const tableHead = document.querySelector('#planillaTable thead tr');
@@ -2114,34 +2114,34 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             let headerHTML = '<th class="col-num">N</th><th class="col-apellido-p">APELLIDO PATERNO</th><th class="col-apellido-m">APELLIDO MATERNO</th><th class="col-nombre">NOMBRE</th>';
             courseTasks.forEach(t => {
-                // Iconos y etiquetas por tipo de evaluaciÃ³n con colores mÃ¡s contrastantes
-                let typeIcon = 'âœ“';
-                let typeLabel = 'SÃ­/No';
-                let typeBg = '#2563eb'; // Azul mÃ¡s oscuro
+                // Iconos y etiquetas por tipo de evaluación con colores más contrastantes
+                let typeIcon = '✓';
+                let typeLabel = 'Sí/No';
+                let typeBg = '#2563eb'; // Azul más oscuro
                 
                 switch(t.gradeType) {
                     case 'levels':
-                        typeIcon = 'ðŸ“Š';
+                        typeIcon = '📊';
                         typeLabel = 'Niveles';
                         typeBg = '#0891b2'; // Cyan oscuro
                         break;
                     case 'checklist':
-                        typeIcon = 'ðŸ“‹';
+                        typeIcon = '📋';
                         typeLabel = 'Cotejo';
                         typeBg = '#ea580c'; // Naranja oscuro
                         break;
                     case 'rubric':
-                        typeIcon = 'ðŸ“';
-                        typeLabel = 'RÃºbrica';
-                        typeBg = '#7c3aed'; // PÃºrpura oscuro
+                        typeIcon = '📝';
+                        typeLabel = 'Rúbrica';
+                        typeBg = '#7c3aed'; // Púrpura oscuro
                         break;
                     default:
-                        typeIcon = 'âœ“';
-                        typeLabel = 'SÃ­/No';
+                        typeIcon = '✓';
+                        typeLabel = 'Sí/No';
                         typeBg = '#2563eb'; // Azul oscuro
                 }
 
-                // Mostrar porcentaje si existe con colores mÃ¡s contrastantes
+                // Mostrar porcentaje si existe con colores más contrastantes
                 let percentageInfo = '';
                 const percentage = parseFloat(t.percentage || 0);
                 if (percentage > 0) {
@@ -2153,7 +2153,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 let oaInfo = '';
                 // Soportar tanto el formato antiguo (t.oa) como el nuevo (t.oas array)
                 if (t.oas && t.oas.length > 0) {
-                    // Nuevo formato: mÃºltiples OAs
+                    // Nuevo formato: múltiples OAs
                     oaInfo = '<br><small style="color: #374151; font-weight: 500;">' + t.oas.join(', ') + '</small>';
                     
                     // Contar indicadores totales
@@ -2174,21 +2174,21 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     }
                 }
                 
-                // Badge del tipo de evaluaciÃ³n
+                // Badge del tipo de evaluación
                 const typeBadge = '<span style="background: ' + typeBg + '; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; display: inline-block; margin-top: 4px; font-weight: 600;">' + typeIcon + ' ' + typeLabel + '</span>';
                 
                 // Mostrar nombre de plantilla si existe
                 let templateInfo = '';
                 if (t.templateData && t.fileName) {
-                    templateInfo = '<br><small style="color: #667eea; font-weight: 600;">ðŸ“„ ' + t.fileName + '</small>';
+                    templateInfo = '<br><small style="color: #667eea; font-weight: 600;">📄 ' + t.fileName + '</small>';
                 }
                 
-                oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; margin-right: 3px; background: #0891b2; border: none;">âœï¸ Editar</button>';
-                oaInfo += '<button class="btn-small" onclick="deleteTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #dc2626; border: none;">ðŸ—‘ï¸ Eliminar</button>';
+                oaInfo += '<br><button class="btn-small" onclick="editTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; margin-right: 3px; background: #0891b2; border: none;">✏️ Editar</button>';
+                oaInfo += '<button class="btn-small" onclick="deleteTask(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #dc2626; border: none;">🗑️ Eliminar</button>';
                 
-                // Si tiene plantilla, agregar botÃ³n para evaluar
+                // Si tiene plantilla, agregar botón para evaluar
                 if (t.templateData) {
-                    oaInfo += '<br><button class="btn-small" onclick="openTemplateEvaluation(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #10b981; border: none;">ðŸ“Š Evaluar</button>';
+                    oaInfo += '<br><button class="btn-small" onclick="openTemplateEvaluation(\'' + t.id + '\')" style="font-size: 10px; padding: 3px 6px; margin-top: 3px; background: #10b981; border: none;">📊 Evaluar</button>';
                 }
                 
                 headerHTML += '<th class="task-header">' + t.name + '<span class="task-subtitle">' + (t.date||'') + '</span>' + typeBadge + percentageInfo + templateInfo + oaInfo + '</th>';
@@ -2227,7 +2227,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     } else {
                         switch(gradeType) {
                             case 'binary':
-                                // SÃ­/No (checkbox)
+                                // Sí/No (checkbox)
                                 const checked = existing ? !!existing.value : false;
                                 cellHTML += '<input type="checkbox" ' + (checked?'checked':'') + ' onchange="upsertEvaluation(\'' + t.id + '\', \'' + st.id + '\', this.checked, \'binary\')">';
                                 if (checked) {
@@ -2277,9 +2277,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                 
                             case 'checklist':
                             case 'rubric':
-                                // Lista de Cotejo o RÃºbrica con plantilla
+                                // Lista de Cotejo o Rúbrica con plantilla
                                 if (t.templateData) {
-                                    // Usar plantilla - mostrar estado y botÃ³n
+                                    // Usar plantilla - mostrar estado y botón
                                     const hasEval = existing && existing.value && existing.value.completed;
                                     if (hasEval) {
                                         // Calcular puntaje obtenido
@@ -2288,7 +2288,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                         const evalData = existing.value.templateEvaluation || {};
                                         
                                         if (t.gradeType === 'rubric') {
-                                            // Contar puntos de rÃºbrica
+                                            // Contar puntos de rúbrica
                                             t.templateData.data.criteria.forEach((crit, idx) => {
                                                 maxScore += crit.maxPoints;
                                                 const points = parseInt(evalData[`criterion_${idx}`]) || 0;
@@ -2312,7 +2312,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                             // Calcular nota (1.0 a 7.0)
                                             const scorePercentage = (score / maxScore) * 100;
                                             const nota = (1 + (scorePercentage / 100) * 6).toFixed(1);
-                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 10px;">' + score + '/' + maxScore + ' âœ“</div>';
+                                            cellHTML += '<div style="color: #10b981; font-weight: bold; font-size: 10px;">' + score + '/' + maxScore + ' ✓</div>';
                                             cellHTML += '<div style="color: #6366f1; font-weight: bold; font-size: 11px;">Nota: ' + nota + '</div>';
                                         }
                                         
@@ -2326,7 +2326,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                                             formativeTotal++;
                                         }
                                     } else {
-                                        cellHTML += '<div style="color: #999; font-size: 16px;">â—‹</div>';
+                                        cellHTML += '<div style="color: #999; font-size: 16px;">○</div>';
                                         cellHTML += '<button onclick="openAndLoadTemplate(\'' + t.id + '\', \'' + st.id + '\')" style="font-size: 9px; padding: 2px 4px; margin-top: 2px; background: #10b981; color: white; border: none; border-radius: 3px; cursor: pointer;">Evaluar</button>';
                                         if (percentage > 0) totalPercentage += percentage;
                                         else formativeTotal++;
@@ -2364,12 +2364,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     const scorePercentage = (totalWeightedScore / totalPercentage) * 100;
                     nota = (1 + (scorePercentage / 100) * 6).toFixed(1);
                 } else {
-                    // Si todas son formativas, usar el mÃ©todo anterior
+                    // Si todas son formativas, usar el método anterior
                     const max = courseTasks.length || 1;
                     nota = max > 0 ? (1 + (puntos/max)*6).toFixed(1) : '1.0';
                 }
 
-                // Mostrar puntos con informaciÃ³n adicional
+                // Mostrar puntos con información adicional
                 let puntosDisplay = puntos + '';
                 if (formativeTotal > 0) {
                     puntosDisplay += '<br><small style="color: #666; font-size: 10px;">(' + formativeComplete + '/' + formativeTotal + ' form.)</small>';
@@ -2388,7 +2388,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             setTimeout(checkScrollIndicator, 100);
         }
         
-        // FunciÃ³n para scroll suave de la tabla
+        // Función para scroll suave de la tabla
         function scrollTable(amount) {
             const wrapper = document.getElementById('tableWrapper');
             if (wrapper) {
@@ -2400,7 +2400,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
         }
         
-        // FunciÃ³n para ir a un porcentaje del scroll
+        // Función para ir a un porcentaje del scroll
         function scrollToPercent(percent) {
             const wrapper = document.getElementById('tableWrapper');
             if (wrapper) {
@@ -2410,7 +2410,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
         }
         
-        // Actualizar UI del scroll (slider y posiciÃ³n)
+        // Actualizar UI del scroll (slider y posición)
         function updateScrollUI() {
             const wrapper = document.getElementById('tableWrapper');
             const slider = document.getElementById('scrollSlider');
@@ -2433,9 +2433,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 
                 if (position) {
                     if (percent <= 5) {
-                        position.textContent = 'â—€ Inicio';
+                        position.textContent = '◀ Inicio';
                     } else if (percent >= 95) {
-                        position.textContent = 'Final â–¶';
+                        position.textContent = 'Final ▶';
                     } else {
                         position.textContent = `${percent}%`;
                     }
@@ -2445,7 +2445,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             checkScrollIndicator();
         }
         
-        // FunciÃ³n para mostrar/ocultar indicador y botones de scroll
+        // Función para mostrar/ocultar indicador y botones de scroll
         function checkScrollIndicator() {
             const wrapper = document.getElementById('tableWrapper');
             const indicator = document.getElementById('scrollIndicator');
@@ -2458,7 +2458,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const isScrolledToStart = wrapper.scrollLeft <= 20;
             const isScrolledToEnd = wrapper.scrollLeft >= (wrapper.scrollWidth - wrapper.clientWidth - 20);
             
-            // Mostrar/ocultar botÃ³n izquierdo
+            // Mostrar/ocultar botón izquierdo
             if (scrollLeft) {
                 if (hasHorizontalScroll && !isScrolledToStart) {
                     scrollLeft.classList.add('show');
@@ -2467,7 +2467,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 }
             }
             
-            // Mostrar/ocultar botÃ³n derecho e indicador
+            // Mostrar/ocultar botón derecho e indicador
             if (scrollRight) {
                 if (hasHorizontalScroll && !isScrolledToEnd) {
                     scrollRight.classList.add('show');
@@ -2526,7 +2526,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
         }
 
         function openAddStudentModal() {
-            console.log('ðŸŽ“ Intentando abrir modal de estudiante. courseActual:', courseActual);
+            console.log('🎓 Intentando abrir modal de estudiante. courseActual:', courseActual);
             if (!courseActual) { 
                 alert('Seleccione un curso primero'); 
                 return; 
@@ -2559,7 +2559,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
         // Bulk student import functions
         function openBulkStudentModal() {
-            console.log('ðŸ“‹ Intentando abrir modal de carga masiva. courseActual:', courseActual);
+            console.log('📋 Intentando abrir modal de carga masiva. courseActual:', courseActual);
             if (!courseActual) { 
                 alert('Seleccione un curso primero'); 
                 return; 
@@ -2578,7 +2578,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 const parts = line.split(/\s+/);
                 
                 if (parts.length < 3) {
-                    console.warn(`LÃ­nea ${index + 1} ignorada (formato incorrecto): ${line}`);
+                    console.warn(`Línea ${index + 1} ignorada (formato incorrecto): ${line}`);
                     return;
                 }
 
@@ -2607,7 +2607,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const students = parseBulkStudents(text);
             
             if (students.length === 0) {
-                alert('No se encontraron estudiantes vÃ¡lidos. Verifica el formato.');
+                alert('No se encontraron estudiantes válidos. Verifica el formato.');
                 return;
             }
 
@@ -2628,7 +2628,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
             
             if (students.length > 5) {
-                html += `<div style="padding: 8px; color: #999; font-style: italic;">... y ${students.length - 5} estudiantes mÃ¡s</div>`;
+                html += `<div style="padding: 8px; color: #999; font-style: italic;">... y ${students.length - 5} estudiantes más</div>`;
             }
             
             previewContent.innerHTML = html;
@@ -2645,11 +2645,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const students = parseBulkStudents(text);
             
             if (students.length === 0) {
-                alert('No se encontraron estudiantes vÃ¡lidos. Verifica el formato.');
+                alert('No se encontraron estudiantes válidos. Verifica el formato.');
                 return;
             }
 
-            if (!confirm(`Â¿Importar ${students.length} estudiantes al curso actual?`)) {
+            if (!confirm(`¿Importar ${students.length} estudiantes al curso actual?`)) {
                 return;
             }
 
@@ -2659,12 +2659,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
             button.disabled = true;
 
             try {
-                // Obtener estudiantes actuales para determinar numeraciÃ³n
+                // Obtener estudiantes actuales para determinar numeración
                 const allStudents = await getAllData('students');
                 const courseStudents = allStudents.filter(s => s.courseId === courseActual);
                 let nextNumber = courseStudents.length + 1;
 
-                console.log(`ðŸ“¥ Importando ${students.length} estudiantes...`);
+                console.log(`📥 Importando ${students.length} estudiantes...`);
 
                 // Importar uno por uno
                 for (const student of students) {
@@ -2675,7 +2675,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         firstNames: student.firstNames
                     });
                     nextNumber++;
-                    console.log(`âœ… Importado: ${student.lastNames}, ${student.firstNames}`);
+                    console.log(`✅ Importado: ${student.lastNames}, ${student.firstNames}`);
                 }
 
                 closeModal('bulkStudentModal');
@@ -2684,9 +2684,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 
                 await loadPlanilla();
                 
-                alert(`âœ… Se importaron exitosamente ${students.length} estudiantes al curso.`);
+                alert(`✅ Se importaron exitosamente ${students.length} estudiantes al curso.`);
             } catch (error) {
-                console.error('âŒ Error en importaciÃ³n masiva:', error);
+                console.error('❌ Error en importación masiva:', error);
                 alert(`Error al importar estudiantes: ${error.message}`);
             } finally {
                 button.innerHTML = originalText;
@@ -2718,7 +2718,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         Marcar como estudiante retirado
                     </label>
                     <div style="font-size: 11px; color: #666; margin-top: 5px;">
-                        Los estudiantes retirados aparecen tachados y no cuentan en las estadÃ­sticas
+                        Los estudiantes retirados aparecen tachados y no cuentan en las estadísticas
                     </div>
                 </div>
                 <div class="modal-buttons">
@@ -2745,27 +2745,27 @@ ASCENCIO ROZAS MAXIMO MARIANO
             if (!courseActual) { alert('Seleccione un curso primero'); return; }
             document.getElementById('oaPreview').style.display = 'none';
             
-            // Actualizar el tÃ­tulo del modal
+            // Actualizar el título del modal
             const modalHeader = document.querySelector('#taskModal .modal-header');
             if (mode === 'evaluation') {
-                modalHeader.textContent = 'Agregar EvaluaciÃ³n (RÃºbrica/Pauta)';
+                modalHeader.textContent = 'Agregar Evaluación (Rúbrica/Pauta)';
             } else {
                 modalHeader.textContent = 'Agregar Tarea';
             }
             
-            // Filtrar opciones del select segÃºn el modo
+            // Filtrar opciones del select según el modo
             const taskTypeSelect = document.getElementById('taskType');
             taskTypeSelect.innerHTML = '';
             
             if (mode === 'simple') {
                 taskTypeSelect.innerHTML = `
-                    <option value="binary">âœ“ SÃ­ o No (Logrado/No Logrado)</option>
-                    <option value="levels">ðŸ“Š Niveles de Logro (Insuficiente, Elemental, Adecuado, Destacado)</option>
+                    <option value="binary">✓ Sí o No (Logrado/No Logrado)</option>
+                    <option value="levels">📊 Niveles de Logro (Insuficiente, Elemental, Adecuado, Destacado)</option>
                 `;
             } else if (mode === 'evaluation') {
                 taskTypeSelect.innerHTML = `
-                    <option value="rubric">ðŸ“ RÃºbrica (Plantilla de evaluaciÃ³n)</option>
-                    <option value="checklist">ðŸ“‹ Lista de Cotejo (Plantilla de evaluaciÃ³n)</option>
+                    <option value="rubric">📝 Rúbrica (Plantilla de evaluación)</option>
+                    <option value="checklist">📋 Lista de Cotejo (Plantilla de evaluación)</option>
                 `;
             }
             
@@ -2779,11 +2779,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const fileSection = document.getElementById('fileAttachmentSection');
             const predefinedTemplates = document.getElementById('predefinedTemplates');
             
-            // Mostrar secciÃ³n de archivo solo para checklist y rubric
+            // Mostrar sección de archivo solo para checklist y rubric
             if (taskType === 'checklist' || taskType === 'rubric') {
                 fileSection.style.display = 'block';
                 
-                // Cargar plantillas predefinidas segÃºn el tipo
+                // Cargar plantillas predefinidas según el tipo
                 const templates = evaluationTemplates[taskType] || [];
                 let templatesHtml = '';
                 
@@ -2806,7 +2806,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     // Auto-mostrar preview
                     setTimeout(() => showTemplatePreview(taskType, template.id), 100);
                 } else {
-                    // Si hay mÃºltiples plantillas, mostrar radio buttons
+                    // Si hay múltiples plantillas, mostrar radio buttons
                     templates.forEach(template => {
                         templatesHtml += `
                             <div style="margin-bottom: 10px;">
@@ -2850,13 +2850,13 @@ ASCENCIO ROZAS MAXIMO MARIANO
             if (type === 'rubric') {
                 previewHtml = `
                     <div style="font-weight: bold; margin-bottom: 12px; color: #333; font-size: 13px;">
-                        ðŸ“Š ${template.name} (${template.totalPoints} puntos)
+                        📊 ${template.name} (${template.totalPoints} puntos)
                     </div>
                     <div style="margin-bottom: 12px; padding: 8px; background: #e7f3ff; border-radius: 4px; font-size: 10px; color: #555;">
-                        <strong>Niveles de EvaluaciÃ³n:</strong><br>
+                        <strong>Niveles de Evaluación:</strong><br>
                         ${template.levels.map((level, idx) => {
                             const colors = ['#28a745', '#17a2b8', '#ffc107', '#dc3545'];
-                            return `<span style="color: ${colors[idx]}; font-weight: bold;">â– </span> ${level}`;
+                            return `<span style="color: ${colors[idx]}; font-weight: bold;">■</span> ${level}`;
                         }).join(' | ')}
                     </div>
                     <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px; color: #667eea;">Criterios con Indicadores:</div>
@@ -2888,7 +2888,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             } else if (type === 'checklist') {
                 previewHtml = `
                     <div style="font-weight: bold; margin-bottom: 8px; color: #333;">
-                        ðŸ“‹ ${template.name} (${template.totalItems} Ã­tems)
+                        📋 ${template.name} (${template.totalItems} ítems)
                     </div>
                 `;
                 template.items.forEach((section, idx) => {
@@ -2901,7 +2901,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     section.items.forEach((item, itemIdx) => {
                         previewHtml += `
                             <div style="padding: 3px 0 3px 15px; font-size: 10px; color: #555;">
-                                â˜ ${item}
+                                ☐ ${item}
                             </div>
                         `;
                     });
@@ -2932,7 +2932,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 warningDiv.style.display = 'block';
                 warningDiv.style.background = '#f8d7da';
                 warningDiv.style.borderColor = '#dc3545';
-                warningText.innerHTML = `El total serÃ­a ${newTotal}% (excede el 100%). Ya tienes ${total}% asignado.`;
+                warningText.innerHTML = `El total sería ${newTotal}% (excede el 100%). Ya tienes ${total}% asignado.`;
             } else if (newTotal < 100 && currentPercentage > 0) {
                 warningDiv.style.display = 'block';
                 warningDiv.style.background = '#d1ecf1';
@@ -2942,7 +2942,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 warningDiv.style.display = 'block';
                 warningDiv.style.background = '#d4edda';
                 warningDiv.style.borderColor = '#28a745';
-                warningText.innerHTML = `âœ“ Perfecto! Total: 100% de 100%`;
+                warningText.innerHTML = `✓ Perfecto! Total: 100% de 100%`;
             } else {
                 warningDiv.style.display = 'none';
             }
@@ -2964,11 +2964,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const fileInput = document.getElementById('taskFile');
 
             if (!name) { 
-                alert('âš ï¸ Ingresa un nombre para la evaluaciÃ³n'); 
+                alert('⚠️ Ingresa un nombre para la evaluación'); 
                 return; 
             }
 
-            // Obtener OAs seleccionados (mÃºltiples)
+            // Obtener OAs seleccionados (múltiples)
             const selectedOAs = [];
             const oaCheckboxes = document.querySelectorAll('.task-oa-checkbox:checked');
             oaCheckboxes.forEach(checkbox => {
@@ -2984,7 +2984,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             });
 
             if (totalPercentage + percentage > 100) {
-                if (!confirm(`âš ï¸ El total de porcentajes serÃ¡ ${(totalPercentage + percentage).toFixed(1)}% (excede el 100%).\n\nÂ¿Deseas continuar de todos modos?`)) {
+                if (!confirm(`⚠️ El total de porcentajes será ${(totalPercentage + percentage).toFixed(1)}% (excede el 100%).\n\n¿Deseas continuar de todos modos?`)) {
                     return;
                 }
             }
@@ -3007,13 +3007,13 @@ ASCENCIO ROZAS MAXIMO MARIANO
             let templateId = null;
             let templateData = null;
             
-            // Verificar si se seleccionÃ³ una plantilla predefinida (obligatorio para checklist y rubric)
+            // Verificar si se seleccionó una plantilla predefinida (obligatorio para checklist y rubric)
             if (taskType === 'checklist' || taskType === 'rubric') {
-                // Buscar tanto radio button como hidden input (para plantilla Ãºnica)
+                // Buscar tanto radio button como hidden input (para plantilla única)
                 const selectedTemplate = document.querySelector('input[name="predefinedTemplate"]:checked') || 
                                        document.getElementById('autoSelectedTemplate');
                 if (!selectedTemplate) {
-                    alert('âš ï¸ Debes seleccionar una plantilla de evaluaciÃ³n para este tipo de tarea.');
+                    alert('⚠️ Debes seleccionar una plantilla de evaluación para este tipo de tarea.');
                     return;
                 }
                 
@@ -3050,13 +3050,13 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 createdAt: new Date().toISOString()
             });
 
-            // Mostrar mensaje de Ã©xito
+            // Mostrar mensaje de éxito
             let typeLabel = '';
             switch(taskType) {
-                case 'binary': typeLabel = 'SÃ­/No'; break;
+                case 'binary': typeLabel = 'Sí/No'; break;
                 case 'levels': typeLabel = 'Niveles de Logro'; break;
                 case 'checklist': typeLabel = 'Lista de Cotejo'; break;
-                case 'rubric': typeLabel = 'RÃºbrica'; break;
+                case 'rubric': typeLabel = 'Rúbrica'; break;
             }
 
             // Limpiar formulario
@@ -3076,9 +3076,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
             
             // Recargar planilla primero
             await loadPlanilla();
-            console.log('âœ… Tarea guardada - Planilla recargada');
+            console.log('✅ Tarea guardada - Planilla recargada');
             
-            alert(`âœ… EvaluaciÃ³n creada exitosamente!\n\nTipo: ${typeLabel}\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(EvaluaciÃ³n formativa)' : ''}`);
+            alert(`✅ Evaluación creada exitosamente!\n\nTipo: ${typeLabel}\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(Evaluación formativa)' : ''}`);
         }
 
         function openReportModal(type) {
@@ -3108,7 +3108,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             let html = '<div class="report-container">';
 
-            // EstadÃ­sticas del curso
+            // Estadísticas del curso
             let totalPuntos = 0;
             let estudiantesCompletaron = 0;
             let tareasCompletadas = 0;
@@ -3148,12 +3148,12 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             html += '<div class="report-header">';
             html += '<h2><i class="fas fa-chart-bar"></i> Reporte Grupal - ' + (course?.name||'') + '</h2>';
-            html += '<div class="student-info">AnÃ¡lisis de desempeÃ±o del curso completo</div>';
+            html += '<div class="student-info">Análisis de desempeño del curso completo</div>';
             html += '</div>';
 
-            // MÃ©tricas principales
+            // Métricas principales
             html += '<div class="report-section">';
-            html += '<h3><i class="fas fa-tachometer-alt"></i> MÃ©tricas Principales</h3>';
+            html += '<h3><i class="fas fa-tachometer-alt"></i> Métricas Principales</h3>';
             html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">';
             html += '<div class="metric-card"><div class="metric-value">' + courseStudents.length + '</div><div class="metric-label">Estudiantes Activos</div></div>';
             html += '<div class="metric-card"><div class="metric-value">' + courseTasks.length + '</div><div class="metric-label">Tareas Totales</div></div>';
@@ -3161,9 +3161,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
             html += '<div class="metric-card"><div class="metric-value">' + notaPromedio + '</div><div class="metric-label">Nota Promedio</div></div>';
             html += '</div></div>';
 
-            // GrÃ¡fico de desempeÃ±o por tarea
+            // Gráfico de desempeño por tarea
             html += '<div class="report-section">';
-            html += '<h3><i class="fas fa-chart-line"></i> DesempeÃ±o por Tarea</h3>';
+            html += '<h3><i class="fas fa-chart-line"></i> Desempeño por Tarea</h3>';
             html += '<div class="chart-container"><canvas id="taskChart" width="400" height="200"></canvas></div>';
             html += '<div style="margin-top: 20px;">';
             html += '<table style="width: 100%; border-collapse: collapse; margin-top: 15px;">';
@@ -3173,7 +3173,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             });
             html += '</tbody></table></div></div>';
 
-            // AnÃ¡lisis por OA
+            // Análisis por OA
             const oaStats = {};
             taskStats.forEach(t => {
                 if (t.oa) {
@@ -3192,7 +3192,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     const percentage = stat.total > 0 ? ((stat.completed/stat.total)*100).toFixed(0) : 0;
                     const oaInfo = oaData[oa];
                     html += '<div class="oa-card">';
-                    html += '<h4>' + oa + ' - ' + (oaInfo?.titulo || 'Sin tÃ­tulo') + '</h4>';
+                    html += '<h4>' + oa + ' - ' + (oaInfo?.titulo || 'Sin título') + '</h4>';
                     html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">';
                     html += '<span>Tareas logradas: ' + stat.completed + '/' + stat.total + '</span>';
                     html += '<span style="font-weight: bold; color: ' + (percentage >= 70 ? '#28a745' : percentage >= 50 ? '#ffc107' : '#dc3545') + ';">' + percentage + '%</span>';
@@ -3209,7 +3209,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             html += '</div>';
             document.getElementById('reportContent').innerHTML = html;
 
-            // Crear grÃ¡fico despuÃ©s de agregar al DOM
+            // Crear gráfico después de agregar al DOM
             setTimeout(() => {
                 createTaskChart(taskStats);
             }, 100);
@@ -3230,7 +3230,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             let html = '<div class="report-container">';
             html += '<div class="report-header">';
             html += '<h2><i class="fas fa-users"></i> Reporte Individual - ' + (course?.name||'') + '</h2>';
-            html += '<div class="student-info">Selecciona un estudiante para ver su anÃ¡lisis detallado</div>';
+            html += '<div class="student-info">Selecciona un estudiante para ver su análisis detallado</div>';
             html += '</div>';
 
             html += '<div class="report-section">';
@@ -3295,17 +3295,17 @@ ASCENCIO ROZAS MAXIMO MARIANO
             const completionRate = courseTasks.length > 0 ? ((completedTasks/courseTasks.length)*100).toFixed(0) : '0';
             const nota = courseTasks.length > 0 ? (1 + (completedTasks/courseTasks.length)*6).toFixed(1) : '1.0';
 
-            // MÃ©tricas principales
+            // Métricas principales
             html += '<div class="report-section">';
-            html += '<h3><i class="fas fa-chart-pie"></i> Resumen de DesempeÃ±o</h3>';
+            html += '<h3><i class="fas fa-chart-pie"></i> Resumen de Desempeño</h3>';
             html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">';
             html += '<div class="metric-card"><div class="metric-value">' + completedTasks + '/' + courseTasks.length + '</div><div class="metric-label">Tareas Completadas</div></div>';
-            html += '<div class="metric-card"><div class="metric-value">' + completionRate + '%</div><div class="metric-label">Tasa de Ã‰xito</div></div>';
+            html += '<div class="metric-card"><div class="metric-value">' + completionRate + '%</div><div class="metric-label">Tasa de Éxito</div></div>';
             html += '<div class="metric-card"><div class="metric-value">' + nota + '</div><div class="metric-label">Nota Final</div></div>';
             html += '<div class="metric-card"><div class="metric-value">' + Object.keys(oaProgress).length + '</div><div class="metric-label">OA Trabajados</div></div>';
             html += '</div></div>';
 
-            // GrÃ¡fico de progreso
+            // Gráfico de progreso
             html += '<div class="report-section">';
             html += '<h3><i class="fas fa-chart-bar"></i> Progreso por Tarea</h3>';
             html += '<div class="chart-container"><canvas id="studentChart" width="400" height="200"></canvas></div>';
@@ -3317,7 +3317,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px;">';
             taskDetails.forEach(t => {
                 const statusClass = t.completed ? 'completed' : 'pending';
-                const statusIcon = t.completed ? 'âœ“' : 'âœ—';
+                const statusIcon = t.completed ? '✓' : '✗';
                 html += '<div style="padding: 12px; border: 1px solid #eee; border-radius: 8px; background: ' + (t.completed ? '#f8fff8' : '#fff8f8') + ';">';
                 html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">';
                 html += '<strong style="font-size: 14px;">' + t.name + '</strong>';
@@ -3342,7 +3342,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                     const percentage = totalTasksForOA > 0 ? ((completed/totalTasksForOA)*100).toFixed(0) : 0;
 
                     html += '<div class="oa-card">';
-                    html += '<h4>' + oa + ' - ' + (oaInfo?.titulo || 'Sin tÃ­tulo') + '</h4>';
+                    html += '<h4>' + oa + ' - ' + (oaInfo?.titulo || 'Sin título') + '</h4>';
                     html += '<div style="margin-top: 10px;">';
                     html += '<div style="display: flex; justify-content: space-between; margin-bottom: 8px;">';
                     html += '<span>Tareas completadas: ' + completed + '/' + totalTasksForOA + '</span>';
@@ -3354,9 +3354,9 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         html += '<div style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">Indicadores logrados:</div>';
                         html += '<ul class="indicator-list">';
                         oaInfo.indicadores.forEach((indicador, index) => {
-                            // AquÃ­ podrÃ­amos verificar si el estudiante logrÃ³ este indicador especÃ­fico
-                            // Por ahora, asumimos que si completÃ³ tareas del OA, logrÃ³ algunos indicadores
-                            const achieved = completed > 0 && Math.random() > 0.3; // SimulaciÃ³n - en producciÃ³n usar lÃ³gica real
+                            // Aquí podríamos verificar si el estudiante logró este indicador específico
+                            // Por ahora, asumimos que si completó tareas del OA, logró algunos indicadores
+                            const achieved = completed > 0 && Math.random() > 0.3; // Simulación - en producción usar lógica real
                             html += '<li class="' + (achieved ? 'completed' : 'pending') + '">' + indicador + '</li>';
                         });
                         html += '</ul></div>';
@@ -3375,24 +3375,24 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
             document.getElementById('reportContent').innerHTML = html;
 
-            // Crear grÃ¡fico despuÃ©s de agregar al DOM
+            // Crear gráfico después de agregar al DOM
             setTimeout(() => {
                 createStudentChart(taskDetails);
             }, 100);
         }
 
-        // FunciÃ³n para formatear reportes de IA eliminando asteriscos y convirtiendo a HTML limpio
+        // Función para formatear reportes de IA eliminando asteriscos y convirtiendo a HTML limpio
         function formatAIReport(text) {
             if (!text) return '';
 
-            // Convertir tÃ­tulos con asteriscos a encabezados HTML
+            // Convertir títulos con asteriscos a encabezados HTML
             text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
             text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
 
-            // Convertir tÃ­tulos numerados a encabezados
+            // Convertir títulos numerados a encabezados
             text = text.replace(/^(\d+)\.\s+(.+)$/gm, '<h3 class="ai-section-title"><span class="ai-section-number">$1.</span> $2</h3>');
 
-            // Convertir subtÃ­tulos con guiones o asteriscos
+            // Convertir subtítulos con guiones o asteriscos
             text = text.replace(/^-\s+(.+)$/gm, '<div class="ai-highlight">$1</div>');
             text = text.replace(/^\*\s+(.+)$/gm, '<div class="ai-highlight">$1</div>');
 
@@ -3400,11 +3400,11 @@ ASCENCIO ROZAS MAXIMO MARIANO
             text = text.replace(/^(\s*)-\s+(.+)$/gm, '$1<li class="ai-list-item">$2</li>');
             text = text.replace(/(<li class="ai-list-item">.+<\/li>\n?)+/g, '<ul class="ai-list">$&</ul>');
 
-            // Convertir pÃ¡rrafos
+            // Convertir párrafos
             text = text.replace(/\n\n/g, '</p><p>');
             text = '<p>' + text + '</p>';
 
-            // Limpiar pÃ¡rrafos vacÃ­os
+            // Limpiar párrafos vacíos
             text = text.replace(/<p><\/p>/g, '');
             text = text.replace(/<p>\s*<h3/g, '<h3');
             text = text.replace(/<\/h3>\s*<\/p>/g, '</h3>');
@@ -3413,7 +3413,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             text = text.replace(/<p>\s*<div/g, '<div');
             text = text.replace(/<\/div>\s*<\/p>/g, '</div>');
 
-            // Limpiar saltos de lÃ­nea innecesarios
+            // Limpiar saltos de línea innecesarios
             text = text.replace(/\n/g, '');
 
             return text;
@@ -3439,7 +3439,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
 
                 // Validar que haya tareas
                 if (courseTasks.length === 0) {
-                    alert('âš ï¸ No hay tareas creadas aÃºn. Debes agregar al menos una tarea para generar reportes con IA.');
+                    alert('⚠️ No hay tareas creadas aún. Debes agregar al menos una tarea para generar reportes con IA.');
                     button.innerHTML = originalText;
                     button.disabled = false;
                     return;
@@ -3448,7 +3448,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 let prompt = '';
 
                 if (type === 'grupal') {
-                    // EstadÃ­sticas para el prompt
+                    // Estadísticas para el prompt
                     let stats = {
                         totalStudents: courseStudents.length,
                         totalTasks: courseTasks.length,
@@ -3487,10 +3487,10 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         
                         const gradeType = t.gradeType || 'binary';
                         const typeLabel = {
-                            'binary': 'SÃ­/No',
+                            'binary': 'Sí/No',
                             'levels': 'Niveles de Logro',
                             'checklist': 'Lista de Cotejo',
-                            'rubric': 'RÃºbrica'
+                            'rubric': 'Rúbrica'
                         }[gradeType];
                         
                         const percentage = parseFloat(t.percentage || 0);
@@ -3516,7 +3516,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
                         });
                     });
 
-                    prompt = `Como docente experto en evaluaciÃ³n formativa, analiza el desempeÃ±o del curso "${course?.name || 'Lenguaje'}" y genera recomendaciones pedagÃ³gicas especÃ­ficas.
+                    prompt = `Como docente experto en evaluación formativa, analiza el desempeño del curso "${course?.name || 'Lenguaje'}" y genera recomendaciones pedagógicas específicas.
 
 DATOS DEL CURSO:
 - Estudiantes activos: ${stats.totalStudents}
@@ -3524,12 +3524,12 @@ DATOS DEL CURSO:
 - Tareas completadas en total: ${stats.completedTasks}
 - Estudiantes que completaron todas las tareas: ${stats.studentsCompletedAll}
 
-DESEMPEÃ‘O POR TAREA:
+DESEMPEÑO POR TAREA:
 ${stats.taskCompletion.map(t => `- ${t.name} [${t.gradeType}] - ${t.weight}
   OA: ${t.oa || 'Sin OA'}
   Logro: ${t.completed}/${t.total} estudiantes (${t.percentage}%)${t.isFormative ? ' [FORMATIVA]' : ''}`).join('\n')}
 
-ANÃLISIS POR OBJETIVOS DE APRENDIZAJE:
+ANÁLISIS POR OBJETIVOS DE APRENDIZAJE:
 ${Object.keys(stats.oaAnalysis).map(oa => {
     const data = stats.oaAnalysis[oa];
     const percentage = data.total > 0 ? ((data.completed/data.total)*100).toFixed(0) : 0;
@@ -3537,18 +3537,18 @@ ${Object.keys(stats.oaAnalysis).map(oa => {
 }).join('\n')}
 
 INSTRUCCIONES PARA EL INFORME:
-1. EVALUACIÃ“N GENERAL: Analiza el rendimiento global del curso e identifica patrones
-2. FORTALEZAS: Destaca aspectos positivos del desempeÃ±o estudiantil
-3. ÃREAS DE MEJORA: Identifica dificultades especÃ­ficas y sus posibles causas
-4. ANÃLISIS PEDAGÃ“GICO: EvalÃºa el logro de objetivos de aprendizaje por OA
-5. RECOMENDACIONES ESPECÃFICAS:
-   - Estrategias de intervenciÃ³n para estudiantes con bajo rendimiento
-   - Ajustes metodolÃ³gicos basados en los datos
+1. EVALUACIÓN GENERAL: Analiza el rendimiento global del curso e identifica patrones
+2. FORTALEZAS: Destaca aspectos positivos del desempeño estudiantil
+3. ÁREAS DE MEJORA: Identifica dificultades específicas y sus posibles causas
+4. ANÁLISIS PEDAGÓGICO: Evalúa el logro de objetivos de aprendizaje por OA
+5. RECOMENDACIONES ESPECÍFICAS:
+   - Estrategias de intervención para estudiantes con bajo rendimiento
+   - Ajustes metodológicos basados en los datos
    - Actividades de refuerzo por OA no logrado
-   - Sugerencias para mejorar la evaluaciÃ³n formativa
-6. PLAN DE ACCIÃ“N: PropÃ³n medidas concretas y medibles para el prÃ³ximo perÃ­odo
+   - Sugerencias para mejorar la evaluación formativa
+6. PLAN DE ACCIÓN: Propón medidas concretas y medibles para el próximo período
 
-El informe debe ser profesional, especÃ­fico y orientado a la mejora pedagÃ³gica continua. Incluye porcentajes, tendencias y recomendaciones prÃ¡cticas.`;
+El informe debe ser profesional, específico y orientado a la mejora pedagógica continua. Incluye porcentajes, tendencias y recomendaciones prácticas.`;
 
                 } else if (type === 'individual' && studentId) {
                     const student = students.find(s => s.id === studentId);
@@ -3564,7 +3564,7 @@ El informe debe ser profesional, especÃ­fico y orientado a la mejora pedagÃ³
                         let completed = false;
                         let level = '';
                         
-                        // Determinar si estÃ¡ completado segÃºn el tipo
+                        // Determinar si está completado según el tipo
                         if (gradeType === 'levels') {
                             level = existing ? (existing.value || '') : '';
                             completed = level !== '';
@@ -3573,16 +3573,16 @@ El informe debe ser profesional, especÃ­fico y orientado a la mejora pedagÃ³
                         }
                         
                         const typeLabel = {
-                            'binary': 'SÃ­/No',
+                            'binary': 'Sí/No',
                             'levels': 'Niveles de Logro',
                             'checklist': 'Lista de Cotejo',
-                            'rubric': 'RÃºbrica'
+                            'rubric': 'Rúbrica'
                         }[gradeType];
                         
                         const percentage = parseFloat(t.percentage || 0);
                         const isFormative = percentage === 0;
                         
-                        // Calcular puntuaciÃ³n ponderada
+                        // Calcular puntuación ponderada
                         if (percentage > 0) {
                             totalPercentage += percentage;
                             if (gradeType === 'levels' && level) {
@@ -3620,7 +3620,7 @@ El informe debe ser profesional, especÃ­fico y orientado a la mejora pedagÃ³
                             isFormative: isFormative
                         });
 
-                        // Actualizar progreso por OA (soporta mÃºltiples OAs)
+                        // Actualizar progreso por OA (soporta múltiples OAs)
                         oaList.forEach(oa => {
                             if (oa) {
                                 if (!oaProgress[oa]) oaProgress[oa] = { completed: 0, total: 0 };
@@ -3633,7 +3633,7 @@ El informe debe ser profesional, especÃ­fico y orientado a la mejora pedagÃ³
                     const completedCount = studentTasks.filter(t => t.completed).length;
                     const completionRate = ((completedCount / courseTasks.length) * 100).toFixed(0);
                     
-                    // Calcular nota con ponderaciÃ³n
+                    // Calcular nota con ponderación
                     let nota = '1.0';
                     if (totalPercentage > 0) {
                         const scorePercentage = (totalWeightedScore / totalPercentage) * 100;
@@ -3642,43 +3642,43 @@ El informe debe ser profesional, especÃ­fico y orientado a la mejora pedagÃ³
                         nota = (1 + (completedCount/courseTasks.length)*6).toFixed(1);
                     }
 
-                    prompt = `Como docente tutor, genera un reporte individual de retroalimentaciÃ³n constructiva para el estudiante ${student.firstNames} ${student.lastNames} en el curso "${course?.name || 'Lenguaje'}".
+                    prompt = `Como docente tutor, genera un reporte individual de retroalimentación constructiva para el estudiante ${student.firstNames} ${student.lastNames} en el curso "${course?.name || 'Lenguaje'}".
 
 PERFIL DEL ESTUDIANTE:
 - Nombre: ${student.firstNames} ${student.lastNames}
 - Tareas totales evaluadas: ${courseTasks.length}
 - Tareas completadas: ${completedCount}
-- Tasa de completaciÃ³n: ${completionRate}%
+- Tasa de completación: ${completionRate}%
 - Nota actual: ${nota}
 
-DESEMPEÃ‘O DETALLADO POR TAREA:
+DESEMPEÑO DETALLADO POR TAREA:
 ${studentTasks.map(t => `- ${t.name} [${t.gradeType}] - ${t.weight}
   OA: ${t.oa || 'Sin OA'} | Fecha: ${t.date || 'Sin fecha'}
-  Estado: ${t.completed ? (t.level ? 'Nivel: ' + t.level + ' âœ“' : 'Completado âœ“') : 'Pendiente âœ—'}${t.isFormative ? ' [FORMATIVA]' : ''}`).join('\n')}
+  Estado: ${t.completed ? (t.level ? 'Nivel: ' + t.level + ' ✓' : 'Completado ✓') : 'Pendiente ✗'}${t.isFormative ? ' [FORMATIVA]' : ''}`).join('\n')}
 
 PROGRESO POR OBJETIVOS DE APRENDIZAJE:
 ${Object.keys(oaProgress).map(oa => {
     const progress = oaProgress[oa];
     const percentage = ((progress.completed/progress.total)*100).toFixed(0);
     const oaInfo = oaData[oa];
-    return `${oa} - ${oaInfo?.titulo || 'Sin tÃ­tulo'}:
+    return `${oa} - ${oaInfo?.titulo || 'Sin título'}:
   - Tareas completadas: ${progress.completed}/${progress.total} (${percentage}%)
   - Indicadores de logro: ${oaInfo?.indicadores?.slice(0, 3).join(', ') || 'No especificados'}`;
 }).join('\n\n')}
 
-INSTRUCCIONES PARA EL REPORTE DE RETROALIMENTACIÃ“N:
-1. EVALUACIÃ“N PERSONALIZADA: AnÃ¡lisis motivador del desempeÃ±o individual
-2. FORTALEZAS DESTACADAS: Aspectos positivos especÃ­ficos del estudiante
-3. ÃREAS DE CRECIMIENTO: Dificultades identificadas con enfoque constructivo
-4. LOGROS POR OA: EvaluaciÃ³n del progreso en objetivos de aprendizaje
-5. RECOMENDACIONES PRÃCTICAS:
+INSTRUCCIONES PARA EL REPORTE DE RETROALIMENTACIÓN:
+1. EVALUACIÓN PERSONALIZADA: Análisis motivador del desempeño individual
+2. FORTALEZAS DESTACADAS: Aspectos positivos específicos del estudiante
+3. ÁREAS DE CRECIMIENTO: Dificultades identificadas con enfoque constructivo
+4. LOGROS POR OA: Evaluación del progreso en objetivos de aprendizaje
+5. RECOMENDACIONES PRÁCTICAS:
    - Estrategias de estudio personalizadas
-   - Actividades de refuerzo especÃ­ficas
-   - Metas realistas para el prÃ³ximo perÃ­odo
-   - Sugerencias de organizaciÃ³n y hÃ¡bitos de trabajo
+   - Actividades de refuerzo específicas
+   - Metas realistas para el próximo período
+   - Sugerencias de organización y hábitos de trabajo
 6. MENSAJE MOTIVADOR: Cierre positivo que impulse la confianza y el esfuerzo continuo
 
-IMPORTANTE: El reporte debe servir como herramienta de retroalimentaciÃ³n formativa, no punitiva. Enfatiza el crecimiento personal, reconoce el esfuerzo y proporciona orientaciones claras y alcanzables. Usa un tono amable, profesional y alentador.`;
+IMPORTANTE: El reporte debe servir como herramienta de retroalimentación formativa, no punitiva. Enfatiza el crecimiento personal, reconoce el esfuerzo y proporciona orientaciones claras y alcanzables. Usa un tono amable, profesional y alentador.`;
 
                 } else if (type === 'estudiantes') {
                     let studentAnalysis = [];
@@ -3707,29 +3707,29 @@ IMPORTANTE: El reporte debe servir como herramienta de retroalimentaciÃ³n form
                         });
                     });
 
-                    prompt = `Como coordinador pedagÃ³gico, analiza el desempeÃ±o general de ${courseStudents.length} estudiantes en el curso "${course?.name || 'Lenguaje'}" para identificar patrones y tomar decisiones de mejora.
+                    prompt = `Como coordinador pedagógico, analiza el desempeño general de ${courseStudents.length} estudiantes en el curso "${course?.name || 'Lenguaje'}" para identificar patrones y tomar decisiones de mejora.
 
-ANÃLISIS GRUPAL:
+ANÁLISIS GRUPAL:
 ${studentAnalysis.map(s => `- ${s.name}: ${s.completed}/${s.total} tareas (${s.rate}%)`).join('\n')}
 
-DISTRIBUCIÃ“N DE RENDIMIENTO:
+DISTRIBUCIÓN DE RENDIMIENTO:
 - Alto rendimiento (80-100%): ${studentAnalysis.filter(s => s.rate >= 80).length} estudiantes
 - Rendimiento medio (50-79%): ${studentAnalysis.filter(s => s.rate >= 50 && s.rate < 80).length} estudiantes
 - Bajo rendimiento (<50%): ${studentAnalysis.filter(s => s.rate < 50).length} estudiantes
 
-INSTRUCCIONES PARA EL ANÃLISIS PEDAGÃ“GICO:
+INSTRUCCIONES PARA EL ANÁLISIS PEDAGÓGICO:
 1. PATRONES IDENTIFICADOS: Analiza tendencias generales del grupo
-2. SEGMENTACIÃ“N POR RENDIMIENTO: Caracteriza cada grupo de desempeÃ±o
-3. NECESIDADES EDUCATIVAS: Identifica requerimientos especÃ­ficos de apoyo
-4. DECISIONES DE INTERVENCIÃ“N:
+2. SEGMENTACIÓN POR RENDIMIENTO: Caracteriza cada grupo de desempeño
+3. NECESIDADES EDUCATIVAS: Identifica requerimientos específicos de apoyo
+4. DECISIONES DE INTERVENCIÓN:
    - Estrategias diferenciadas por nivel de rendimiento
    - Agrupamiento flexible basado en necesidades
    - Actividades de refuerzo selectivas
-   - Ajustes en la planificaciÃ³n curricular
-5. SEGUIMIENTO Y EVALUACIÃ“N: PropÃ³n indicadores para medir el impacto de las intervenciones
+   - Ajustes en la planificación curricular
+5. SEGUIMIENTO Y EVALUACIÓN: Propón indicadores para medir el impacto de las intervenciones
 6. RECOMENDACIONES INSTITUCIONALES: Sugerencias para mejorar el sistema educativo
 
-El anÃ¡lisis debe fundamentarse en datos objetivos y orientarse a la toma de decisiones pedagÃ³gicas efectivas.`;
+El análisis debe fundamentarse en datos objetivos y orientarse a la toma de decisiones pedagógicas efectivas.`;
                 }
 
                 // Llamar a Multi-Provider AI API (Gemini -> OpenAI -> HuggingFace)
@@ -3752,7 +3752,7 @@ El anÃ¡lisis debe fundamentarse en datos objetivos y orientarse a la toma de d
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     
-                    console.error('âŒ Error API Response:', errorData);
+                    console.error('❌ Error API Response:', errorData);
                     
                     if (response.status === 503) {
                         let debugMsg = 'Todos los proveedores fallaron.';
@@ -3763,15 +3763,15 @@ El anÃ¡lisis debe fundamentarse en datos objetivos y orientarse a la toma de d
                         }
                         if (errorData.debug) {
                             debugMsg += '\n\nAPI Keys configuradas:\n' + 
-                                `Gemini: ${errorData.debug.hasGeminiKey ? 'âœ…' : 'âŒ'}\n` +
-                                `OpenAI: ${errorData.debug.hasOpenAIKey ? 'âœ…' : 'âŒ'}\n` +
-                                `HuggingFace: ${errorData.debug.hasHFKey ? 'âœ…' : 'âŒ'}`;
+                                `Gemini: ${errorData.debug.hasGeminiKey ? '✅' : '❌'}\n` +
+                                `OpenAI: ${errorData.debug.hasOpenAIKey ? '✅' : '❌'}\n` +
+                                `HuggingFace: ${errorData.debug.hasHFKey ? '✅' : '❌'}`;
                         }
                         throw new Error(debugMsg);
                     } else if (response.status === 429) {
-                        throw new Error('LÃMITE_ALCANZADO');
+                        throw new Error('LÍMITE_ALCANZADO');
                     } else if (response.status === 403) {
-                        throw new Error('API_KEY_INVÃLIDA');
+                        throw new Error('API_KEY_INVÁLIDA');
                     } else {
                         throw new Error(`Error ${response.status}: ${errorData.error || 'Error desconocido'}`);
                     }
@@ -3781,16 +3781,16 @@ El anÃ¡lisis debe fundamentarse en datos objetivos y orientarse a la toma de d
                 const aiReport = data.text;
                 const usedProvider = data.provider || 'Desconocido';
                 const isDemo = data.demo === true;
-                console.log(`âœ… Informe generado con: ${usedProvider}${isDemo ? ' [DEMO]' : ''}`);
+                console.log(`✅ Informe generado con: ${usedProvider}${isDemo ? ' [DEMO]' : ''}`);
 
                 // Mostrar el informe generado
                 let formattedReport = formatAIReport(aiReport);
                 let reportHtml = '<div class="ai-report-container">';
                 if (isDemo) {
                     reportHtml += '<div style="background:#fff3cd;border:1px solid #ffc107;color:#664d03;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;">' +
-                        '<i class="fas fa-info-circle"></i> <strong>Modo demostraciÃ³n:</strong> no hay API key de IA activa en Netlify. ' +
-                        'Este informe se generÃ³ con una plantilla a partir de tus datos reales. ' +
-                        'Para activar anÃ¡lisis con IA configura <code>GROQ_API_KEY</code> (recomendado, gratis) en Netlify â†’ Site settings â†’ Environment variables.' +
+                        '<i class="fas fa-info-circle"></i> <strong>Modo demostración:</strong> no hay API key de IA activa en Netlify. ' +
+                        'Este informe se generó con una plantilla a partir de tus datos reales. ' +
+                        'Para activar análisis con IA configura <code>GROQ_API_KEY</code> (recomendado, gratis) en Netlify → Site settings → Environment variables.' +
                         '</div>';
                 }
                 reportHtml += `<div class="ai-report-header"><i class="fas fa-robot"></i> Informe IA - Generado con ${usedProvider}</div>`;
@@ -3799,7 +3799,7 @@ El anÃ¡lisis debe fundamentarse en datos objetivos y orientarse a la toma de d
 
                 document.getElementById('reportContent').innerHTML += reportHtml;
 
-                // Auto-descargar PDF: esperar render de Chart.js y luego exportar
+                // Auto-descargar PDF tras generar informe IA
                 await new Promise(r => setTimeout(r, 500));
                 try {
                     await downloadPDF(type, studentId);
@@ -3812,32 +3812,32 @@ El anÃ¡lisis debe fundamentarse en datos objetivos y orientarse a la toma de d
                 
                 let errorMessage = 'Error al generar el informe con IA. ';
                 
-                if (error.message === 'LÃMITE_ALCANZADO') {
-                    errorMessage = `âš ï¸ LÃMITE DE SOLICITUDES ALCANZADO
+                if (error.message === 'LÍMITE_ALCANZADO') {
+                    errorMessage = `⚠️ LÍMITE DE SOLICITUDES ALCANZADO
 
-La API de Google Gemini tiene lÃ­mites de uso:
-â€¢ VersiÃ³n gratuita: 15 solicitudes por minuto
-â€¢ Has excedido este lÃ­mite temporalmente
+La API de Google Gemini tiene límites de uso:
+• Versión gratuita: 15 solicitudes por minuto
+• Has excedido este límite temporalmente
 
 SOLUCIONES:
-1. â±ï¸ Espera 1 minuto e intenta nuevamente
-2. ðŸ’¾ Usa los reportes en PDF (no requieren IA)
-3. ðŸ“Š Los grÃ¡ficos y estadÃ­sticas estÃ¡n disponibles
-4. ðŸ”‘ Considera actualizar tu API key a una versiÃ³n de pago
+1. ⏱️ Espera 1 minuto e intenta nuevamente
+2. 💾 Usa los reportes en PDF (no requieren IA)
+3. 📊 Los gráficos y estadísticas están disponibles
+4. 🔑 Considera actualizar tu API key a una versión de pago
 
-Los datos estÃ¡n guardados y puedes generar el reporte mÃ¡s tarde.`;
-                } else if (error.message === 'API_KEY_INVÃLIDA') {
-                    errorMessage = `âŒ API KEY INVÃLIDA
+Los datos están guardados y puedes generar el reporte más tarde.`;
+                } else if (error.message === 'API_KEY_INVÁLIDA') {
+                    errorMessage = `❌ API KEY INVÁLIDA
 
-La clave de API de Gemini no es vÃ¡lida o ha expirado.
+La clave de API de Gemini no es válida o ha expirado.
 
-SOLUCIÃ“N:
+SOLUCIÓN:
 1. Ve a https://makersuite.google.com/app/apikey
 2. Genera una nueva API key
 3. Actualiza la variable GEMINI_API_KEY en Netlify
 4. Verifica que la key tenga permisos para Gemini API`;
                 } else {
-                    errorMessage += `\n\nError tÃ©cnico: ${error.message}\n\nPuedes descargar el reporte en PDF que incluye todas las estadÃ­sticas.`;
+                    errorMessage += `\n\nError técnico: ${error.message}\n\nPuedes descargar el reporte en PDF que incluye todas las estadísticas.`;
                 }
                 
                 alert(errorMessage);
@@ -3856,7 +3856,7 @@ SOLUCIÃ“N:
                 data: {
                     labels: taskStats.map(t => t.name.length > 15 ? t.name.substring(0, 15) + '...' : t.name),
                     datasets: [{
-                        label: 'Porcentaje de CompletaciÃ³n',
+                        label: 'Porcentaje de Completación',
                         data: taskStats.map(t => parseInt(t.percentage)),
                         backgroundColor: 'rgba(102, 126, 234, 0.6)',
                         borderColor: 'rgba(102, 126, 234, 1)',
@@ -3953,7 +3953,7 @@ SOLUCIÃ“N:
             // Modal de carga
             const loadingModal = document.createElement('div');
             loadingModal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Inter,Segoe UI,sans-serif;';
-            loadingModal.innerHTML = '<div style="text-align:center;padding:30px;background:#1f2a44;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);"><i class="fas fa-file-pdf" style="font-size:54px;color:#ff4757;margin-bottom:16px;"></i><div style="font-size:20px;font-weight:600;">Generando PDF profesionalâ€¦</div><div style="font-size:13px;opacity:.7;margin-top:6px;">Compilando mÃ©tricas, tablas, grÃ¡ficos e informe IA</div></div>';
+            loadingModal.innerHTML = '<div style="text-align:center;padding:30px;background:#1f2a44;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);"><i class="fas fa-file-pdf" style="font-size:54px;color:#ff4757;margin-bottom:16px;"></i><div style="font-size:20px;font-weight:600;">Generando PDF profesional...</div><div style="font-size:13px;opacity:.7;margin-top:6px;">Compilando metricas, tablas, graficos e informe IA</div></div>';
             document.body.appendChild(loadingModal);
 
             try {
@@ -3990,7 +3990,7 @@ SOLUCIÃ“N:
                 const courseTasks = tasks.filter(t => t.courseId === courseActual);
 
                 const fechaLarga = new Date().toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                const titulo = type === 'grupal' ? 'Reporte Grupal' : (type === 'estudiantes' ? 'AnÃ¡lisis Grupal de Estudiantes' : 'Reporte Individual');
+                const titulo = type === 'grupal' ? 'Reporte Grupal' : (type === 'estudiantes' ? 'Analisis Grupal de Estudiantes' : 'Reporte Individual');
 
                 // ======== Helpers de dibujo ========
                 let y = 0;
@@ -4007,7 +4007,7 @@ SOLUCIÃ“N:
                     setFill(C.accent);      doc.rect(0, 10, PAGE_W, 2, 'F');
                     setText([255,255,255]);
                     doc.setFont(undefined, 'bold'); doc.setFontSize(9);
-                    doc.text(titulo + ' Â· ' + courseName, MARGIN, 7);
+                    doc.text(titulo + '  -  ' + courseName, MARGIN, 7);
                     doc.text(new Date().toLocaleDateString('es-CL'), PAGE_W - MARGIN, 7, { align: 'right' });
                     doc.setFont(undefined, 'normal');
                     setText(C.text);
@@ -4015,13 +4015,13 @@ SOLUCIÃ“N:
                 }
                 function newContentPage() { doc.addPage(); pageHeader(); }
 
-                function drawSectionTitle(text, icon) {
+                function drawSectionTitle(text) {
                     ensureSpace(14);
                     setFill(C.bgSoft); setStroke(C.primary); doc.setLineWidth(0.4);
                     doc.roundedRect(MARGIN, y, CONTENT_W, 9, 2, 2, 'FD');
                     setText(C.primaryDark);
                     doc.setFont(undefined, 'bold'); doc.setFontSize(12);
-                    doc.text((icon ? icon + '  ' : '') + text, MARGIN + 3, y + 6);
+                    doc.text(text, MARGIN + 3, y + 6);
                     doc.setFont(undefined, 'normal');
                     setText(C.text);
                     y += 13;
@@ -4030,7 +4030,7 @@ SOLUCIÃ“N:
                 function drawStatCard(x, cy, w, h, label, value, accent) {
                     setFill([255,255,255]); setStroke(C.border); doc.setLineWidth(0.3);
                     doc.roundedRect(x, cy, w, h, 2, 2, 'FD');
-                    setFill(accent); doc.rect(x, cy, 1.5, h, 'F'); // borde lateral coloreado
+                    setFill(accent); doc.rect(x, cy, 1.5, h, 'F');
                     setText(C.muted); doc.setFontSize(8);
                     doc.text(String(label).toUpperCase(), x + 4, cy + 5);
                     setText(C.text); doc.setFont(undefined, 'bold'); doc.setFontSize(16);
@@ -4052,7 +4052,6 @@ SOLUCIÃ“N:
                     return C.danger;
                 }
 
-                // Tabla con filas y columnas; rows = [[cell, cell, ...], ...]
                 function drawTable(columns, rows, opts2 = {}) {
                     const padX = 2.5, rowH = opts2.rowH || 7;
                     const widths = columns.map(c => c.w);
@@ -4091,15 +4090,13 @@ SOLUCIÃ“N:
                             }
                             cx += widths[i];
                         });
-                        // borde inferior sutil
                         setStroke(C.border); doc.setLineWidth(0.1); doc.line(MARGIN, y + rowH, MARGIN + CONTENT_W, y + rowH);
                         y += rowH;
                     });
                     y += 4;
                 }
 
-                // ============ PÃGINA 1: PORTADA ============
-                // Fondo degradado simulado (capas)
+                // ============ PORTADA ============
                 setFill(C.primary); doc.rect(0, 0, PAGE_W, 110, 'F');
                 setFill(C.accent);  doc.rect(0, 95, PAGE_W, 15, 'F');
 
@@ -4107,9 +4104,8 @@ SOLUCIÃ“N:
                 doc.setFont(undefined, 'bold'); doc.setFontSize(28);
                 doc.text(titulo, PAGE_W/2, 45, { align: 'center' });
                 doc.setFont(undefined, 'normal'); doc.setFontSize(13);
-                doc.text('Sistema de EvaluaciÃ³n Â· Profesora Javiera Poblete', PAGE_W/2, 58, { align: 'center' });
+                doc.text('Sistema de Evaluacion - Profesora Javiera Poblete', PAGE_W/2, 58, { align: 'center' });
 
-                // Tarjeta blanca con info
                 setFill([255,255,255]); setStroke(C.border); doc.setLineWidth(0.3);
                 doc.roundedRect(MARGIN, 125, CONTENT_W, student ? 74 : 58, 3, 3, 'FD');
                 setText(C.muted); doc.setFontSize(9);
@@ -4133,24 +4129,22 @@ SOLUCIÃ“N:
                     doc.setFont(undefined, 'normal');
                 }
 
-                // Contenido incluido
                 setText(C.muted); doc.setFontSize(10);
-                doc.text('Este documento incluye:', MARGIN, student ? 215 : 215);
+                doc.text('Este documento incluye:', MARGIN, 215);
                 setText(C.text); doc.setFontSize(10);
                 const bullets = [
-                    'â€¢ MÃ©tricas principales en tarjetas visuales',
-                    'â€¢ Tabla de desempeÃ±o por tarea con barras de progreso',
-                    'â€¢ GrÃ¡ficos del curso (si estÃ¡n disponibles)',
-                    'â€¢ Progreso por Objetivos de Aprendizaje',
-                    'â€¢ AnÃ¡lisis pedagÃ³gico generado con IA'
+                    '- Metricas principales en tarjetas visuales',
+                    '- Tabla de desempeno por tarea con barras de progreso',
+                    '- Graficos del curso (si estan disponibles)',
+                    '- Progreso por Objetivos de Aprendizaje',
+                    '- Analisis pedagogico generado con IA'
                 ];
                 bullets.forEach((b, i) => { doc.text(b, MARGIN + 3, 224 + i*6); });
 
-                // Pie portada
                 setText(C.muted); doc.setFontSize(8);
                 doc.text('profesorajavierapoblete.com', PAGE_W/2, 285, { align: 'center' });
 
-                // ============ CÃLCULOS ============
+                // ============ CALCULOS ============
                 const taskStats = courseTasks.map(t => {
                     let completados = 0;
                     courseStudents.forEach(st => {
@@ -4165,11 +4159,10 @@ SOLUCIÃ“N:
                     return { id: t.id, name: t.name || 'Sin nombre', oa: oaDisplay, completed: completados, total: courseStudents.length, percentage: pct, weight: percW };
                 });
 
-                // ============ PÃGINA 2: CONTENIDO ============
+                // ============ CONTENIDO ============
                 newContentPage();
 
                 if (type === 'individual' && student) {
-                    // MÃ©tricas individuales
                     let completed = 0;
                     let totalWeightedScore = 0, totalPercentage = 0;
                     const studentTaskRows = [];
@@ -4218,33 +4211,31 @@ SOLUCIÃ“N:
                         nota = (1 + (completed/courseTasks.length)*6).toFixed(1);
                     }
 
-                    // Tarjetas
-                    drawSectionTitle('Resumen del estudiante', '');
+                    drawSectionTitle('Resumen del estudiante');
                     const cardW = (CONTENT_W - 6*2) / 3;
                     drawStatCard(MARGIN,                        y, cardW, 20, 'Tareas completadas', completed + ' / ' + courseTasks.length, C.primary);
                     drawStatCard(MARGIN + cardW + 6,            y, cardW, 20, 'Tasa de logro',      tasaInd.toFixed(0) + '%',                colorForPct(tasaInd));
                     drawStatCard(MARGIN + (cardW + 6) * 2,      y, cardW, 20, 'Nota final',         nota,                                     (parseFloat(nota) >= 4 ? C.success : C.danger));
                     y += 24;
 
-                    drawSectionTitle('Detalle de tareas', '');
+                    drawSectionTitle('Detalle de tareas');
                     drawTable(
                         [
                             { label: 'Tarea',        w: 72 },
                             { label: 'OA',           w: 32 },
-                            { label: 'PonderaciÃ³n',  w: 28, align: 'right' },
+                            { label: 'Ponderacion',  w: 28, align: 'right' },
                             { label: 'Estado',       w: 48 }
                         ],
                         studentTaskRows
                     );
 
-                    // Progreso por OA
                     if (Object.keys(oaProgress).length) {
-                        drawSectionTitle('Logro por Objetivos de Aprendizaje', '');
+                        drawSectionTitle('Logro por Objetivos de Aprendizaje');
                         const oaRows = Object.keys(oaProgress).map(oa => {
                             const p = oaProgress[oa];
                             const pct = p.total ? (p.completed/p.total)*100 : 0;
                             const info = (typeof oaData !== 'undefined' && oaData[oa]) ? (oaData[oa].titulo || '') : '';
-                            return [ oa + ' â€” ' + info, p.completed + ' / ' + p.total, pct ];
+                            return [ oa + ' - ' + info, p.completed + ' / ' + p.total, pct ];
                         });
                         drawTable(
                             [
@@ -4256,13 +4247,11 @@ SOLUCIÃ“N:
                         );
                     }
                 } else {
-                    // Reporte grupal (type === 'grupal' o 'estudiantes')
-                    const totalCompletadas = taskStats.reduce((a,t) => a + t.completed, 0);
                     const estTodo = courseStudents.filter(st => courseTasks.every(t => { const ev = evalMap.get(t.id+':'+st.id); return ev && ev.value; })).length;
                     const promedioPct = taskStats.length ? taskStats.reduce((a,t)=>a+t.percentage,0) / taskStats.length : 0;
                     const notaProm = (1 + (promedioPct/100)*6).toFixed(1);
 
-                    drawSectionTitle('MÃ©tricas del curso', '');
+                    drawSectionTitle('Metricas del curso');
                     const cardW = (CONTENT_W - 6*3) / 4;
                     drawStatCard(MARGIN,                             y, cardW, 20, 'Estudiantes',        String(courseStudents.length), C.primary);
                     drawStatCard(MARGIN + (cardW + 6),               y, cardW, 20, 'Tareas',             String(courseTasks.length),    C.accent);
@@ -4270,15 +4259,13 @@ SOLUCIÃ“N:
                     drawStatCard(MARGIN + (cardW + 6) * 3,           y, cardW, 20, 'Nota promedio',      notaProm,                      (parseFloat(notaProm) >= 4 ? C.success : C.danger));
                     y += 24;
 
-                    // GrÃ¡fico (capturar canvas del DOM si existe)
                     const chartEl = document.getElementById('taskChart');
                     if (chartEl && chartEl.width > 0) {
-                        drawSectionTitle('GrÃ¡fico: completaciÃ³n por tarea', '');
+                        drawSectionTitle('Grafico: completacion por tarea');
                         try {
                             const img = chartEl.toDataURL('image/png', 1.0);
                             const imgH = Math.min(80, CONTENT_W * (chartEl.height / chartEl.width));
                             ensureSpace(imgH + 4);
-                            // Marco
                             setFill([255,255,255]); setStroke(C.border);
                             doc.roundedRect(MARGIN, y, CONTENT_W, imgH + 4, 2, 2, 'FD');
                             doc.addImage(img, 'PNG', MARGIN + 2, y + 2, CONTENT_W - 4, imgH);
@@ -4286,7 +4273,7 @@ SOLUCIÃ“N:
                         } catch (e) { /* ignore */ }
                     }
 
-                    drawSectionTitle('DesempeÃ±o por tarea', '');
+                    drawSectionTitle('Desempeno por tarea');
                     const rows = taskStats.map(t => [
                         t.name,
                         t.oa,
@@ -4303,7 +4290,6 @@ SOLUCIÃ“N:
                         rows
                     );
 
-                    // AnÃ¡lisis por OA
                     const oaAgg = {};
                     courseTasks.forEach(t => {
                         const list = (t.oas && t.oas.length) ? t.oas : (t.oa ? [t.oa] : []);
@@ -4317,12 +4303,12 @@ SOLUCIÃ“N:
                         });
                     });
                     if (Object.keys(oaAgg).length) {
-                        drawSectionTitle('Progreso por Objetivos de Aprendizaje', '');
+                        drawSectionTitle('Progreso por Objetivos de Aprendizaje');
                         const oaRows = Object.keys(oaAgg).map(oa => {
                             const p = oaAgg[oa];
                             const pct = p.total ? (p.completed/p.total)*100 : 0;
                             const info = (typeof oaData !== 'undefined' && oaData[oa]) ? (oaData[oa].titulo || '') : '';
-                            return [ oa + ' â€” ' + info, p.completed + ' / ' + p.total, pct ];
+                            return [ oa + ' - ' + info, p.completed + ' / ' + p.total, pct ];
                         });
                         drawTable(
                             [
@@ -4335,7 +4321,7 @@ SOLUCIÃ“N:
                     }
                 }
 
-                // ============ ANÃLISIS IA ============
+                // ============ ANALISIS IA ============
                 const aiContentEl = document.querySelector('#reportContent .ai-report-content');
                 const aiHeaderEl  = document.querySelector('#reportContent .ai-report-header');
                 const aiText = aiContentEl ? (aiContentEl.innerText || aiContentEl.textContent || '').trim() : '';
@@ -4343,11 +4329,10 @@ SOLUCIÃ“N:
                 if (aiText) {
                     newContentPage();
 
-                    // Banda lateral de la secciÃ³n IA
                     setFill(C.accent); doc.rect(MARGIN, y, 3, 10, 'F');
                     setFill(C.bgSoft); doc.rect(MARGIN + 3, y, CONTENT_W - 3, 10, 'F');
                     setText(C.primaryDark); doc.setFont(undefined, 'bold'); doc.setFontSize(13);
-                    doc.text((aiHeaderEl?.innerText || 'AnÃ¡lisis pedagÃ³gico con IA').replace(/\s+/g,' ').trim(), MARGIN + 7, y + 6.5);
+                    doc.text((aiHeaderEl?.innerText || 'Analisis pedagogico con IA').replace(/\s+/g,' ').trim(), MARGIN + 7, y + 6.5);
                     doc.setFont(undefined,'normal'); setText(C.text);
                     y += 14;
 
@@ -4355,18 +4340,16 @@ SOLUCIÃ“N:
                     for (const raw of lines) {
                         ensureSpace(8);
                         const isH3     = /^#{2,3}\s+/.test(raw);
-                        const isAllCap = /^[A-ZÃÃ‰ÃÃ“ÃšÃ‘][^a-z]{2,}$/.test(raw) && raw.length < 60;
-                        const isBullet = /^[-â€¢]\s+/.test(raw);
+                        const isBullet = /^[-\u2022]\s+/.test(raw);
                         const isNum    = /^\d+\.\s+/.test(raw);
-                        let cleaned = raw.replace(/^#+\s*/, '').replace(/\*\*(.+?)\*\*/g, '$1').replace(/^[-â€¢]\s+/, '').replace(/^\d+\.\s+/, '');
+                        let cleaned = raw.replace(/^#+\s*/, '').replace(/\*\*(.+?)\*\*/g, '$1').replace(/^[-\u2022]\s+/, '').replace(/^\d+\.\s+/, '');
 
-                        if (isH3 || isAllCap) {
+                        if (isH3) {
                             y += 2;
                             setText(C.primaryDark); doc.setFont(undefined, 'bold'); doc.setFontSize(12);
                             const wrapped = doc.splitTextToSize(cleaned, CONTENT_W);
                             doc.text(wrapped, MARGIN, y + 4);
                             y += wrapped.length * 5.5 + 2;
-                            // subrayado
                             setStroke(C.accent); doc.setLineWidth(0.5);
                             doc.line(MARGIN, y, MARGIN + 30, y);
                             y += 3;
@@ -4374,7 +4357,7 @@ SOLUCIÃ“N:
                         } else if (isBullet) {
                             doc.setFontSize(10);
                             setText(C.accent); doc.setFont(undefined,'bold');
-                            doc.text('â€¢', MARGIN + 2, y + 4);
+                            doc.text('\u2022', MARGIN + 2, y + 4);
                             setText(C.text); doc.setFont(undefined,'normal');
                             const wrapped = doc.splitTextToSize(cleaned, CONTENT_W - 8);
                             doc.text(wrapped, MARGIN + 6, y + 4);
@@ -4383,7 +4366,7 @@ SOLUCIÃ“N:
                             doc.setFontSize(10);
                             setText(C.primary); doc.setFont(undefined,'bold');
                             const numMatch = raw.match(/^(\d+)\./);
-                            doc.text((numMatch ? numMatch[1] : 'Â·') + '.', MARGIN + 2, y + 4);
+                            doc.text((numMatch ? numMatch[1] : '.') + '.', MARGIN + 2, y + 4);
                             setText(C.text); doc.setFont(undefined,'normal');
                             const wrapped = doc.splitTextToSize(cleaned, CONTENT_W - 10);
                             doc.text(wrapped, MARGIN + 8, y + 4);
@@ -4397,20 +4380,19 @@ SOLUCIÃ“N:
                     }
                 }
 
-                // ============ PIE DE PÃGINA EN TODAS LAS PÃGINAS ============
+                // ============ FOOTER EN TODAS LAS PAGINAS ============
                 const totalPages = doc.internal.getNumberOfPages();
                 for (let i = 1; i <= totalPages; i++) {
                     doc.setPage(i);
-                    // lÃ­nea fina
                     setStroke(C.border); doc.setLineWidth(0.2);
                     doc.line(MARGIN, PAGE_H - 12, PAGE_W - MARGIN, PAGE_H - 12);
                     setText(C.muted); doc.setFontSize(8);
                     if (i === 1) {
                         doc.text('profesorajavierapoblete.com', MARGIN, PAGE_H - 7);
                     } else {
-                        doc.text('profesorajavierapoblete.com Â· ' + courseName, MARGIN, PAGE_H - 7);
+                        doc.text('profesorajavierapoblete.com  -  ' + courseName, MARGIN, PAGE_H - 7);
                     }
-                    doc.text('PÃ¡gina ' + i + ' de ' + totalPages, PAGE_W - MARGIN, PAGE_H - 7, { align: 'right' });
+                    doc.text('Pagina ' + i + ' de ' + totalPages, PAGE_W - MARGIN, PAGE_H - 7, { align: 'right' });
                 }
 
                 const safeCourse = courseName.replace(/[^a-z0-9]/gi, '_');
@@ -4420,7 +4402,6 @@ SOLUCIÃ“N:
                 doc.save(fileName);
 
                 if (!silent) {
-                    // mensaje sutil de Ã©xito
                     const toast = document.createElement('div');
                     toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#22c55e;color:#fff;padding:12px 18px;border-radius:10px;font-family:Inter,Segoe UI,sans-serif;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:10001;';
                     toast.innerHTML = '<i class="fas fa-check-circle"></i>  PDF descargado';
@@ -4429,7 +4410,7 @@ SOLUCIÃ“N:
                 }
             } catch (error) {
                 console.error('Error generando PDF:', error);
-                alert('âŒ Error al generar el PDF.\n\nDetalle: ' + error.message);
+                alert('Error al generar el PDF.\n\nDetalle: ' + error.message);
             } finally {
                 if (loadingModal.parentNode) document.body.removeChild(loadingModal);
             }
@@ -4461,10 +4442,10 @@ SOLUCIÃ“N:
                     <label>OA (Objetivo de Aprendizaje):</label>
                     <select id="editTaskOA" onchange="updateEditOAPreview()">
                         <option value="">Sin OA</option>
-                        <option value="OA3" ${task.oa === 'OA3' ? 'selected' : ''}>OA3 - ComprensiÃ³n y producciÃ³n textual</option>
-                        <option value="OA5" ${task.oa === 'OA5' ? 'selected' : ''}>OA5 - Sistema de la lengua espaÃ±ola</option>
-                        <option value="OA6" ${task.oa === 'OA6' ? 'selected' : ''}>OA6 - ReflexiÃ³n sobre el lenguaje</option>
-                        <option value="OA11" ${task.oa === 'OA11' ? 'selected' : ''}>OA11 - Aprendizaje autÃ³nomo</option>
+                        <option value="OA3" ${task.oa === 'OA3' ? 'selected' : ''}>OA3 - Comprensión y producción textual</option>
+                        <option value="OA5" ${task.oa === 'OA5' ? 'selected' : ''}>OA5 - Sistema de la lengua española</option>
+                        <option value="OA6" ${task.oa === 'OA6' ? 'selected' : ''}>OA6 - Reflexión sobre el lenguaje</option>
+                        <option value="OA11" ${task.oa === 'OA11' ? 'selected' : ''}>OA11 - Aprendizaje autónomo</option>
                     </select>
                 </div>
                 <div id="editOAPreview" style="display: ${task.oa ? 'block' : 'none'}; background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #6366f1;">
@@ -4557,20 +4538,20 @@ SOLUCIÃ“N:
             await updateData('tasks', task);
             closeModal('editTaskModal');
             await loadPlanilla();
-            console.log('âœ… Tarea editada (incluyendo porcentaje) - Planilla recargada');
-            alert(`âœ… Tarea actualizada!\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(EvaluaciÃ³n formativa)' : ''}`);
+            console.log('✅ Tarea editada (incluyendo porcentaje) - Planilla recargada');
+            alert(`✅ Tarea actualizada!\nPorcentaje: ${percentage}%\n${percentage === 0 ? '(Evaluación formativa)' : ''}`);
         }
 
         async function deleteTask(taskId) {
             const tasks = await getAllData('tasks');
             const task = tasks.find(t => t.id === taskId);
             
-            if (!confirm(`Â¿EstÃ¡s seguro de eliminar la tarea "${task?.name}"?\n\nEsto tambiÃ©n eliminarÃ¡ todas las evaluaciones asociadas a esta tarea.`)) {
+            if (!confirm(`¿Estás seguro de eliminar la tarea "${task?.name}"?\n\nEsto también eliminará todas las evaluaciones asociadas a esta tarea.`)) {
                 return;
             }
 
             try {
-                console.log('ðŸ—‘ï¸ Eliminando tarea:', taskId);
+                console.log('🗑️ Eliminando tarea:', taskId);
 
                 // Eliminar evaluaciones asociadas a esta tarea
                 const evaluations = await firebaseDB.getEvaluations();
@@ -4584,23 +4565,23 @@ SOLUCIÃ“N:
                 // Eliminar la tarea
                 await deleteData('tasks', taskId);
 
-                console.log('âœ… Tarea eliminada correctamente');
+                console.log('✅ Tarea eliminada correctamente');
                 await loadPlanilla();
                 alert('Tarea eliminada correctamente');
             } catch (error) {
-                console.error('âŒ Error al eliminar tarea:', error);
+                console.error('❌ Error al eliminar tarea:', error);
                 alert(`Error al eliminar la tarea: ${error.message}`);
             }
         }
 
-        // FunciÃ³n auxiliar para abrir modal y cargar estudiante
-        // Abrir evaluaciÃ³n directamente para un estudiante especÃ­fico
+        // Función auxiliar para abrir modal y cargar estudiante
+        // Abrir evaluación directamente para un estudiante específico
         async function openAndLoadTemplate(taskId, studentId) {
             const tasks = await getAllData('tasks');
             const task = tasks.find(t => t.id === taskId);
             
             if (!task || !task.templateData) {
-                alert('Esta tarea no tiene una plantilla de evaluaciÃ³n asociada.');
+                alert('Esta tarea no tiene una plantilla de evaluación asociada.');
                 return;
             }
 
@@ -4625,7 +4606,7 @@ SOLUCIÃ“N:
             const title = document.getElementById('templateEvalTitle');
             const content = document.getElementById('templateEvalContent');
 
-            title.textContent = `ðŸ“Š ${task.name} - ${template.name}`;
+            title.textContent = `📊 ${task.name} - ${template.name}`;
 
             let html = `
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #6366f1;">
@@ -4641,7 +4622,7 @@ SOLUCIÃ“N:
                 </div>
                 
                 <div id="templateEvalForm">
-                    <!-- Formulario de evaluaciÃ³n -->
+                    <!-- Formulario de evaluación -->
                 </div>
             `;
 
@@ -4661,7 +4642,7 @@ SOLUCIÃ“N:
                 formHTML = `
                     <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
                         <div style="font-weight: bold; margin-bottom: 15px; color: #667eea; font-size: 15px;">
-                            ðŸ“ RÃºbrica de EvaluaciÃ³n
+                            📝 Rúbrica de Evaluación
                         </div>
                 `;
 
@@ -4711,7 +4692,7 @@ SOLUCIÃ“N:
                         </div>
                         <div class="modal-buttons" style="margin-top: 15px;">
                             <button class="modal-btn modal-btn-primary" onclick="saveTemplateEvaluation('${taskId}', '${studentId}')">
-                                <i class="fas fa-save"></i> Guardar EvaluaciÃ³n
+                                <i class="fas fa-save"></i> Guardar Evaluación
                             </button>
                         </div>
                     </div>
@@ -4730,7 +4711,7 @@ SOLUCIÃ“N:
                 formHTML = `
                     <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
                         <div style="font-weight: bold; margin-bottom: 15px; color: #667eea; font-size: 15px;">
-                            ðŸ“‹ Lista de Cotejo
+                            📋 Lista de Cotejo
                         </div>
                 `;
 
@@ -4768,7 +4749,7 @@ SOLUCIÃ“N:
                         </div>
                         <div class="modal-buttons" style="margin-top: 15px;">
                             <button class="modal-btn modal-btn-primary" onclick="saveTemplateEvaluation('${taskId}', '${studentId}')">
-                                <i class="fas fa-save"></i> Guardar EvaluaciÃ³n
+                                <i class="fas fa-save"></i> Guardar Evaluación
                             </button>
                         </div>
                     </div>
@@ -4838,7 +4819,7 @@ SOLUCIÃ“N:
                     });
                 });
                 
-                // Considerar completado si tiene al menos un Ã­tem marcado
+                // Considerar completado si tiene al menos un ítem marcado
                 completed = Object.keys(evaluationData).some(key => key.startsWith('section_') && evaluationData[key] === true);
             }
 
@@ -4849,7 +4830,7 @@ SOLUCIÃ“N:
                 evaluatedAt: new Date().toISOString()
             });
 
-            alert('âœ… EvaluaciÃ³n guardada correctamente');
+            alert('✅ Evaluación guardada correctamente');
             closeModal('templateEvaluationModal');
             await loadPlanilla();
         }
@@ -4905,10 +4886,10 @@ SOLUCIÃ“N:
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                alert('âœ… Backup creado exitosamente\n\nArchivo descargado: ' + a.download);
+                alert('✅ Backup creado exitosamente\n\nArchivo descargado: ' + a.download);
             } catch (error) {
                 console.error('Error creando backup:', error);
-                alert('âŒ Error al crear el backup: ' + error.message);
+                alert('❌ Error al crear el backup: ' + error.message);
             } finally {
                 const button = event.target;
                 button.innerHTML = '<i class="fas fa-download"></i> Descargar Backup';
@@ -4925,7 +4906,7 @@ SOLUCIÃ“N:
                 return;
             }
 
-            if (!confirm('âš ï¸ ADVERTENCIA: Esta acciÃ³n reemplazarÃ¡ TODOS los datos actuales.\n\nÂ¿EstÃ¡s seguro de continuar? Se recomienda hacer un backup primero.')) {
+            if (!confirm('⚠️ ADVERTENCIA: Esta acción reemplazará TODOS los datos actuales.\n\n¿Estás seguro de continuar? Se recomienda hacer un backup primero.')) {
                 return;
             }
 
@@ -4941,10 +4922,10 @@ SOLUCIÃ“N:
 
                 // Validar estructura del backup
                 if (!backupData.version || !backupData.data) {
-                    throw new Error('Archivo de backup invÃ¡lido o corrupto');
+                    throw new Error('Archivo de backup inválido o corrupto');
                 }
 
-                console.log('ðŸ“¦ Restaurando backup:', backupData.metadata);
+                console.log('📦 Restaurando backup:', backupData.metadata);
 
                 // Mostrar progreso
                 const progressModal = document.createElement('div');
@@ -4972,7 +4953,7 @@ SOLUCIÃ“N:
                 const progressBar = document.getElementById('restoreProgress');
                 const statusDiv = document.getElementById('restoreStatus');
 
-                // Limpiar datos existentes (opcional - por ahora no limpiamos para evitar pÃ©rdida accidental)
+                // Limpiar datos existentes (opcional - por ahora no limpiamos para evitar pérdida accidental)
                 // await clearAllData();
 
                 // Restaurar cursos
@@ -5004,7 +4985,7 @@ SOLUCIÃ“N:
                 }
 
                 progressBar.style.width = '100%';
-                statusDiv.textContent = 'Â¡RestauraciÃ³n completada!';
+                statusDiv.textContent = '¡Restauración completada!';
 
                 // Esperar un momento y recargar
                 setTimeout(() => {
@@ -5018,16 +4999,16 @@ SOLUCIÃ“N:
                         loadPlanilla();
                     }
                     
-                    alert('âœ… RestauraciÃ³n completada exitosamente\n\nSe restauraron:\n' + 
-                          `â€¢ ${backupData.data.courses.length} cursos\n` +
-                          `â€¢ ${backupData.data.students.length} estudiantes\n` +
-                          `â€¢ ${backupData.data.tasks.length} tareas\n` +
-                          `â€¢ ${backupData.data.evaluations.length} evaluaciones`);
+                    alert('✅ Restauración completada exitosamente\n\nSe restauraron:\n' + 
+                          `• ${backupData.data.courses.length} cursos\n` +
+                          `• ${backupData.data.students.length} estudiantes\n` +
+                          `• ${backupData.data.tasks.length} tareas\n` +
+                          `• ${backupData.data.evaluations.length} evaluaciones`);
                 }, 1500);
 
             } catch (error) {
                 console.error('Error restaurando backup:', error);
-                alert('âŒ Error al restaurar el backup: ' + error.message);
+                alert('❌ Error al restaurar el backup: ' + error.message);
                 
                 // Remover modal de progreso si existe
                 const progressModal = document.getElementById('progressModal');
@@ -5065,7 +5046,7 @@ SOLUCIÃ“N:
                 const courseTasks = tasks.filter(t => t.courseId === courseActual);
 
                 // Crear encabezados CSV
-                let csvContent = 'NÂ°,Apellido Paterno,Apellido Materno,Nombres';
+                let csvContent = 'N°,Apellido Paterno,Apellido Materno,Nombres';
                 
                 courseTasks.forEach(task => {
                     csvContent += ',' + task.name.replace(/,/g, ';'); // Escapar comas
@@ -5109,10 +5090,10 @@ SOLUCIÃ“N:
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                alert('âœ… Planilla exportada exitosamente\n\nArchivo descargado: ' + a.download);
+                alert('✅ Planilla exportada exitosamente\n\nArchivo descargado: ' + a.download);
             } catch (error) {
                 console.error('Error exportando CSV:', error);
-                alert('âŒ Error al exportar la planilla: ' + error.message);
+                alert('❌ Error al exportar la planilla: ' + error.message);
             } finally {
                 const button = event.target;
                 button.innerHTML = '<i class="fas fa-file-csv"></i> Exportar CSV';
