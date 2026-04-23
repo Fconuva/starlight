@@ -3325,7 +3325,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
 
             html += '<div class="action-buttons">';
-            html += '<button class="btn-ai" onclick="generateAIReport(\'grupal\')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
+            html += '<button class="btn-ai" onclick="pickAIStyle(\'grupal\')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
             html += '<button class="btn-pdf" onclick="downloadPDF(\'grupal\')"><i class="fas fa-download"></i> Descargar PDF</button>';
             html += '</div>';
 
@@ -3490,7 +3490,7 @@ ASCENCIO ROZAS MAXIMO MARIANO
             }
 
             html += '<div class="action-buttons">';
-            html += '<button class="btn-ai" onclick="generateAIReport(\'individual\', \'' + studentId + '\')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
+            html += '<button class="btn-ai" onclick="pickAIStyle(\'individual\', \'' + studentId + '\')"><i class="fas fa-robot"></i> Generar Informe con IA</button>';
             html += '<button class="btn-pdf" onclick="downloadPDF(\'individual\', \'' + studentId + '\')"><i class="fas fa-download"></i> Descargar PDF</button>';
             html += '</div>';
 
@@ -3542,11 +3542,96 @@ ASCENCIO ROZAS MAXIMO MARIANO
             return text;
         }
 
-        async function generateAIReport(type, studentId = null) {
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<span class="ai-loading"></span>Generando...';
-            button.disabled = true;
+        // ===== Selector de estilo de retroalimentación (3 opciones) =====
+        window.pickAIStyle = function(type, studentId = null) {
+            // Eliminar modal previo si existe
+            const prev = document.getElementById('aiStyleModal');
+            if (prev) prev.remove();
+
+            const styles = [
+                {
+                    key: 'constructiva',
+                    icon: '🌱',
+                    title: 'Constructiva y motivadora',
+                    desc: 'Destaca primero los logros, presenta áreas de mejora como oportunidades de crecimiento. Tono cálido y alentador.',
+                    color: '#28a745'
+                },
+                {
+                    key: 'analitica',
+                    icon: '📊',
+                    title: 'Analítica y detallada',
+                    desc: 'Análisis cuantitativo profundo con porcentajes, patrones por OA y tendencias. Tono técnico-profesional.',
+                    color: '#0066CC'
+                },
+                {
+                    key: 'accion',
+                    icon: '🎯',
+                    title: 'Orientada a acción',
+                    desc: 'Lista priorizada de próximos pasos e intervenciones pedagógicas por urgencia (Alta/Media/Baja). Tono directo.',
+                    color: '#ff6b35'
+                }
+            ];
+
+            const overlay = document.createElement('div');
+            overlay.id = 'aiStyleModal';
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease;';
+
+            let cardsHtml = '';
+            styles.forEach(s => {
+                cardsHtml += '<div class="ai-style-card" data-style="' + s.key + '" style="flex:1;min-width:220px;background:#fff;border:2px solid #e9ecef;border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;text-align:left;">'
+                    + '<div style="font-size:36px;margin-bottom:8px;">' + s.icon + '</div>'
+                    + '<div style="font-weight:700;color:' + s.color + ';font-size:15px;margin-bottom:6px;">' + s.title + '</div>'
+                    + '<div style="font-size:13px;color:#495057;line-height:1.4;">' + s.desc + '</div>'
+                    + '</div>';
+            });
+
+            overlay.innerHTML = '<div style="background:#fff;border-radius:16px;max-width:880px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.3);">'
+                + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+                + '<h2 style="margin:0;color:#2c3e50;font-size:22px;"><i class="fas fa-robot"></i> Elige el estilo de retroalimentación</h2>'
+                + '<button id="aiStyleClose" style="background:transparent;border:none;font-size:26px;cursor:pointer;color:#6c757d;line-height:1;">&times;</button>'
+                + '</div>'
+                + '<p style="margin:0 0 20px;color:#6c757d;font-size:14px;">Selecciona el enfoque que la IA usará para generar el informe.</p>'
+                + '<div style="display:flex;gap:14px;flex-wrap:wrap;">' + cardsHtml + '</div>'
+                + '</div>';
+
+            document.body.appendChild(overlay);
+
+            const close = () => overlay.remove();
+            document.getElementById('aiStyleClose').onclick = close;
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+
+            overlay.querySelectorAll('.ai-style-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.borderColor = card.querySelector('div:nth-child(2)').style.color;
+                    card.style.transform = 'translateY(-4px)';
+                    card.style.boxShadow = '0 8px 20px rgba(0,0,0,.12)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.borderColor = '#e9ecef';
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = 'none';
+                });
+                card.addEventListener('click', () => {
+                    const style = card.getAttribute('data-style');
+                    close();
+                    generateAIReport(type, studentId, style);
+                });
+            });
+        };
+
+        async function generateAIReport(type, studentId = null, style = 'constructiva') {
+            const button = (typeof event !== 'undefined' && event && event.target && event.target.closest) ? event.target.closest('.btn-ai') : null;
+            const originalText = button ? button.innerHTML : '';
+            if (button) { button.innerHTML = '<span class="ai-loading"></span>Generando...'; button.disabled = true; }
+            // Toast de carga (cuando se llama desde el modal, no hay botón)
+            let loadingToast = null;
+            if (!button) {
+                loadingToast = document.createElement('div');
+                loadingToast.id = 'aiLoadingToast';
+                loadingToast.style.cssText = 'position:fixed;top:24px;right:24px;background:#0066CC;color:#fff;padding:14px 20px;border-radius:10px;box-shadow:0 6px 20px rgba(0,102,204,.35);z-index:10001;font-size:14px;';
+                loadingToast.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando informe con IA...';
+                document.body.appendChild(loadingToast);
+            }
 
             try {
                 const [courses, students, tasks, evalMap] = await Promise.all([
@@ -3563,8 +3648,8 @@ ASCENCIO ROZAS MAXIMO MARIANO
                 // Validar que haya tareas
                 if (courseTasks.length === 0) {
                     alert('⚠️ No hay tareas creadas aún. Debes agregar al menos una tarea para generar reportes con IA.');
-                    button.innerHTML = originalText;
-                    button.disabled = false;
+                    if (button) { button.innerHTML = originalText; button.disabled = false; }
+                    if (loadingToast) loadingToast.remove();
                     return;
                 }
 
@@ -3855,6 +3940,14 @@ INSTRUCCIONES PARA EL ANÁLISIS PEDAGÓGICO:
 El análisis debe fundamentarse en datos objetivos y orientarse a la toma de decisiones pedagógicas efectivas.`;
                 }
 
+                // === Inyectar estilo de retroalimentación elegido ===
+                const styleBlocks = {
+                    constructiva: `\n\nESTILO DE RETROALIMENTACIÓN: CONSTRUCTIVA Y MOTIVADORA\n- Usa un tono cálido, cercano y alentador.\n- Comienza siempre destacando los logros y avances antes de mencionar dificultades.\n- Presenta las áreas de mejora como oportunidades de crecimiento, no como fallas.\n- Incluye frases motivadoras y reconoce el esfuerzo del estudiante/curso.\n- Cierra con un mensaje positivo que impulse la confianza.`,
+                    analitica: `\n\nESTILO DE RETROALIMENTACIÓN: ANALÍTICA Y DETALLADA\n- Usa un tono técnico-profesional, riguroso y basado en datos.\n- Incluye porcentajes, tendencias y correlaciones entre tareas y OA.\n- Identifica patrones de desempeño y posibles causas pedagógicas.\n- Cita datos concretos del contexto entregado (no inventes cifras).\n- Orienta el análisis a coordinadores y docentes que requieren información precisa.`,
+                    accion: `\n\nESTILO DE RETROALIMENTACIÓN: ORIENTADA A ACCIÓN\n- Usa un tono directo, resolutivo y práctico.\n- Enfoca el informe en próximos pasos concretos y accionables.\n- Entrega una lista priorizada de recomendaciones e intervenciones pedagógicas clasificadas como: 🔴 URGENCIA ALTA, 🟡 URGENCIA MEDIA, 🟢 URGENCIA BAJA.\n- Para cada acción sugiere: plazo estimado, responsable sugerido y resultado esperado.\n- Evita extenderte en análisis teórico; prioriza lo ejecutable.`
+                };
+                prompt += (styleBlocks[style] || styleBlocks.constructiva);
+
                 // Llamar a Multi-Provider AI API (Gemini -> OpenAI -> HuggingFace)
                 const response = await fetch('/.netlify/functions/ai-report', {
                     method: 'POST',
@@ -3916,7 +4009,9 @@ El análisis debe fundamentarse en datos objetivos y orientarse a la toma de dec
                         'Para activar análisis con IA configura <code>GROQ_API_KEY</code> (recomendado, gratis) en Netlify → Site settings → Environment variables.' +
                         '</div>';
                 }
-                reportHtml += `<div class="ai-report-header"><i class="fas fa-robot"></i> Informe IA - Generado con ${usedProvider}</div>`;
+                const styleLabels = { constructiva: '🌱 Constructiva y motivadora', analitica: '📊 Analítica y detallada', accion: '🎯 Orientada a acción' };
+                const styleLabel = styleLabels[style] || styleLabels.constructiva;
+                reportHtml += `<div class="ai-report-header"><i class="fas fa-robot"></i> Informe IA - Generado con ${usedProvider} <span style="float:right;font-size:13px;opacity:.9;">${styleLabel}</span></div>`;
                 reportHtml += '<div class="ai-report-content">' + formattedReport + '</div>';
                 reportHtml += '</div>';
 
@@ -3965,8 +4060,8 @@ SOLUCIÓN:
                 
                 alert(errorMessage);
             } finally {
-                button.innerHTML = originalText;
-                button.disabled = false;
+                if (button) { button.innerHTML = originalText; button.disabled = false; }
+                if (loadingToast) loadingToast.remove();
             }
         }
 
